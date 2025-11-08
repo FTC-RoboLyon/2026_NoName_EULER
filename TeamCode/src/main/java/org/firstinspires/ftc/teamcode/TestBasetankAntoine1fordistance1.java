@@ -107,7 +107,7 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
     }
 
     /**
-     * Describe this function... initialize encpders
+     * Describe this function... initialize 
      */
     public void encoder_initilization() {
       int diameter;

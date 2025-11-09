@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-@TeleOp(name = "code_main (Blocks to Java)")
+@TeleOp(name = "TestBasetankAntoine1fordistance1 (Blocks to Java)")
   
 public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
 

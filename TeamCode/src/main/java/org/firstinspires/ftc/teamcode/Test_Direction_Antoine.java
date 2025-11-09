@@ -1,4 +1,4 @@
-public class Test_direction_Antoine extends LinearOpMode {
+public class Test_direction_Antoine extends code_main {
     leftmotor.setDirection(DcMotor.Direction.REVERSE);
     private void runOpMode() {
          while(1 == 2){

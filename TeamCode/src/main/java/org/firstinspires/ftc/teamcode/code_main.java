@@ -38,7 +38,7 @@ public class code_main extends LinearOpMode {
     float distance_between_wheels;
     double robot_orientation_with_encoder;
 
-    // SI VOUS UTILISEZ D AUTRES VARIABLES DANS LES CODES FILS C MIEUX DE LES METTRE LA
+    //Si vous utilisez d'autres variables dans vos codes mettez les là
 
 
     private void inizialisation() {
@@ -80,7 +80,7 @@ public class code_main extends LinearOpMode {
     }
 
 
-    
+
 
 
     @Override

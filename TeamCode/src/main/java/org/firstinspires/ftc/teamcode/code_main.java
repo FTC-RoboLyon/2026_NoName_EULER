@@ -1,47 +1,51 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.IMU;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-
 
 public class code_main extends LinearOpMode {
 
-    private DcMotor leftmotor;
-    private DcMotor rightmotor;
-    private CRServo Intake;
-    private DcMotor shooterright;
-    private DcMotor shooterleft;
-    private IMU imu;
-    private DistanceSensor distancesensor;
-    private CRServo feeder;
+    protected void importation() {
+        import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+        import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+        import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+        import com.qualcomm.robotcore.hardware.CRServo;
+        import com.qualcomm.robotcore.hardware.DcMotor;
+        import com.qualcomm.robotcore.hardware.DcMotorEx;
+        import com.qualcomm.robotcore.hardware.DistanceSensor;
+        import com.qualcomm.robotcore.hardware.IMU;
+        import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+        import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+        import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-    double distance_to_the_goal;
-    float Turn;
-    int CPR;
-    double robotOrienRadian;
-    double robotOrienDegrees;
+    }
 
-    int velocity_motor;
-    float Forward;
-    int distancce_to_goal_parfaite_pour_tirer;
-    double circumference;
-    int robot_orientation_parfaite;
-    float distance_between_wheels;
-    double robot_orientation_with_encoder;
+    protected void création() {
+
+        private DcMotor leftmotor;
+        private DcMotor rightmotor;
+        private CRServo Intake;
+        private DcMotor shooterright;
+        private DcMotor shooterleft;
+        private IMU imu;
+        private DistanceSensor distancesensor;
+        private CRServo feeder;
+        double distance_to_the_goal;
+        float Turn;
+        int CPR;
+        double robotOrienRadian;
+        double robotOrienDegrees;
+        int velocity_motor;
+        float Forward;
+        int distancce_to_goal_parfaite_pour_tirer;
+        double circumference;
+        int robot_orientation_parfaite;
+        float distance_between_wheels;
+        double robot_orientation_with_encoder;
+    }
 
     //Si vous utilisez d'autres variables dans vos codes mettez les là
 
 
-    private void inizialisation() {
+    protected void inizialisation() {
         leftmotor.setDirection(DcMotor.Direction.REVERSE);
         Intake.setDirection(CRServo.Direction.REVERSE);
         shooterright.setDirection(DcMotor.Direction.REVERSE);
@@ -57,7 +61,7 @@ public class code_main extends LinearOpMode {
     }
 
 
-    private void imu_inizialisation() {
+    protected void imu_inizialisation() {
         IMU.Parameters imu_parameters;
 
         // Create a RevHubOrientationOnRobot object for use with an IMU in a REV Robotics
@@ -71,7 +75,7 @@ public class code_main extends LinearOpMode {
 
     }
 
-    public void encoder_initilization() {
+    protected void encoder_initilization() {
         int diameter;
 
         CPR = 560;
@@ -79,12 +83,7 @@ public class code_main extends LinearOpMode {
         circumference = Math.PI * diameter;
     }
 
-
-
-
-
-    @Override
-    public void runOpMode() {
+    protected void nommage() {
         leftmotor = hardwareMap.get(DcMotor.class, "left motor");
         Intake = hardwareMap.get(CRServo.class, "Intake");
         shooterright = hardwareMap.get(DcMotor.class, "shooter right");
@@ -95,12 +94,5 @@ public class code_main extends LinearOpMode {
         feeder = hardwareMap.get(CRServo.class, "feeder");
 
 
-        inizialisation();
-        imu_inizialisation();
-        encoder_initilization();
-        waitForStart();
-        //Executer les codes fils ici
-
-
-        }
     }
+}

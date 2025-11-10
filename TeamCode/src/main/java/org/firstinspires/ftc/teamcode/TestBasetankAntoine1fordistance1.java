@@ -93,7 +93,7 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
     }
 
     /**
-     * Describe this function...
+     * 
      */
     private void imu_inizialisation() {
       IMU.Parameters imu_parameters;

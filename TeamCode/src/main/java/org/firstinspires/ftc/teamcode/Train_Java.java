@@ -11,6 +11,10 @@ public class Train_Java extends OpMode {
 
     public void loop() {
         double right_joystick = -gamepad1.right_stick_y;
+        boolean boost_button = gamepad1.a;
+        if boost_button == true;
+            double right_joystick = rightjoystick*2;
+
         telemetry.addData("Speed value", right_joystick);
     }
 

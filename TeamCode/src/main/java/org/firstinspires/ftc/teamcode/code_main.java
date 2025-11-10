@@ -18,7 +18,7 @@ public class code_main extends LinearOpMode {
 
     }
 
-    protected void création() {
+    protected void création () {
 
         private DcMotor leftmotor;
         private DcMotor rightmotor;
@@ -40,6 +40,8 @@ public class code_main extends LinearOpMode {
         int robot_orientation_parfaite;
         float distance_between_wheels;
         double robot_orientation_with_encoder;
+        float x;
+        float y;
     }
 
     //Si vous utilisez d'autres variables dans vos codes mettez les là
@@ -75,7 +77,7 @@ public class code_main extends LinearOpMode {
 
     }
 
-    protected void encoder_initilization() {
+    protected void encoder_inizilization() {
         int diameter;
 
         CPR = 560;

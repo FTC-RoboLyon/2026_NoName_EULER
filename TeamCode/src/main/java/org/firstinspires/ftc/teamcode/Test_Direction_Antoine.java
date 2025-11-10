@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 public class Test_direction_Antoine extends code_main {
-   
+
 
     private void Drive() {
         x = gamepad1.right_stick_x;
@@ -34,10 +34,4 @@ public class Test_direction_Antoine extends code_main {
         runOpMode();
 
     }
-
-
-
-
-
-
 }

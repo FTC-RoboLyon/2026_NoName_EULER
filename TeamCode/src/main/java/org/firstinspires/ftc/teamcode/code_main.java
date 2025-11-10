@@ -18,7 +18,7 @@ public class code_main extends LinearOpMode {
 
     }
 
-    protected void création () {
+    protected void création() {
 
         private DcMotor leftmotor;
         private DcMotor rightmotor;

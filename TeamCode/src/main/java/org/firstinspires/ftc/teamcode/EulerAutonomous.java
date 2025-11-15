@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.euler.Driver;
 
-@Autonomous(preselectTeleOp = "")
+@Autonomous(preselectTeleOp = "EulerTeleop",group = "Euler")
 public class EulerAutonomous extends LinearOpMode {
     Driver driver;
 

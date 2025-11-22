@@ -5,19 +5,19 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Driver {
 
-    final DcMotor leftMotor;
-    final DcMotor rightMotor;
+    final DcMotor left_motor;
+    final DcMotor right_motor;
 
     public Driver(DcMotor leftMotor1, DcMotor rightMotor1) {
-        leftMotor = leftMotor1;
-        rightMotor = rightMotor1;
+        left_motor = leftMotor1;
+        right_motor = rightMotor1;
 
-        this.leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        this.rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.right_motor.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void drive(float left, float right) {
-        leftMotor.setPower(left);
-        rightMotor.setPower(right);
+        left_motor.setPower(left);
+        right_motor.setPower(right);
     }
 }

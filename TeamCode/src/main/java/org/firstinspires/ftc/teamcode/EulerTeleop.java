@@ -29,7 +29,8 @@ public class EulerTeleop extends LinearOpMode {
             float left = -gamepad1.left_stick_y;
             float right = -gamepad1.right_stick_y;
 
-            telemetry.addData("Gamepad", "left:"+left+" right:"+right);
+            telemetry.addData("Gamepad", "left:"+left);
+            telemetry.addData("Gamepad", "right:"+right);
             telemetry.update();
 
             myRobotDriver.drive(left, right);

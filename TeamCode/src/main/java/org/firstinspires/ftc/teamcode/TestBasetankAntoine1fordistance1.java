@@ -245,7 +245,7 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
       rightmotor.setPower(Forward - Turn);
     }
 
-    /**
+    /** aa
      * Describe this function...
      */
     private void intake() {
@@ -265,9 +265,10 @@ Dans cette section, je code une fonction pour piloter une base mecanum en foncti
 
 float strafe;             a rajouter dans l'initilisation des variables
 public void mecanumDrive() {
-    Turn = gamepad.right_stick_x
-    Forward = gamepade.left_stick_y * robotOrienDegrees
-    strafe =
+
+    strafe = x * Math.cos(-robotOrienRadian) - y * Math.sin(-robotOrienRadian);
+    Forward = x * Math.sin(-robotOrienRadian) + y * Math.cos(-robotOrienRadian);
+    double denominator = Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(Turn), 1);
     FrontLeft.setPower(Forward + strafe + Turn );
     FrontRight.setPower(Forward - strafe - Turn);
     BackLeft.setPower(Forward - starfe + Turn);

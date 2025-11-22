@@ -18,9 +18,8 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
 
   private DcMotor leftmotor;
 
-  private CRServo Intake;
-  private DcMotor shooterright;
-  private DcMotor shooterleft;
+  private DcMotor Intake;
+  private DcMotor shooter;
   private IMU imu;
   private DistanceSensor distancesensor;
   private DcMotor rightmotor;
@@ -46,10 +45,8 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
   private void inizialisation() {
     leftmotor.setDirection(DcMotor.Direction.REVERSE);
     Intake.setDirection(CRServo.Direction.REVERSE);
-    shooterright.setDirection(DcMotor.Direction.REVERSE);
-    shooterleft.setDirection(DcMotor.Direction.FORWARD);
-    shooterleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    shooterright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    shooter.setDirection(DcMotor.Direction.REVERSE);
+    shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     velocity_motor = 1000;
     // Remplacer les 0 par les valeurs voulues
     distancce_to_goal_parfaite_pour_tirer = 0;
@@ -67,9 +64,8 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
   @Override
   public void runOpMode() {
     leftmotor = hardwareMap.get(DcMotor.class, "left motor");
-    Intake = hardwareMap.get(CRServo.class, "Intake");
-    shooterright = hardwareMap.get(DcMotor.class, "shooter right");
-    shooterleft = hardwareMap.get(DcMotor.class, "shooter left");
+    Intake = hardwareMap.get(DcMotor.class, "Intake");
+    shooter = hardwareMap.get(DcMotor.class, "shoote");
     imu = hardwareMap.get(IMU.class, "imu");
     distancesensor = hardwareMap.get(DistanceSensor.class, "distance sensor");
     rightmotor = hardwareMap.get(DcMotor.class, "right motor");
@@ -98,7 +94,7 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
     private void imu_inizialisation() {
       IMU.Parameters imu_parameters;
 
-      // Create a RevHubOrientationOnRobot object for use with an IMU in a REV Robotics
+      // Create a RevHubOrientationOnRobot objecexplication incendies de wajdi mouawad chapitre par cexplication incendies de wajdi mouawad chapitre par for use with an IMU in a REV Robotics
       // Control Hub or Expansion Hub, specifying the hub's arbitrary orientation on
       // the robot via an Orientation block that describes the rotation that would
       // need to be applied in order to rotate the hub from having its logo facing up1
@@ -215,17 +211,15 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
       if (gamepad1.dpad_up) {
         velocity_motor += 50;
       } else if (gamepad1.dpad_down) {
-        velocity_motor += -50;
+        velocity_motor -= 50;
       } else if (gamepad1.a) {
-        ((DcMotorEx) shooterleft).setVelocity(velocity_motor);
-        ((DcMotorEx) shooterright).setVelocity(velocity_motor);
+        ((DcMotorEx) shooter).setVelocity(velocity_motor);
       } else if (gamepad1.b) {
         feeder.setPower(1);
       } else if (gamepad1.x) {
         feeder.setPower(-1);
       } else {
-        ((DcMotorEx) shooterleft).setVelocity(0);
-        ((DcMotorEx) shooterright).setVelocity(0);
+        ((DcMotorEx) shooter).setVelocity(0);
         feeder.setPower(0);
       }
     }
@@ -268,7 +262,7 @@ public void mecanumDrive() {
 
     strafe = x * Math.cos(-robotOrienRadian) - y * Math.sin(-robotOrienRadian);
     Forward = x * Math.sin(-robotOrienRadian) + y * Math.cos(-robotOrienRadian);
-    double denominator = Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(Turn), 1);
+    double denominator = Math.max(Math.abs(forward) + Math.abs(strafe) + Math.absl:(Turn), 1);
     FrontLeft.setPower(Forward + strafe + Turn );
     FrontRight.setPower(Forward - strafe - Turn);
     BackLeft.setPower(Forward - starfe + Turn);

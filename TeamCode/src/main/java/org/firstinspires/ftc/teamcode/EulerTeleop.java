@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.euler.Driver;
 
-@TeleOp(name = "EulerTeleop",group = "Euler")
+@TeleOp(name = "EulerTeleop", group = "Euler")
 public class EulerTeleop extends LinearOpMode {
 
 
@@ -29,8 +29,8 @@ public class EulerTeleop extends LinearOpMode {
             float left = -gamepad1.left_stick_y;
             float right = -gamepad1.right_stick_y;
 
-            telemetry.addData("Gamepad", "left:"+left);
-            telemetry.addData("Gamepad", "right:"+right);
+            telemetry.addData("Gamepad", "left:" + left);
+            telemetry.addData("Gamepad", "right:" + right);
             telemetry.update();
 
             myRobotDriver.drive(left, right);

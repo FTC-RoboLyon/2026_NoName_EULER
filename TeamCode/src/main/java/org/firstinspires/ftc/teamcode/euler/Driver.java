@@ -9,8 +9,8 @@ public class Driver {
     final DcMotor rightMotor;
 
     public Driver(DcMotor leftMotor1, DcMotor rightMotor1) {
-        this.leftMotor = leftMotor1;
-        this.rightMotor = rightMotor1;
+        leftMotor = leftMotor1;
+        rightMotor = rightMotor1;
 
         this.leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);

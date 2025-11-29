@@ -23,7 +23,7 @@ public class EulerTeleop extends LinearOpMode {
 
         waitForStart();
 
-        Driver myRobotDriver = new Driver(leftMotor, rightMotor);
+        Driver myRobotDriver = new Driver(left_motor, right_motor);
 
         while (opModeIsActive()) {
             float turn = gamepad1.left_stick_x;

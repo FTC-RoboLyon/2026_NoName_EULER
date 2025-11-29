@@ -8,6 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -23,8 +26,8 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
   private IMU imu;
   private DistanceSensor distancesensor;
   private DcMotor rightmotor;
-  private CRServo feeder;
-
+  private Servo feeder;
+  ElapsedTime timer;
   double distance_to_the_goal;
   float Turn;
   int CPR;
@@ -53,6 +56,7 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
     robot_orientation_parfaite = 52;
     distance_between_wheels = 14.5F;
     robot_orientation_with_encoder = 0;
+    timer = new ElapsedTime();
   }
 
   /**
@@ -69,7 +73,7 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
     imu = hardwareMap.get(IMU.class, "imu");
     distancesensor = hardwareMap.get(DistanceSensor.class, "distance sensor");
     rightmotor = hardwareMap.get(DcMotor.class, "right motor");
-    feeder = hardwareMap.get(CRServo.class, "feeder");
+    feeder = hardwareMap.get(Servo.class, "feeder");
 
     // Put initialization blocks here.
     inizialisation();
@@ -83,7 +87,6 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
         drive();
         intake();
         Shooter();
-        se_positioner();
         }
       }
     }
@@ -94,12 +97,12 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
     private void imu_inizialisation() {
       IMU.Parameters imu_parameters;
 
-      // Create a RevHubOrientationOnRobot objecexplication incendies de wajdi mouawad chapitre par cexplication incendies de wajdi mouawad chapitre par for use with an IMU in a REV Robotics
+      // Create a RevHubOrientationOnRobot object for use with an IMU in a REV Robotics
       // Control Hub or Expansion Hub, specifying the hub's arbitrary orientation on
       // the robot via an Orientation block that describes the rotation that would
       // need to be applied in order to rotate the hub from having its logo facing up1
       // and the USB ports facing forward, to its actual orientation on the robot.
-      imu_parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.xyzOrientation(0, 0, 0)));
+      imu_parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.xyzOrientation(0, 0, 90)));
       imu.initialize(imu_parameters);
       imu.resetYaw();
     }
@@ -169,7 +172,7 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
 
     /**
      * Describe this function...
-     */
+     *
     private void se_positioner() {
       if (gamepad1.right_trigger > 0.1) {
         while (opModeIsActive()) {
@@ -202,7 +205,7 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
           }
         }
       }
-    }
+    } /
 
     /**
      * Describe this function...
@@ -215,13 +218,15 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
       } else if (gamepad1.a) {
         ((DcMotorEx) shooter).setVelocity(velocity_motor);
       } else if (gamepad1.b) {
-        feeder.setPower(1);
-      } else if (gamepad1.x) {
-        feeder.setPower(-1);
-      } else {
+        resetRuntime();
+        feeder.setPosition(1);
+
+      } else if (gamepad1.cross) {
+        ((DcMotorEx) shooter).setPower(-0.01);
+      }else {
         ((DcMotorEx) shooter).setVelocity(0);
-        feeder.setPower(0);
       }
+      telemetry.addData("Vélocité du shooter" , velocity_motor);
     }
 
     /**

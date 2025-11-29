@@ -26,14 +26,14 @@ public class EulerTeleop extends LinearOpMode {
         Driver myRobotDriver = new Driver(leftMotor, rightMotor);
 
         while (opModeIsActive()) {
-            float tourner = gamepad1.left_stick_x;
-            float avancer = -gamepad1.right_stick_y;
+            float turn = gamepad1.left_stick_x;
+            float forward = -gamepad1.right_stick_y;
 
-            telemetry.addData("Gamepad", "left:" + tourner);
-            telemetry.addData("Gamepad", "right:" + avancer);
+            telemetry.addData("Gamepad", "left:" + turn);
+            telemetry.addData("Gamepad", "right:" + forward);
             telemetry.update();
 
-            myRobotDriver.drive(tourner, avancer);
+            myRobotDriver.drive(turn, forward);
         }
     }
 }

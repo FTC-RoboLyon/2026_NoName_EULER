@@ -16,9 +16,8 @@ public class Driver {
         this.right_motor.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
-    public void drive(float tourner, float avancer) {
-        left_motor.setPower(avancer);
-        right_motor.setPower(avancer);
-        if
+    public void drive(float turn, float forward) {
+        left_motor.setPower(forward - turn);
+        right_motor.setPower(forward + turn);
     }
 }

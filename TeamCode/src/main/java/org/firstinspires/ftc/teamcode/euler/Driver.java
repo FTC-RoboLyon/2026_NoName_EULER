@@ -35,11 +35,9 @@ public class Driver {
         }
     }
 
-    public void shooter() {
+    public void shooter(int puissanceShooter) {
         if(gamepad1.right_bumper) {
-            shooter.setPower(1);
-        } else if (gamepad.right_trigger) {
-            shooter.setPower(-1);
+            shooter.setPower(puissanceShooter);
         } else {
             shooter.setPower(0);
         }
@@ -55,10 +53,20 @@ public class Driver {
         if(gamepad1.b){
             if(variableInverseurIntake == 0){
                 puissanceIntake = -puissanceIntake;
-                variableInverseurIntake == 1;
+                variableInverseurIntake = 1;
             }
         }else{
-            variableInverseurIntake == 0;
+            variableInverseurIntake = 0;
+        }
+    }
+    public void InverseurShooter(int puissanceShooter, int variableInverseurShooter){
+        if(gamepad1.y){
+            if(variableInverseurShooter == 0){
+                puissanceShooter = -puissanceShooter;
+                variableInverseurShooter = 1;
+            }
+        }else{
+            variableInverseurShooter = 0;
         }
     }
 }

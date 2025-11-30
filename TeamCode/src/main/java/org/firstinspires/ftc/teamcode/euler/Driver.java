@@ -22,9 +22,9 @@ public class Driver {
         this.shooter.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
-    public void drive(float turn, float forward) {
-        left_motor.setPower(forward - turn);
-        right_motor.setPower(forward + turn);
+    public void drive(float valueLeftMotor, float valueRightMotor) {
+        left_motor.setPower(valueLeftMotor);
+        right_motor.setPower(valueRightMotor);
     }
 
     public void intake() {
@@ -44,6 +44,13 @@ public class Driver {
             shooter.setPower(-1);
         }else {
             shooter.setPower(0);
+        }
+    }
+
+    public void limitateur(float valueLeftMotor, float valueRightMotor) {
+        if(gamepad.a){
+            valueLeftMotor = valueLeftMotor/2;
+            valueRightMotor = valueRightMotor/2;
         }
     }
 }

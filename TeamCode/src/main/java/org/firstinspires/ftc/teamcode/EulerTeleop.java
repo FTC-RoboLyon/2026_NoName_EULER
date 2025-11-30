@@ -34,6 +34,7 @@ public class EulerTeleop extends LinearOpMode {
             telemetry.update();
 
             myRobotDriver.drive(turn, forward);
+            myRobotDriver.intake();
         }
     }
 }

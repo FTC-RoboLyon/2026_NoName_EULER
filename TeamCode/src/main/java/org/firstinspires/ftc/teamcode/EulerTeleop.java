@@ -17,6 +17,7 @@ public class EulerTeleop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         DcMotor left_motor = hardwareMap.get(DcMotor.class, LEFT_MOTOR);
         DcMotor right_motor = hardwareMap.get(DcMotor.class, RIGHT_MOTOR);
+        DcMotor intake = hardwareMap.get(DcMotor.class, INTAKE);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();

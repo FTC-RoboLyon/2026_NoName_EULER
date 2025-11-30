@@ -18,13 +18,14 @@ public class EulerTeleop extends LinearOpMode {
         DcMotor left_motor = hardwareMap.get(DcMotor.class, LEFT_MOTOR);
         DcMotor right_motor = hardwareMap.get(DcMotor.class, RIGHT_MOTOR);
         DcMotor intake = hardwareMap.get(DcMotor.class, INTAKE);
+        DcMotor shooter = harwareMap.get(DcMotor.class, SHOOTER);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
 
-        Driver myRobotDriver = new Driver(left_motor, right_motor);
+        Driver myRobotDriver = new Driver(left_motor, right_motor, intake, shooter);
 
         while (opModeIsActive()) {
             float turn = gamepad1.left_stick_x;
@@ -36,6 +37,7 @@ public class EulerTeleop extends LinearOpMode {
 
             myRobotDriver.drive(turn, forward);
             myRobotDriver.intake();
+            myRobotDriver.shooter();
         }
     }
 }

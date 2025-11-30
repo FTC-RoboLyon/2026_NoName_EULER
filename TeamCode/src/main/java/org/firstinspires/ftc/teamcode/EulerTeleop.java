@@ -26,6 +26,8 @@ public class EulerTeleop extends LinearOpMode {
         waitForStart();
 
         Driver myRobotDriver = new Driver(left_motor, right_motor, intake, shooter);
+        int puissanceIntake = 1;
+        int variableInverseurIntake = 0;
 
         while (opModeIsActive()) {
             float turn = gamepad1.left_stick_x;
@@ -37,9 +39,10 @@ public class EulerTeleop extends LinearOpMode {
             telemetry.addData("Gamepad", "right:" + forward);
             telemetry.update();
 
-            myRobotDriver.limitateur(valueLeftMotor, valueRightMotor);
+            //myRobotDriver.limitateur(valueLeftMotor, valueRightMotor);
             myRobotDriver.drive(valueLeftMotor, valueRightMotor);
-            myRobotDriver.intake();
+            //myRobotDriver.inverseurIntake(puissanceIntake, variableInverseurIntake);
+            myRobotDriver.intake(puissanceIntake);
             myRobotDriver.shooter();
         }
     }

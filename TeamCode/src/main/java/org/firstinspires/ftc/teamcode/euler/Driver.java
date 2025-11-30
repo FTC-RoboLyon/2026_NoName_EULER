@@ -27,11 +27,9 @@ public class Driver {
         right_motor.setPower(valueRightMotor);
     }
 
-    public void intake() {
+    public void intake(int puissanceIntake) {
         if(gamepad1.left_bumper){
-            intake.setPower(1);
-        }else if (gamepad1.left_trigger) {
-            intake.setPower(-1);
+            intake.setPower(puissanceIntake);
         }else {
             intake.setPower(0);
         }
@@ -40,9 +38,9 @@ public class Driver {
     public void shooter() {
         if(gamepad1.right_bumper) {
             shooter.setPower(1);
-        } else if (gamepad1.right_trigger) {
+        } else if (gamepad.right_trigger) {
             shooter.setPower(-1);
-        }else {
+        } else {
             shooter.setPower(0);
         }
     }
@@ -51,6 +49,16 @@ public class Driver {
         if(gamepad.a){
             valueLeftMotor = valueLeftMotor/2;
             valueRightMotor = valueRightMotor/2;
+        }
+    }
+    public void inverseurIntake(int puissanceIntake, int variableInverseurIntake){
+        if(gamepad1.b){
+            if(variableInverseurIntake == 0){
+                puissanceIntake = -puissanceIntake;
+                variableInverseurIntake == 1;
+            }
+        }else{
+            variableInverseurIntake == 0;
         }
     }
 }

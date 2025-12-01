@@ -69,4 +69,20 @@ public class Driver {
             variableInverseurShooter = 0;
         }
     }
+
+    public void règleurPuissanceShooter(int puissanceShooter){
+        if(gamepad1.right_trigger){
+            puissanceShooter = puissanceShooter+0.1;
+        } else if (gamepad1.left_trigger) {
+            puissanceShooter = puissanceShooter-0.1;
+        }
+    }
+
+    public void positionsShooter(int puissanceShooter, int puissanceShooterPos1, int puissanceShooterPos2){
+        if(gamepad2.a){
+            shooter.setPower(puissanceShooterPos1);
+        } else if (gamepad2.b) {
+            shooter.setPower(puissanceShooterPos2);
+        }
+    }
 }

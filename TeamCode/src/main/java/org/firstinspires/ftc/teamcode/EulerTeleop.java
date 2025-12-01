@@ -30,6 +30,8 @@ public class EulerTeleop extends LinearOpMode {
         int puissanceShooter = 1;
         int variableInverseurIntake = 0;
         int variableInverseurShooter = 0;
+        int puissanceShooterPos1 = 0;
+        int puissanceShooterPos2 = 0;
 
         while (opModeIsActive()) {
             float turn = gamepad1.left_stick_x;
@@ -39,6 +41,7 @@ public class EulerTeleop extends LinearOpMode {
 
             telemetry.addData("Gamepad", "left:" + turn);
             telemetry.addData("Gamepad", "right:" + forward);
+            telemetry.addData("Puissance Shooter ="+puissanceShooter);
             telemetry.update();
 
             //myRobotDriver.limitateur(valueLeftMotor, valueRightMotor);
@@ -46,7 +49,13 @@ public class EulerTeleop extends LinearOpMode {
             //myRobotDriver.inverseurIntake(puissanceIntake, variableInverseurIntake);
             myRobotDriver.intake(puissanceIntake);
             //myRobotDriver.Inverseurshooter(puissanceShooter, variableInverseurShooter);
+            //myRobotDriver.règleurPuissanceShooter(puissanceShooter);
+            //myRobotDriver.positionsShooter(puissanceShooter, puissanceShooterPos1, puissanceShooterPos2);
             myRobotDriver.shooter();
         }
     }
 }
+
+
+//Ce qui est en commentaire est à mettre apres avoir déjà regardé si le shooter et l'intake marchent
+//Parce que sinon ça encombre le code et si y'a des erreurs, on saura pas d'où elles viennent

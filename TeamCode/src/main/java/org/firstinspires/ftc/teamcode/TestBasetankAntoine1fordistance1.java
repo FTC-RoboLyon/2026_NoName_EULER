@@ -57,6 +57,7 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
     distance_between_wheels = 14.5F;
     robot_orientation_with_encoder = 0;
     timer = new ElapsedTime();
+
   }
 
   /**
@@ -216,7 +217,7 @@ public class TestBasetankAntoine1fordistance1 extends LinearOpMode {
       } else if (gamepad1.dpad_down) {
         velocity_motor -= 50;
       } else if (gamepad1.a) {
-        ((DcMotorEx) shooter).setVelocity(velocity_motor);
+
       } else if (gamepad1.b) {
         resetRuntime();
         feeder.setPosition(1);

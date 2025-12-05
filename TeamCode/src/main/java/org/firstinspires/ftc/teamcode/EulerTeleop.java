@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.euler.Constant.INTAKE;
 import static org.firstinspires.ftc.teamcode.euler.Constant.LEFT_MOTOR;
 import static org.firstinspires.ftc.teamcode.euler.Constant.RIGHT_MOTOR;
+import static org.firstinspires.ftc.teamcode.euler.Constant.SHOOTER;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,7 +20,7 @@ public class EulerTeleop extends LinearOpMode {
         DcMotor left_motor = hardwareMap.get(DcMotor.class, LEFT_MOTOR);
         DcMotor right_motor = hardwareMap.get(DcMotor.class, RIGHT_MOTOR);
         DcMotor intake = hardwareMap.get(DcMotor.class, INTAKE);
-        DcMotor shooter = harwareMap.get(DcMotor.class, SHOOTER);
+        DcMotor shooter = hardwareMap.get(DcMotor.class, SHOOTER);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -27,7 +29,7 @@ public class EulerTeleop extends LinearOpMode {
 
         Driver myRobotDriver = new Driver(left_motor, right_motor, intake, shooter);
         int puissanceIntake = 1;
-        int puissanceShooter = 1;
+        int vélocitéShooter = 0;
         int variableInverseurIntake = 0;
         int variableInverseurShooter = 0;
         int puissanceShooterPos1 = 0;
@@ -41,17 +43,18 @@ public class EulerTeleop extends LinearOpMode {
 
             telemetry.addData("Gamepad", "left:" + turn);
             telemetry.addData("Gamepad", "right:" + forward);
-            telemetry.addData("Puissance Shooter ="+puissanceShooter);
+            telemetry.addData("Puissance Shooter =", vélocitéShooter);
             telemetry.update();
 
-            //myRobotDriver.limitateur(valueLeftMotor, valueRightMotor);
+            myRobotDriver.intake(puissanceIntake, gamepad1.left_bumper);
+            myRobotDriver.shooter(vélocitéShooter, gamepad1.right_bumper);
             myRobotDriver.drive(valueLeftMotor, valueRightMotor);
+            //myRobotDriver.limitateur(valueLeftMotor, valueRightMotor);
             //myRobotDriver.inverseurIntake(puissanceIntake, variableInverseurIntake);
-            myRobotDriver.intake(puissanceIntake);
-            //myRobotDriver.Inverseurshooter(puissanceShooter, variableInverseurShooter);
-            //myRobotDriver.règleurPuissanceShooter(puissanceShooter);
-            //myRobotDriver.positionsShooter(puissanceShooter, puissanceShooterPos1, puissanceShooterPos2);
-            myRobotDriver.shooter();
+            //myRobotDriver.Inverseurshooter(vélocitéShooter, variableInverseurShooter);
+            myRobotDriver.règleurPuissanceShooter(vélocitéShooter, gamepad1.dpad_up, gamepad1.dpad_down);
+            myRobotDriver.positionsShooter(vélocitéShooter, puissanceShooterPos1, puissanceShooterPos2, gamepad1.dpad_left, gamepad1.dpad_right);
+
         }
     }
 }

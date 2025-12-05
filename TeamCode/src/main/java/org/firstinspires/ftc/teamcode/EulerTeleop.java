@@ -45,14 +45,14 @@ public class EulerTeleop extends LinearOpMode {
         boolean a = gamepad1.a;
         boolean b = gamepad1.b;
         boolean x = gamepad1.x;
+        boolean xpr = gamepad1.xWasPressed();
+        boolean xrl = gamepad1.xWasReleased();
         boolean fleche_haut = gamepad1.dpad_up;
         boolean fleche_bas = gamepad1.dpad_down;
         boolean Fgauche = gamepad1.dpad_left;
         boolean Fdroite = gamepad1.dpad_right;
 
-
-
-
+        feeder.setPosition(0);
 
         while (opModeIsActive()) {
             float turn = gamepad1.left_stick_x;
@@ -65,15 +65,15 @@ public class EulerTeleop extends LinearOpMode {
             telemetry.addData("Puissance Shooter =", "velocityShooter");
             telemetry.update();
 
-            //myRobotDriver.limitateur(valueLeftMotor, valueRightMotor);
+            //myRobotDriver.limitateur(valueLeftMotor, valueRightMotor, a);
             myRobotDriver.drive(valueLeftMotor, valueRightMotor);
-            //myRobotDriver.inverseurIntake(puissanceIntake, variableInverseurIntake);
+            //myRobotDriver.inverseurIntake(puissanceIntake, variableInverseurIntake, b);
             myRobotDriver.intake(puissanceIntake, left_bumper);
-            //myRobotDriver.Inverseurshooter(puissanceShooter, variableInverseurShooter);
-            //myRobotDriver.règleurPuissanceShooter(velocitysooter);
-            //myRobotDriver.positionsShooter(velocityShooter, puissanceShooterPos1, puissanceShooterPos2);
+            //myRobotDriver.Inverseurshooter(velocityShooter, variableInverseurShooter, y);
+            //myRobotDriver.règleurPuissanceShooter(velocitysooter, fleche_haut, fleche_bas);
+            //myRobotDriver.positionsShooter(velocityShooter, velocityShooterPos1, velocityShooterPos2, Fgauche, Fdroite);
             myRobotDriver.shooter(velocityShooter, right_bumper);
-            myRobotDriver.feeder(gamepad1.xWasPressed(), gamepad1.xWasReleased());
+            myRobotDriver.feeder(xpr, xrl);
         }
     }
 }

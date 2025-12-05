@@ -12,16 +12,15 @@ public class Driver {
     final DcMotor right_motor;
     final DcMotor intake;
     final DcMotor shooter;
-
     final Servo feeder;
     
 
-    public Driver(DcMotor leftMotor1, DcMotor rightMotor1, DcMotor intake1, DcMotor shooter1, Servo feeder) {
+    public Driver(DcMotor leftMotor1, DcMotor rightMotor1, DcMotor intake1, DcMotor shooter1, Servo feeder1) {
         left_motor = leftMotor1;
         right_motor = rightMotor1;
         intake = intake1;
         shooter = shooter1;
-        this.feeder = feeder;
+        feeder = feeder1;
 
         this.left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.right_motor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -68,10 +67,10 @@ public class Driver {
             variableInverseurIntake = 0;
         }
     }
-    public void InverseurShooter(int puissanceShooter, int variableInverseurShooter, boolean y){
+    public void InverseurShooter(int velocityShooter, int variableInverseurShooter, boolean y){
         if(y){
             if(variableInverseurShooter == 0){
-                puissanceShooter = -puissanceShooter;
+                velocityShooter = -velocityShooter;
                 variableInverseurShooter = 1;
             }
         }else{
@@ -79,27 +78,27 @@ public class Driver {
         }
     }
 
-    public void règleurPuissanceShooter(int puissanceShooter, boolean fleche_haut, boolean fleche_bas){
-        if(fleche_haut == true){
-            puissanceShooter += 0.1;
-        } else if (fleche_bas)
-            {puissanceShooter -= 0.1;
+    public void règleurPuissanceShooter(int velocityShooter, boolean fleche_haut, boolean fleche_bas){
+        if(fleche_haut){
+            velocityShooter += 100;
+        } else if (fleche_bas) {
+            velocityShooter -= 100;
         }
     }
 // je sais pas encore si on a besoin de mettre == true dc si la fleche bas marche pas c'est pour ca
-    public void positionsShooter(int puissanceShooter, int puissanceShooterPos1, int puissanceShooterPos2, boolean Fgauche, boolean Fdroite){
+    public void positionsShooter(int velocityShooter, int velocityShooterPos1, int velocityShooterPos2, boolean Fgauche, boolean Fdroite){
         if(Fgauche){
-            shooter.setPower(puissanceShooterPos1);
+            velocityShooter = velocityShooterPos1;
         } else if (Fdroite) {
-            shooter.setPower(puissanceShooterPos2);
+            velocityShooter = velocityShooterPos2;
         }
     }
     public void feeder( boolean xpr, boolean xrl){
         if (xpr){
             feeder.setPosition(1);
-            if (xrl){
-                feeder.setPosition(0);
-            }
+
+        } else if (xrl) {
+            feeder.setPosition(0);
         }
     }
 }

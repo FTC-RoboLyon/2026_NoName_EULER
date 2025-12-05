@@ -27,6 +27,26 @@ public class EulerTeleop extends LinearOpMode {
 
         Driver myRobotDriver = new Driver(left_motor, right_motor, intake, shooter);
 
+        int puissanceIntake = 1;
+        int velocityShooter = 5100;
+        int velocityShooterPos1 = 0;
+        int velocityShooterPos2 = 0;
+        int variableInverseurIntake = 0;
+        int variableInverseurShooter = 0;
+        boolean right_bumper = gamepad1.right_bumper;
+        boolean left_bumper = gamepad1.left_bumper;
+        boolean y = gamepad1.y;
+        boolean a = gamepad1.a;
+        boolean b = gamepad1.b;
+        boolean x = gamepad1.x;
+        boolean fleche_haut = gamepad1.dpad_up;
+        boolean fleche_bas = gamepad1.dpad_down;
+        boolean Fgauche = gamepad1.dpad_left;
+        boolean Fdroite = gamepad1.dpad_right;
+
+
+
+
         while (opModeIsActive()) {
             float turn = gamepad1.left_stick_x;
             float forward = -gamepad1.right_stick_y;
@@ -43,9 +63,9 @@ public class EulerTeleop extends LinearOpMode {
             //myRobotDriver.inverseurIntake(puissanceIntake, variableInverseurIntake);
             myRobotDriver.intake(puissanceIntake);
             //myRobotDriver.Inverseurshooter(puissanceShooter, variableInverseurShooter);
-            //myRobotDriver.règleurPuissanceShooter(puissanceShooter);
-            //myRobotDriver.positionsShooter(puissanceShooter, puissanceShooterPos1, puissanceShooterPos2);
-            myRobotDriver.shooter(puissanceShooter);
+            //myRobotDriver.règleurPuissanceShooter(velocitysooter);
+            //myRobotDriver.positionsShooter(velocityShooter, puissanceShooterPos1, puissanceShooterPos2);
+            myRobotDriver.shooter(velocityShooter);
         }
     }
 }

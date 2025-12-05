@@ -20,6 +20,13 @@ public class Driver {
         this.right_motor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.intake.setDirection(DcMotorSimple.Direction.FORWARD);
         this.shooter.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        int puissanceIntake = 1;
+        int puissanceShooter = 1;
+        int variableInverseurIntake = 0;
+        int variableInverseurShooter = 0;
+        int puissanceShooterPos1 = 0;
+        int puissanceShooterPos2 = 0;
     }
 
     public void drive(float valueLeftMotor, float valueRightMotor) {

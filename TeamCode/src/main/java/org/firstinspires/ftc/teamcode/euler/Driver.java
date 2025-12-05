@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.euler;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class Driver {
 
@@ -10,19 +12,23 @@ public class Driver {
     final DcMotor right_motor;
     final DcMotor intake;
     final DcMotor shooter;
+
+    final Servo feeder;
     
 
-    public Driver(DcMotor leftMotor1, DcMotor rightMotor1, DcMotor intake1, DcMotor shooter1) {
+    public Driver(DcMotor leftMotor1, DcMotor rightMotor1, DcMotor intake1, DcMotor shooter1, Servo feeder) {
         left_motor = leftMotor1;
         right_motor = rightMotor1;
         intake = intake1;
         shooter = shooter1;
+        this.feeder = feeder;
 
         this.left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.right_motor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.intake.setDirection(DcMotorSimple.Direction.FORWARD);
         this.shooter.setDirection(DcMotorSimple.Direction.FORWARD);
         this.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
     public void drive(float valueLeftMotor, float valueRightMotor) {
@@ -86,6 +92,14 @@ public class Driver {
             shooter.setPower(puissanceShooterPos1);
         } else if (Fdroite) {
             shooter.setPower(puissanceShooterPos2);
+        }
+    }
+    public void feeder( boolean xpr, boolean xrl){
+        if (xpr){
+            feeder.setPosition(1);
+            if (xrl){
+                feeder.setPosition(0);
+            }
         }
     }
 }

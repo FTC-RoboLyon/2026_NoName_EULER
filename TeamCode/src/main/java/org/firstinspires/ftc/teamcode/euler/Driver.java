@@ -36,17 +36,21 @@ public class Driver {
         right_motor.setPower(valueRightMotor);
     }
 
-    public void intake(int puissanceIntake, boolean left_bumper) {
+    public void intake(int puissanceIntake, boolean left_bumper, boolean b) {
         if(left_bumper){
             intake.setPower(puissanceIntake);
-        }else {
+        } else if (b) {
+            intake.setPower(-puissanceIntake);
+        } else {
             intake.setPower(0);
         }
     }
 
-    public void shooter(int velocityShooter, boolean right_bumper) {
+    public void shooter(int velocityShooter, boolean right_bumper, boolean y) {
         if(right_bumper) {
             ((DcMotorEx) shooter).setVelocity (velocityShooter);
+        } else if (y) {
+            ((DcMotorEx) shooter).setVelocity (-velocityShooter);
         } else {
             ((DcMotorEx) shooter).setVelocity (0);
         }
@@ -54,28 +58,18 @@ public class Driver {
 
     public void limitateur(float valueLeftMotor, float valueRightMotor, boolean a) {
         if(a){
-            valueLeftMotor = valueLeftMotor/2;
-            valueRightMotor = valueRightMotor/2;
+            valueLeftMotor /= 2;
+            valueRightMotor /= 2;
         }
     }
-    public void inverseurIntake(int puissanceIntake, int variableInverseurIntake, boolean b){
+    public void inverseurIntake(int puissanceIntake, boolean b){
         if(b){
-            if(variableInverseurIntake == 0){
-                puissanceIntake = -puissanceIntake;
-                variableInverseurIntake = 1;
-            }
-        }else{
-            variableInverseurIntake = 0;
+            puissanceIntake = -puissanceIntake;
         }
     }
-    public void InverseurShooter(int velocityShooter, int variableInverseurShooter, boolean y){
+    public void InverseurShooter(int velocityShooter, boolean y){
         if(y){
-            if(variableInverseurShooter == 0){
-                velocityShooter = -velocityShooter;
-                variableInverseurShooter = 1;
-            }
-        }else{
-            variableInverseurShooter = 0;
+            velocityShooter = -velocityShooter;
         }
     }
 

@@ -27,7 +27,7 @@ public class EulerTeleop extends LinearOpMode {
         DcMotor right_motor = hardwareMap.get(DcMotor.class, RIGHT_MOTOR);
         DcMotor intake = hardwareMap.get(DcMotor.class, INTAKE);
         DcMotor shooter = hardwareMap.get(DcMotor.class, SHOOTER);
-        Servo feeder = (Servo) hardwareMap.get(CRServo.class, FEEDER);
+        Servo feeder = hardwareMap.get(Servo.class, FEEDER);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -58,8 +58,8 @@ public class EulerTeleop extends LinearOpMode {
         feeder.setPosition(0);
 
         while (opModeIsActive()) {
-            float turn = -gamepad1.left_stick_x;
-            float forward = -gamepad1.right_stick_y;
+            float turn = -gamepad1.right_stick_x;
+            float forward = -gamepad1.left_stick_y;
             float valueLeftMotor = forward - turn;
             float valueRightMotor = forward + turn;
 
@@ -68,14 +68,14 @@ public class EulerTeleop extends LinearOpMode {
             telemetry.addData("Puissance Shooter =", "velocityShooter");
             telemetry.update();
 
-            //myRobotDriver.limitateur(valueLeftMotor, valueRightMotor, a);
+            myRobotDriver.limitateur(valueLeftMotor, valueRightMotor, gamepad1.a);
             myRobotDriver.drive(valueLeftMotor, valueRightMotor);
-            //myRobotDriver.inverseurIntake(puissanceIntake, variableInverseurIntake, b);
-            myRobotDriver.intake(puissanceIntake, gamepad1.left_bumper);
-            //myRobotDriver.Inverseurshooter(velocityShooter, variableInverseurShooter, y);
-            //myRobotDriver.règleurPuissanceShooter(velocitysooter, fleche_haut, fleche_bas);
+
+            myRobotDriver.intake(puissanceIntake, gamepad1.left_bumper, gamepad1.b);
+
             //myRobotDriver.positionsShooter(velocityShooter, velocityShooterPos1, velocityShooterPos2, Fgauche, Fdroite);
-            myRobotDriver.shooter(velocityShooter, gamepad1.right_bumper);
+            //myRobotDriver.règleurPuissanceShooter(velocitysooter, fleche_haut, fleche_bas);
+            myRobotDriver.shooter(velocityShooter, gamepad1.right_bumper, gamepad1.y);
             //myRobotDriver.feeder(xpr, xrl);
         }
     }

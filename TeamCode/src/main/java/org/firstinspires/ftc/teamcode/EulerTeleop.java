@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.euler.Driver;
 import org.opencv.core.Core;
 
+
 import java.util.Objects;
 
 @TeleOp(name = "EulerTeleop", group = "Euler")
@@ -42,22 +43,8 @@ public class EulerTeleop extends LinearOpMode {
         int velocityShooter = 5100;
         int velocityShooterPos1 = 0;
         int velocityShooterPos2 = 0;
-        int variableInverseurIntake = 0;
-        int variableInverseurShooter = 0;
-        boolean right_bumper = gamepad1.right_bumper;
-        boolean left_bumper = gamepad1.left_bumper;
-        boolean y = gamepad1.y;
-        boolean a = gamepad1.a;
-        boolean b = gamepad1.b;
-        boolean x = gamepad1.x;
-        boolean a2 = gamepad2.a;
-        boolean b2 = gamepad2.b;
-        boolean xpr = gamepad1.xWasPressed();
-        boolean xrl = gamepad1.xWasReleased();
-        boolean fleche_haut = gamepad1.dpad_up;
-        boolean fleche_bas = gamepad1.dpad_down;
-        boolean Fgauche = gamepad1.dpad_left;
-        boolean Fdroite = gamepad1.dpad_right;
+        double posviseur = 0;
+
 
         feeder.setPosition(0);
 
@@ -67,22 +54,21 @@ public class EulerTeleop extends LinearOpMode {
             float valueLeftMotor = forward - turn;
             float valueRightMotor = forward + turn;
 
-            telemetry.addData("Gamepad", "left:" + turn);
-            telemetry.addData("Gamepad", "right:" + forward);
-            telemetry.addData("Puissance Shooter =", "velocityShooter");
+            telemetry.addData("Puissance Shooter =", velocityShooter);
+            telemetry.addData("Position Viseur ", viseur.getPosition());
             telemetry.update();
 
-            myRobotDriver.limitateur(valueLeftMotor, valueRightMotor, gamepad1.a);
-            myRobotDriver.drive(valueLeftMotor, valueRightMotor);
-            myRobotDriver.intake(puissanceIntake, gamepad1.left_bumper, gamepad1.b);
+
+            myRobotDriver.drive(valueLeftMotor, valueRightMotor, gamepad2.x);
+            myRobotDriver.intake(puissanceIntake, gamepad1.left_bumper, gamepad2.b);
             //myRobotDriver.positionsShooter(velocityShooter, velocityShooterPos1, velocityShooterPos2, Fgauche, Fdroite);
-            //myRobotDriver.règleurPuissanceShooter(velocitysooter, fleche_haut, fleche_bas);
+            velocityShooter = myRobotDriver.regleurPuissanceShooter(velocityShooter, gamepad1.dpadUpWasPressed(), gamepad1.dpadDownWasPressed());
             myRobotDriver.shooter(velocityShooter, gamepad1.right_bumper, gamepad1.y);
-            //myRobotDriver.feeder(xpr, xrl);
+            myRobotDriver.feeder(gamepad1.xWasPressed(), gamepad1.xWasReleased());
+            posviseur = myRobotDriver.viseur(gamepad1.a, gamepad1.b, gamepad1.dpadLeftWasPressed(), gamepad1.dpadRightWasPressed(), posviseur);
+            viseur.setPosition(posviseur);
         }
     }
 }
 
 
-//Ce qui est en commentaire est à mettre apres avoir déjà regardé si le shooter et l'intake marchent
-//Parce que sinon ça encombre le code et si y'a des erreurs, on saura pas d'où elles viennent

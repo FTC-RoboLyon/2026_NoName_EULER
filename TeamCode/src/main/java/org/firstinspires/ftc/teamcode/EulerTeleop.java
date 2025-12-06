@@ -44,6 +44,10 @@ public class EulerTeleop extends LinearOpMode {
         int velocityShooterPos1 = 0;
         int velocityShooterPos2 = 0;
         double posviseur = 0;
+        double posviseur_bank = 1;
+        int velocity_bank = 900;
+        double posviseur_far = 0.4;
+        int velocity_far = 1600;
 
 
         feeder.setPosition(0);

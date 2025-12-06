@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.opencv.core.Core;
+
 public class Driver {
 
     final DcMotor left_motor;
@@ -24,10 +26,9 @@ public class Driver {
 
         this.left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.right_motor.setDirection(DcMotorSimple.Direction.FORWARD);
-        this.intake.setDirection(DcMotorSimple.Direction.FORWARD);
         this.shooter.setDirection(DcMotorSimple.Direction.FORWARD);
         this.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        this.intake.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void drive(float valueLeftMotor, float valueRightMotor) {

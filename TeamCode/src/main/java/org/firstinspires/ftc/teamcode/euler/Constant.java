@@ -6,4 +6,5 @@ public class Constant {
     public final static String INTAKE = "intake";
     public final static String SHOOTER = "shooter";
     public final static String FEEDER = "feeder";
+    public final static String VISEUR = "viseur";
 }

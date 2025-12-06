@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.euler.Constant.INTAKE;
 import static org.firstinspires.ftc.teamcode.euler.Constant.LEFT_MOTOR;
 import static org.firstinspires.ftc.teamcode.euler.Constant.RIGHT_MOTOR;
 import static org.firstinspires.ftc.teamcode.euler.Constant.SHOOTER;
+import static org.firstinspires.ftc.teamcode.euler.Constant.VISEUR;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -28,13 +29,14 @@ public class EulerTeleop extends LinearOpMode {
         DcMotor intake = hardwareMap.get(DcMotor.class, INTAKE);
         DcMotor shooter = hardwareMap.get(DcMotor.class, SHOOTER);
         Servo feeder = hardwareMap.get(Servo.class, FEEDER);
+        Servo viseur = hardwareMap.get(Servo.class, VISEUR);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
 
-        Driver myRobotDriver = new Driver(left_motor, right_motor, intake, shooter, feeder);
+        Driver myRobotDriver = new Driver(left_motor, right_motor, intake, shooter, feeder, viseur);
 
         int puissanceIntake = 1;
         int velocityShooter = 5100;
@@ -48,6 +50,8 @@ public class EulerTeleop extends LinearOpMode {
         boolean a = gamepad1.a;
         boolean b = gamepad1.b;
         boolean x = gamepad1.x;
+        boolean a2 = gamepad2.a;
+        boolean b2 = gamepad2.b;
         boolean xpr = gamepad1.xWasPressed();
         boolean xrl = gamepad1.xWasReleased();
         boolean fleche_haut = gamepad1.dpad_up;
@@ -70,9 +74,7 @@ public class EulerTeleop extends LinearOpMode {
 
             myRobotDriver.limitateur(valueLeftMotor, valueRightMotor, gamepad1.a);
             myRobotDriver.drive(valueLeftMotor, valueRightMotor);
-
             myRobotDriver.intake(puissanceIntake, gamepad1.left_bumper, gamepad1.b);
-
             //myRobotDriver.positionsShooter(velocityShooter, velocityShooterPos1, velocityShooterPos2, Fgauche, Fdroite);
             //myRobotDriver.règleurPuissanceShooter(velocitysooter, fleche_haut, fleche_bas);
             myRobotDriver.shooter(velocityShooter, gamepad1.right_bumper, gamepad1.y);

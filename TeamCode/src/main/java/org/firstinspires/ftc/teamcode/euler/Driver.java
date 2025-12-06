@@ -15,14 +15,16 @@ public class Driver {
     final DcMotor intake;
     final DcMotor shooter;
     final Servo feeder;
+    final Servo viseur;
     
 
-    public Driver(DcMotor leftMotor1, DcMotor rightMotor1, DcMotor intake1, DcMotor shooter1, Servo feeder1) {
+    public Driver(DcMotor leftMotor1, DcMotor rightMotor1, DcMotor intake1, DcMotor shooter1, Servo feeder1, Servo viseur1) {
         left_motor = leftMotor1;
         right_motor = rightMotor1;
         intake = intake1;
         shooter = shooter1;
         feeder = feeder1;
+        viseur = viseur1;
 
         this.left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.right_motor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -93,7 +95,15 @@ public class Driver {
             feeder.setPosition(1);
 
         } else if (xrl) {
-            feeder.setPosition(0);
+            feeder.setPosition(-1);
+        }
+    }
+
+    public void viseur( boolean a2, boolean b2){
+        if(a2){
+            viseur.setPosition(0);
+        } else if (b2) {
+            viseur.setPosition(1);
         }
     }
 }

@@ -48,8 +48,7 @@ public class EulerTeleopReal extends LinearOpMode {
         while (opModeIsActive()) {
             float turn = gamepad1.right_stick_x;
             float forward = -gamepad1.left_stick_y;
-            float valueLeftMotor = forward + turn;
-            float valueRightMotor = forward - turn;
+
 
             telemetry.addData("Puissance Shooter =", velocityShooter);
             telemetry.addData("Position Viseur ", viseur.getPosition());
@@ -57,7 +56,11 @@ public class EulerTeleopReal extends LinearOpMode {
 
 
             // se deplacer
+            myRobotDriver.drivePourDefit(turn);
+            float valueLeftMotor = forward + turn;
+            float valueRightMotor = forward - turn;
             myRobotDriver.drive(valueLeftMotor, valueRightMotor, gamepad1.dpad_down);
+
             //l'intake
             myRobotDriver.intake(puissanceIntake, gamepad1.left_bumper, gamepad1.left_trigger);
 

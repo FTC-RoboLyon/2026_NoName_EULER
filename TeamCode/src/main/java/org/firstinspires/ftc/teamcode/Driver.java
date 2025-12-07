@@ -105,4 +105,9 @@ public class Driver {
         }
         return posviseur;
     }
+
+    public float drivePourDefit(float turn){
+        turn /= 2;
+        return turn;
+    }
 }

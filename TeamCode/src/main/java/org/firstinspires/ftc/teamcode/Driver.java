@@ -66,20 +66,6 @@ public class Driver {
         }
     }
 
-
-    public void inverseurIntake(int puissanceIntake, boolean b) {
-        if (b) {
-            puissanceIntake = -puissanceIntake;
-        }
-
-    }
-
-    public void InverseurShooter(int velocityShooter, boolean y) {
-        if (y) {
-            velocityShooter = -velocityShooter;
-        }
-    }
-
     public int regleurPuissanceShooter(int velocityShooter, int PosTirNear, int PosTirFar, boolean fleche_haut, boolean fleche_bas, boolean b, boolean y) {
         if (fleche_haut) {
             velocityShooter += 100;
@@ -94,14 +80,6 @@ public class Driver {
     }
 
     // je sais pas encore si on a besoin de mettre == true dc si la fleche bas marche pas c'est pour ca
-    public int positionsShooter(int velocityShooter, int velocityShooterPos1, int velocityShooterPos2, boolean Fgauche, boolean Fdroite) {
-        if (Fgauche) {
-            velocityShooter = velocityShooterPos1;
-        } else if (Fdroite) {
-            velocityShooter = velocityShooterPos2;
-        }
-        return velocityShooter;
-    }
 
 
     public void feeder(boolean xpr, boolean xrl) {

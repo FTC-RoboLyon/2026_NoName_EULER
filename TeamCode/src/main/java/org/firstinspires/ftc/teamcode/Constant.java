@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.euler;
+package org.firstinspires.ftc.teamcode;
 
 public class Constant {
     public final static String LEFT_MOTOR = "left motor";

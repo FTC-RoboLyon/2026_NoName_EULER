@@ -1,12 +1,9 @@
-package org.firstinspires.ftc.teamcode.euler;
+package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.opencv.core.Core;
 
 public class Driver {
 
@@ -49,21 +46,21 @@ public class Driver {
         return valueLeftMotor;
     }
 
-    public void intake(int puissanceIntake, boolean left_bumper, boolean b) {
+    public void intake(int puissanceIntake, boolean left_bumper, double Left_Trig) {
         if (left_bumper) {
             intake.setPower(puissanceIntake);
-        } else if (b) {
+        } else if (Left_Trig > 0.3) {
             intake.setPower(-puissanceIntake);
         } else {
             intake.setPower(0);
         }
     }
 
-    public void shooter(int velocityShooter, boolean right_bumper, boolean y) {
+    public void shooter(int velocityShooter, boolean right_bumper, double right_Trig) {
         if (right_bumper) {
             ((DcMotorEx) shooter).setVelocity(velocityShooter);
-        } else if (y) {
-            ((DcMotorEx) shooter).setVelocity(-velocityShooter);
+        } else if (right_Trig > 0.3) {
+            ((DcMotorEx) shooter).setVelocity(-50);
         } else {
             ((DcMotorEx) shooter).setVelocity(0);
         }
@@ -83,23 +80,29 @@ public class Driver {
         }
     }
 
-    public int regleurPuissanceShooter(int velocityShooter, boolean fleche_haut, boolean fleche_bas) {
+    public int regleurPuissanceShooter(int velocityShooter, int PosTirNear, int PosTirFar, boolean fleche_haut, boolean fleche_bas, boolean b, boolean y) {
         if (fleche_haut) {
             velocityShooter += 100;
         } else if (fleche_bas) {
             velocityShooter -= 100;
+        } else if (b) {
+            velocityShooter = PosTirNear;
+        } else if (y) {
+            velocityShooter = PosTirFar;
         }
         return velocityShooter;
     }
 
     // je sais pas encore si on a besoin de mettre == true dc si la fleche bas marche pas c'est pour ca
-    public void positionsShooter(int velocityShooter, int velocityShooterPos1, int velocityShooterPos2, boolean Fgauche, boolean Fdroite) {
+    public int positionsShooter(int velocityShooter, int velocityShooterPos1, int velocityShooterPos2, boolean Fgauche, boolean Fdroite) {
         if (Fgauche) {
             velocityShooter = velocityShooterPos1;
         } else if (Fdroite) {
             velocityShooter = velocityShooterPos2;
         }
+        return velocityShooter;
     }
+
 
     public void feeder(boolean xpr, boolean xrl) {
         if (xpr) {
@@ -110,15 +113,17 @@ public class Driver {
         }
     }
 
-    public double viseur(boolean a2, boolean b, boolean FG2, boolean FD2, double posviseur) {
-        if (a2) {
-            posviseur = 0;
-        } else if (FG2) {
-            posviseur += 0.05;
-        } else if (FD2){
-            posviseur -= 0.05;
+    public double viseur(boolean a, boolean b, boolean y, boolean FG2, boolean FD2, double posviseur, double posTir1, double posTir2) {
+        if (a) {
+            posviseur = 0.3;
         } else if (b){
-            posviseur = 1;
+            posviseur = posTir2;
+        } else if (y) {
+            posviseur = posTir1;
+        } else if (FD2) {
+            posviseur += 0.005;
+        } else if (FG2){
+            posviseur -= 0.005;
         }
         return posviseur;
     }

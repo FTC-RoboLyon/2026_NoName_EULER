@@ -55,10 +55,13 @@ private IMU imu;
         int velocity_far = 1600;
         double robotOrienDegrees;
         double real_velo;
+        float forward;
+        float turn;
         imu.resetYaw();
         feeder.setPosition(0);
 
         while (opModeIsActive()) {
+
             YawPitchRollAngles robotYawPitchRoll;
             robotYawPitchRoll = imu.getRobotYawPitchRollAngles();
             robotOrienDegrees = -robotYawPitchRoll.getYaw(AngleUnit.DEGREES);
@@ -66,8 +69,13 @@ private IMU imu;
 
             real_velo = ((DcMotorEx) shooter).getVelocity();
 
-            float turn = gamepad1.right_stick_x;
-            float forward = -gamepad1.left_stick_y;
+            turn = gamepad1.right_stick_x;
+            if (-90 <= robotOrienDegrees && robotOrienDegrees <= 90) {
+                forward = -gamepad1.left_stick_y;
+            }
+            else {
+                forward = gamepad1.left_stick_y;
+            }
 
 
             telemetry.addData("Velocité programmé Shooter =", velocityShooter);

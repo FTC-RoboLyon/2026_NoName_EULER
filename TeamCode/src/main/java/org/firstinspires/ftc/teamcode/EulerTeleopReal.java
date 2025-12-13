@@ -10,12 +10,13 @@ import static org.firstinspires.ftc.teamcode.Constant.VISEUR;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "EulerTeleop", group = "Euler")
 public class EulerTeleopReal extends LinearOpMode {
 
-
+private IMU imu;
     @Override
     public void runOpMode() throws InterruptedException {
         DcMotor left_motor = hardwareMap.get(DcMotor.class, LEFT_MOTOR);
@@ -24,6 +25,7 @@ public class EulerTeleopReal extends LinearOpMode {
         DcMotor shooter = hardwareMap.get(DcMotor.class, SHOOTER);
         Servo feeder = hardwareMap.get(Servo.class, FEEDER);
         Servo viseur = hardwareMap.get(Servo.class, VISEUR);
+        imu = hardwareMap.get(IMU.class, "imu");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();

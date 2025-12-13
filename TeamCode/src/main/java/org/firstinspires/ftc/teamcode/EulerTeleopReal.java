@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.Constant.RIGHT_MOTOR;
 import static org.firstinspires.ftc.teamcode.Constant.SHOOTER;
 import static org.firstinspires.ftc.teamcode.Constant.VISEUR;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -34,13 +35,18 @@ private IMU imu;
 
         Driver myRobotDriver = new Driver(left_motor, right_motor, intake, shooter, feeder, viseur);
 
+        IMU.Parameters imu_parameters;
+        imu_parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.xyzOrientation(0, 0, 90)));
+        imu.initialize(imu_parameters);
+        imu.resetYaw();
+
         int puissanceIntake = 1;
         int velocityShooter = 5100;
         int velocityShooterPos1 = 0;
         int velocityShooterPos2 = 0;
         double posviseur = 0.6;
         double posviseur_bank = 0.6;
-        int velocity_bank = 900;
+        int velocity_bank = 1700;
         double posviseur_far = 0.4;
         int velocity_far = 1600;
 

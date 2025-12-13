@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -22,6 +23,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 public class EulerTeleopReal extends LinearOpMode {
 
 private IMU imu;
+private VoltageSensor ControlHub_VoltageSensor;
+
     @Override
     public void runOpMode() throws InterruptedException {
         DcMotor left_motor = hardwareMap.get(DcMotor.class, LEFT_MOTOR);
@@ -31,6 +34,7 @@ private IMU imu;
         Servo feeder = hardwareMap.get(Servo.class, FEEDER);
         Servo viseur = hardwareMap.get(Servo.class, VISEUR);
         imu = hardwareMap.get(IMU.class, "imu");
+        ControlHub_VoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -45,18 +49,20 @@ private IMU imu;
         imu.resetYaw();
 
         int puissanceIntake = 1;
-        int velocityShooter = 5100;
+        double velocityShooter = 5100;
         int velocityShooterPos1 = 0;
         int velocityShooterPos2 = 0;
         double posviseur = 0.6;
         double posviseur_bank = 0.6;
         int velocity_bank = 1700;
         double posviseur_far = 0.4;
-        int velocity_far = 1600;
+        int velocity_far = 3000;
         double robotOrienDegrees;
         double real_velo;
         float forward;
         float turn;
+        double seuil_shootter = 12;
+        double voltage;
         imu.resetYaw();
         feeder.setPosition(0);
 
@@ -69,13 +75,10 @@ private IMU imu;
 
             real_velo = ((DcMotorEx) shooter).getVelocity();
 
+            voltage = ControlHub_VoltageSensor.getVoltage();
+
             turn = gamepad1.right_stick_x;
-            if (-90 <= robotOrienDegrees && robotOrienDegrees <= 90) {
-                forward = -gamepad1.left_stick_y;
-            }
-            else {
-                forward = gamepad1.left_stick_y;
-            }
+            forward = -gamepad1.left_stick_y;
 
 
             telemetry.addData("Velocité programmé Shooter =", velocityShooter);
@@ -95,6 +98,7 @@ private IMU imu;
 
             //régler la velocité du shooter et le viseur
             velocityShooter = myRobotDriver.regleurPuissanceShooter(velocityShooter, velocity_bank, velocity_far, gamepad2.dpadUpWasPressed(), gamepad2.dpadDownWasPressed(), gamepad1.b, gamepad1.y);
+            //velocityShooter = (velocityShooter * seuil_shootter) / voltage;
             posviseur = myRobotDriver.viseur(gamepad1.a, gamepad1.b, gamepad1.y, gamepad1.dpadLeftWasPressed(), gamepad1.dpadRightWasPressed(), posviseur, posviseur_far, posviseur_bank);
             myRobotDriver.shooter(velocityShooter, gamepad1.right_bumper, gamepad1.right_trigger, real_velo);
             viseur.setPosition(posviseur);

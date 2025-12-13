@@ -34,7 +34,7 @@ public class EulerTeleopForTest extends LinearOpMode {
         Driver myRobotDriver = new Driver(left_motor, right_motor, intake, shooter, feeder, viseur);
 
         int puissanceIntake = 1;
-        int velocityShooter = 5100;
+        double velocityShooter = 5100;
         int velocityShooterPos1 = 0;
         int velocityShooterPos2 = 0;
         double posviseur = 0.6;

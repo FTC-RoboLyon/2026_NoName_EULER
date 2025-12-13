@@ -56,17 +56,17 @@ public class Driver {
         }
     }
 
-    public void shooter(int velocityShooter, boolean right_bumper, double right_Trig, double shoot_velo) {
+    public void shooter(double velocityShooter, boolean right_bumper, double right_Trig, double shoot_velo) {
         if (right_bumper) {
             ((DcMotorEx) shooter).setVelocity(velocityShooter);
         } else if (right_Trig > 0.3 || shoot_velo > 0){
-            ((DcMotorEx) shooter).setVelocity(-50);
+            ((DcMotorEx) shooter).setVelocity(-200);
         } else {
             ((DcMotorEx) shooter).setVelocity(0);
         }
     }
 
-    public int regleurPuissanceShooter(int velocityShooter, int PosTirNear, int PosTirFar, boolean fleche_haut, boolean fleche_bas, boolean b, boolean y) {
+    public double regleurPuissanceShooter(double velocityShooter, int PosTirNear, int PosTirFar, boolean fleche_haut, boolean fleche_bas, boolean b, boolean y) {
         if (fleche_haut) {
             velocityShooter += 100;
         } else if (fleche_bas) {
@@ -91,13 +91,13 @@ public class Driver {
         }
     }
 
-    public double viseur(boolean a, boolean b, boolean y, boolean FG2, boolean FD2, double posviseur, double posTir1, double posTir2) {
+    public double viseur(boolean a, boolean b, boolean y, boolean FG2, boolean FD2, double posviseur, double posTirfar, double posTirbank) {
         if (a) {
             posviseur = 0.3;
         } else if (b){
-            posviseur = posTir2;
+            posviseur = posTirbank;
         } else if (y) {
-            posviseur = posTir1;
+            posviseur = posTirfar;
         } else if (FD2) {
             posviseur += 0.005;
         } else if (FG2){
@@ -110,4 +110,5 @@ public class Driver {
         turn /= 2;
         return turn;
     }
+
 }

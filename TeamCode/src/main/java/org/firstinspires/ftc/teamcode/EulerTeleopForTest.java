@@ -10,6 +10,7 @@ import static org.firstinspires.ftc.teamcode.Constant.VISEUR;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "EulerTeleop", group = "Euler")
@@ -41,6 +42,7 @@ public class EulerTeleopForTest extends LinearOpMode {
         int velocity_bank = 900;
         double posviseur_far = 0.4;
         int velocity_far = 1600;
+        double real_velo;
 
 
         feeder.setPosition(0);
@@ -50,6 +52,8 @@ public class EulerTeleopForTest extends LinearOpMode {
             float forward = -gamepad1.left_stick_y;
             float valueLeftMotor = forward + turn;
             float valueRightMotor = forward - turn;
+
+            real_velo = ((DcMotorEx) shooter).getVelocity();
 
             telemetry.addData("Puissance Shooter =", velocityShooter);
             telemetry.addData("Position Viseur ", viseur.getPosition());
@@ -64,7 +68,7 @@ public class EulerTeleopForTest extends LinearOpMode {
 
             //régler la velocité du shooter
             velocityShooter = myRobotDriver.regleurPuissanceShooter(velocityShooter, velocity_bank, velocity_far, gamepad1.dpadUpWasPressed(), gamepad1.dpadDownWasPressed(), gamepad2.b, gamepad2.y);
-            myRobotDriver.shooter(velocityShooter, gamepad1.right_bumper, gamepad1.right_trigger);
+            myRobotDriver.shooter(velocityShooter, gamepad1.right_bumper, gamepad1.right_trigger, real_velo);
 
             //Le feeder
             myRobotDriver.feeder(gamepad1.xWasPressed(), gamepad1.xWasReleased());

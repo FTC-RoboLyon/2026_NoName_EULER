@@ -56,10 +56,10 @@ public class Driver {
         }
     }
 
-    public void shooter(int velocityShooter, boolean right_bumper, double right_Trig) {
+    public void shooter(int velocityShooter, boolean right_bumper, double right_Trig, double shoot_velo) {
         if (right_bumper) {
             ((DcMotorEx) shooter).setVelocity(velocityShooter);
-        } else if (right_Trig > 0.3) {
+        } else if (right_Trig > 0.3 || shoot_velo > 0){
             ((DcMotorEx) shooter).setVelocity(-50);
         } else {
             ((DcMotorEx) shooter).setVelocity(0);

@@ -39,7 +39,7 @@ private VoltageSensor ControlHub_VoltageSensor;
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        waitForStart();
+
 
         Driver myRobotDriver = new Driver(left_motor, right_motor, intake, shooter, feeder, viseur);
 
@@ -67,7 +67,7 @@ private VoltageSensor ControlHub_VoltageSensor;
         feeder.setPosition(0);
 
 
-
+        waitForStart();
         while (opModeIsActive()) {
 
             YawPitchRollAngles robotYawPitchRoll;
@@ -107,7 +107,6 @@ private VoltageSensor ControlHub_VoltageSensor;
 
             //Le feeder
             myRobotDriver.feeder(gamepad1.xWasPressed(), gamepad1.xWasReleased());
-
 
 
         }

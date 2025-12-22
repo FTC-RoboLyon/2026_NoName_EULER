@@ -46,11 +46,11 @@ public class Driver {
         return valueLeftMotor;
     }
 
-    public void intake(int puissanceIntake, boolean left_bumper, double Left_Trig) {
+    public void intake(boolean left_bumper, double Left_Trig) {
         if (left_bumper) {
-            intake.setPower(puissanceIntake);
+            intake.setPower(1);
         } else if (Left_Trig > 0.3) {
-            intake.setPower(-puissanceIntake);
+            intake.setPower(-1);
         } else {
             intake.setPower(0);
         }
@@ -66,15 +66,11 @@ public class Driver {
         }
     }
 
-    public double regleurPuissanceShooter(double velocityShooter, int PosTirNear, int PosTirFar, boolean fleche_haut, boolean fleche_bas, boolean b, boolean y) {
+    public double regleurPuissanceShooter(double velocityShooter, boolean fleche_haut, boolean fleche_bas) {
         if (fleche_haut) {
             velocityShooter += 100;
         } else if (fleche_bas) {
             velocityShooter -= 100;
-        } else if (b) {
-            velocityShooter = PosTirNear;
-        } else if (y) {
-            velocityShooter = PosTirFar;
         }
         return velocityShooter;
     }
@@ -87,23 +83,23 @@ public class Driver {
             feeder.setPosition(0.2);
 
         } else if (xrl) {
-            feeder.setPosition(0);
+            feeder.setPosition(0.02);
         }
     }
 
-    public double viseur(boolean a, boolean b, boolean y, boolean FG2, boolean FD2, double posviseur, double posTirfar, double posTirbank) {
+    public void viseur(boolean a, boolean b, boolean y, boolean FG2, boolean FD2, double posviseur, double posTirfar, double posTirbank) {
         if (a) {
             posviseur = 0.3;
         } else if (b){
             posviseur = posTirbank;
         } else if (y) {
             posviseur = posTirfar;
-        } else if (FD2) {
-            posviseur += 0.005;
-        } else if (FG2){
-            posviseur -= 0.005;
+        } else if (FG2) {
+            posviseur += 0.05;
+        } else if (FD2){
+            posviseur -= 0.05;
         }
-        return posviseur;
+        viseur.setPosition(posviseur);
     }
 
     public float drivePourDefit(float turn){

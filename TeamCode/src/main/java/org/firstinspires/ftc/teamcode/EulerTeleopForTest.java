@@ -33,7 +33,7 @@ public class EulerTeleopForTest extends LinearOpMode {
 
         Driver myRobotDriver = new Driver(left_motor, right_motor, intake, shooter, feeder, viseur);
 
-        int puissanceIntake = 1;
+
         double velocityShooter = 5100;
         int velocityShooterPos1 = 0;
         int velocityShooterPos2 = 0;
@@ -64,17 +64,17 @@ public class EulerTeleopForTest extends LinearOpMode {
             myRobotDriver.drive(valueLeftMotor, valueRightMotor, gamepad2.b);
 
             //l'intake
-            myRobotDriver.intake(puissanceIntake, gamepad1.left_bumper, gamepad1.left_trigger);
+            myRobotDriver.intake(gamepad1.left_bumper, gamepad1.left_trigger);
 
             //régler la velocité du shooter
-            velocityShooter = myRobotDriver.regleurPuissanceShooter(velocityShooter, velocity_bank, velocity_far, gamepad1.dpadUpWasPressed(), gamepad1.dpadDownWasPressed(), gamepad2.b, gamepad2.y);
+            velocityShooter = myRobotDriver.regleurPuissanceShooter(velocityShooter, gamepad1.dpadUpWasPressed(), gamepad1.dpadDownWasPressed());
             myRobotDriver.shooter(velocityShooter, gamepad1.right_bumper, gamepad1.right_trigger, real_velo);
 
             //Le feeder
             myRobotDriver.feeder(gamepad1.xWasPressed(), gamepad1.xWasReleased());
 
             //Regler le viseur
-            posviseur = myRobotDriver.viseur(gamepad1.a, gamepad1.b, gamepad1.y, gamepad1.dpadLeftWasPressed(), gamepad1.dpadRightWasPressed(), posviseur, posviseur_far, posviseur_bank);
+            myRobotDriver.viseur(gamepad1.a, gamepad1.b, gamepad1.y, gamepad1.dpadLeftWasPressed(), gamepad1.dpadRightWasPressed(), posviseur, posviseur_far, posviseur_bank);
             viseur.setPosition(posviseur);
         }
     }

@@ -16,11 +16,11 @@ public class euler_auto extends LinearOpMode {
     public void runOpMode () throws InterruptedException {
         DcMotor shooter = hardwareMap.get(DcMotor.class, SHOOTER);
         Servo feeder = hardwareMap.get(Servo.class, FEEDER);
-        int velocité = 1700;
-        feeder.setPosition(0);
+        int velocité = 1200;
         waitForStart();
 
-        while (opModeIsActive()){
+        if (opModeIsActive()){
+            feeder.setPosition(0);
             ((DcMotorEx) shooter).setVelocity(velocité);
             sleep(3000);
             feeder.setPosition(0.2);

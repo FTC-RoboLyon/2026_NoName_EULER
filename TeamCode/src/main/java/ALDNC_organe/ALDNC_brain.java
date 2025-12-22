@@ -1,5 +1,4 @@
-package org.firstinspires.ftc.teamcode;
-
+package ALDNC_organe;
 import static org.firstinspires.ftc.teamcode.Constant.COMPTEUR_BALLE;
 import static org.firstinspires.ftc.teamcode.Constant.FEEDER;
 import static org.firstinspires.ftc.teamcode.Constant.INTAKE;
@@ -22,13 +21,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-@TeleOp(name = "EulerTeleop", group = "Euler")
-public class EulerTeleopReal extends LinearOpMode {
+@TeleOp(name = "ALDNC_brain", group = "Euler")
+public class ALDNC_brain extends LinearOpMode{
 
-private IMU imu;
-private VoltageSensor ControlHub_VoltageSensor;
-
-
+    private IMU imu;
+    private VoltageSensor ControlHub_VoltageSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -45,15 +42,11 @@ private VoltageSensor ControlHub_VoltageSensor;
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-
-
-        Driver myRobotDriver = new Driver(left_motor, right_motor, intake, shooter, feeder, viseur);
-
-        IMU.Parameters imu_parameters;
-        imu_parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.xyzOrientation(0, 0, 90)));
-        imu.initialize(imu_parameters);
-        imu.resetYaw();
-
+        ALDNC_organe.shooter Shooter = new shooter(shooter);
+        feeder_v1 Feeder = new feeder_v1(feeder);
+        jambes Chassis = new jambes(left_motor, right_motor);
+        bouche_intake Intake = new bouche_intake(intake);
+        ALDNC_organe.viseur Volet = new viseur(viseur);
 
         double velocityShooter = 1;
         double posviseur = 0.6;
@@ -66,10 +59,8 @@ private VoltageSensor ControlHub_VoltageSensor;
         float forward;
         float turn;
         double seuil_shootter = 12;
-        double voltage;
-        imu.resetYaw();
+        double voltage = ControlHub_VoltageSensor.getVoltage();
         feeder.setPosition(0);
-        voltage = ControlHub_VoltageSensor.getVoltage();
         velocityShooter = (velocityShooter * seuil_shootter) / voltage;
         velocity_bank = (velocity_bank * seuil_shootter) / voltage;
         velocity_far = (velocity_far * seuil_shootter) / voltage;
@@ -78,60 +69,57 @@ private VoltageSensor ControlHub_VoltageSensor;
 
         waitForStart();
         while (opModeIsActive()) {
-
-
-
             if (distance < 25){
                 isIntaking = true;
             } else {
                 isIntaking = false;
             }
 
-
-
-
+            // Se déplacer
             turn = gamepad1.right_stick_x;
             forward = -gamepad1.left_stick_y;
-
-            // se deplacer
-            myRobotDriver.drivePourDefit(turn);
             float valueLeftMotor = forward + turn;
             float valueRightMotor = forward - turn;
-            myRobotDriver.drive(valueLeftMotor, valueRightMotor, gamepad1.dpad_up);
+            Chassis.drive(valueLeftMotor, valueRightMotor, gamepad1.dpad_up);
 
-            //l'intake
-            myRobotDriver.intake(gamepad1.left_bumper, gamepad1.left_trigger);
+            //intake
+            Intake.intake(gamepad1.left_bumper, gamepad1.left_trigger);
 
-            //régler la velocité du shooter et le viseur
+
             if (gamepad1.bWasPressed()){
                 velocityShooter = velocity_bank;
             } else if (gamepad1.yWasPressed()) {
                 velocityShooter = velocity_far;
             }
-            myRobotDriver.viseur(gamepad1.a, gamepad1.b, gamepad1.y,gamepad1.dpadRightWasPressed(), gamepad1.dpadLeftWasPressed(),  posviseur, posviseur_far, posviseur_bank);
-            myRobotDriver.shooter(velocityShooter, gamepad1.right_bumper, gamepad1.right_trigger, real_velo);
-            viseur.setPosition(posviseur);
+            Volet.viseur(gamepad1.a,
+                    gamepad1.b,
+                    gamepad1.y,
+                    gamepad1.dpadRightWasPressed(),
+                    gamepad1.dpadLeftWasPressed(),
+                    posviseur,
+                    posviseur_far,
+                    posviseur_bank);
 
-            //Le feeder
-            myRobotDriver.feeder(gamepad1.xWasPressed(), gamepad1.xWasReleased());
+            Shooter.shooter(velocityShooter,
+                    gamepad1.right_bumper,
+                    gamepad1.right_trigger,
+                    real_velo);
 
 
-            real_velo = ((DcMotorEx) shooter).getVelocity();
+            //feeder
+            Feeder.feeder(gamepad1.xWasPressed(), gamepad1.xWasReleased());
+
 
             distance = compteurBalle.getDistance(DistanceUnit.CM);
-            YawPitchRollAngles robotYawPitchRoll;
-            robotYawPitchRoll = imu.getRobotYawPitchRollAngles();
-            robotOrienDegrees = -robotYawPitchRoll.getYaw(AngleUnit.DEGREES);
-            telemetry.addData("robot orientation", robotOrienDegrees);
             telemetry.addData("Velocité programmé Shooter =", velocityShooter);
             telemetry.addData("Vrai vélocité Shooter =", real_velo);
             telemetry.addData("Position Viseur ", viseur.getPosition());
             telemetry.addData("Distance", compteurBalle.getDistance(DistanceUnit.CM));
             telemetry.addData("is intaking", isIntaking);
             telemetry.update();
-
-
         }
+
+
 
     }
 }

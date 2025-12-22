@@ -18,13 +18,13 @@ public class shooter {
 
     }
 
-    public void shooter(double velocityShooter, boolean right_bumper, double right_Trig, double shoot_velo) {
+    public void shooter(double PowerShooter, boolean right_bumper, double right_Trig, double shoot_velo) {
         if (right_bumper) {
-            ((DcMotorEx) shooter).setVelocity(velocityShooter);
-        } else if (right_Trig > 0.3) {
-            ((DcMotorEx) shooter).setVelocity(-500);
+            ((DcMotorEx) shooter).setPower(PowerShooter);
+        } else if (right_Trig > 0.3 || shoot_velo > 0) {
+            ((DcMotorEx) shooter).setPower(-0.3);
         } else {
-            ((DcMotorEx) shooter).setVelocity(0);
+            ((DcMotorEx) shooter).setPower(0);
         }
     }
 

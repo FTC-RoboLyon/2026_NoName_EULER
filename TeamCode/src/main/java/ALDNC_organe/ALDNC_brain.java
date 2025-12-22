@@ -48,12 +48,12 @@ public class ALDNC_brain extends LinearOpMode{
         bouche_intake Intake = new bouche_intake(intake);
         ALDNC_organe.viseur Volet = new viseur(viseur);
 
-        double velocityShooter = 1;
         double posviseur = 0.6;
         double posviseur_bank = 0.6;
-        double velocity_bank = 0.5;
+        double Power_bank = 0.5;
         double posviseur_far = 0.37;
-        double velocity_far = 1;
+        double Power_far = 1;
+        double PowerShooter = Power_far;
         double robotOrienDegrees;
         double real_velo = 0;
         float forward;
@@ -61,9 +61,9 @@ public class ALDNC_brain extends LinearOpMode{
         double seuil_shootter = 12;
         double voltage = ControlHub_VoltageSensor.getVoltage();
         feeder.setPosition(0);
-        velocityShooter = (velocityShooter * seuil_shootter) / voltage;
-        velocity_bank = (velocity_bank * seuil_shootter) / voltage;
-        velocity_far = (velocity_far * seuil_shootter) / voltage;
+        PowerShooter = (PowerShooter * seuil_shootter) / voltage;
+        Power_bank = (Power_bank * seuil_shootter) / voltage;
+        Power_far = (Power_far * seuil_shootter) / voltage;
         double distance = compteurBalle.getDistance(DistanceUnit.CM);
         boolean isIntaking = false;
 
@@ -87,9 +87,9 @@ public class ALDNC_brain extends LinearOpMode{
 
 
             if (gamepad1.bWasPressed()){
-                velocityShooter = velocity_bank;
+                PowerShooter = Power_bank;
             } else if (gamepad1.yWasPressed()) {
-                velocityShooter = velocity_far;
+                PowerShooter = Power_far;
             }
             Volet.viseur(gamepad1.a,
                     gamepad1.b,
@@ -100,7 +100,7 @@ public class ALDNC_brain extends LinearOpMode{
                     posviseur_far,
                     posviseur_bank);
 
-            Shooter.shooter(velocityShooter,
+            Shooter.shooter(PowerShooter,
                     gamepad1.right_bumper,
                     gamepad1.right_trigger,
                     real_velo);
@@ -109,9 +109,9 @@ public class ALDNC_brain extends LinearOpMode{
             //feeder
             Feeder.feeder(gamepad1.xWasPressed(), gamepad1.xWasReleased());
 
-
+            real_velo = ((DcMotorEx) shooter).getVelocity();
             distance = compteurBalle.getDistance(DistanceUnit.CM);
-            telemetry.addData("Velocité programmé Shooter =", velocityShooter);
+            telemetry.addData("Velocité programmé Shooter =", PowerShooter);
             telemetry.addData("Vrai vélocité Shooter =", real_velo);
             telemetry.addData("Position Viseur ", viseur.getPosition());
             telemetry.addData("Distance", compteurBalle.getDistance(DistanceUnit.CM));

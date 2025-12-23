@@ -66,6 +66,7 @@ public class ALDNC_brain extends LinearOpMode{
         Power_far = (Power_far * seuil_shootter) / voltage;
         double distance = compteurBalle.getDistance(DistanceUnit.CM);
         boolean isIntaking = false;
+        int v = -1;
 
         waitForStart();
         while (opModeIsActive()) {
@@ -101,9 +102,10 @@ public class ALDNC_brain extends LinearOpMode{
                     posviseur_bank);
 
             Shooter.shooter(PowerShooter,
-                    gamepad1.right_bumper,
+                    gamepad1.right_bumperWasRealeased(),
                     gamepad1.right_trigger,
-                    real_velo);
+                    real_velo,
+                    v);
 
 
             //feeder

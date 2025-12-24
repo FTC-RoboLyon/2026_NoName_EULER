@@ -18,11 +18,8 @@ public class jambes {
         this.right_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void drive(float valueLeftMotor, float valueRightMotor, boolean a) {
-        if (a) {
-            valueLeftMotor /= 2;
-            valueRightMotor /= 2;
-        }
+    public void drive(float valueLeftMotor, float valueRightMotor) {
+
         left_motor.setPower(valueLeftMotor);
         right_motor.setPower(valueRightMotor);
     }

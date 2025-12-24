@@ -81,11 +81,11 @@ public class ALDNC_brain extends LinearOpMode{
             forward = -gamepad1.left_stick_y;
             float valueLeftMotor = forward + turn;
             float valueRightMotor = forward - turn;
-            if (a == false) {
+            /*if (!gamepad1.a) {
                 valueLeftMotor /= 2;
                 valueRightMotor /= 2;
-            }
-            Chassis.drive(valueLeftMotor, valueRightMotor, gamepad1.dpad_up);
+            }*/
+            Chassis.drive(valueLeftMotor, valueRightMotor);
 
             //intake
             Intake.intake(gamepad1.left_bumper, gamepad1.left_trigger);
@@ -106,7 +106,7 @@ public class ALDNC_brain extends LinearOpMode{
                     posviseur_bank);
 
             Shooter.shooter(PowerShooter,
-                    gamepad1.right_bumperWasRealeased(),
+                    gamepad1.rightBumperWasReleased(),
                     gamepad1.right_trigger,
                     real_velo,
                     v);

@@ -81,6 +81,10 @@ public class ALDNC_brain extends LinearOpMode{
             forward = -gamepad1.left_stick_y;
             float valueLeftMotor = forward + turn;
             float valueRightMotor = forward - turn;
+            if (a == false) {
+                valueLeftMotor /= 2;
+                valueRightMotor /= 2;
+            }
             Chassis.drive(valueLeftMotor, valueRightMotor, gamepad1.dpad_up);
 
             //intake

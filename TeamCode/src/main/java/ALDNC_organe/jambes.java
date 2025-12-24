@@ -26,12 +26,5 @@ public class jambes {
         left_motor.setPower(valueLeftMotor);
         right_motor.setPower(valueRightMotor);
     }
-    public void limitateur (float valueLeftMotor, float valueRightMotor, boolean a){
-        if (a) {
-            valueLeftMotor /= 2;
-            valueRightMotor /= 2;
-        }
-        left_motor.setPower(valueLeftMotor);
-        right_motor.setPower(valueRightMotor);
-    }
+
 }

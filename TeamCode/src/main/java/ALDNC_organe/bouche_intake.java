@@ -20,4 +20,17 @@ public class bouche_intake {
             intake.setPower(0);
         }
     }
+
+    public int nbeBalles(double distance, int nbeBallesInsideBot, int vIntake){
+        if (distance < 25 && vIntake == 0){
+            nbeBallesInsideBot += 1;
+            vIntake = 1;
+        }else if (distance > 25){
+            vIntake = 0;
+        }
+        if (nbeBallesInsideBot > 3){
+            nbeBallesInsideBot = 3;
+        }
+        return nbeBallesInsideBot;
+    }
 }

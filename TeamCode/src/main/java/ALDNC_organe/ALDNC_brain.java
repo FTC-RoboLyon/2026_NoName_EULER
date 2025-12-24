@@ -67,6 +67,8 @@ public class ALDNC_brain extends LinearOpMode{
         double distance = compteurBalle.getDistance(DistanceUnit.CM);
         boolean isIntaking = false;
         int v = -1;
+        int nbeBallesInsideBot == 3;
+        int vIntake = 0;
 
         waitForStart();
         while (opModeIsActive()) {
@@ -84,11 +86,19 @@ public class ALDNC_brain extends LinearOpMode{
             /*if (!gamepad1.a) {
                 valueLeftMotor /= 2;
                 valueRightMotor /= 2;
+            }else if (gamepad.a){
+                valueLeftMotor = valueLeftMotor /1;
+                valueRightMotor = valueRightMotor /1;
             }*/
             Chassis.drive(valueLeftMotor, valueRightMotor);
 
             //intake
-            Intake.intake(gamepad1.left_bumper, gamepad1.left_trigger);
+            Intake.intake(gamepad1.left_bumper,
+                    gamepad1.left_trigger);
+
+            Intake.nbeBalles(distance,
+                    nbeBallesInsideBot,
+                    vIntake)
 
 
             if (gamepad1.bWasPressed()){
@@ -110,6 +120,8 @@ public class ALDNC_brain extends LinearOpMode{
                     gamepad1.right_trigger,
                     real_velo,
                     v);
+            Shooter.compteurBalles(nbeBallesInsideBot, v, gamepad1.xWasPressed())
+
 
 
             //feeder
@@ -122,6 +134,12 @@ public class ALDNC_brain extends LinearOpMode{
             telemetry.addData("Position Viseur ", viseur.getPosition());
             telemetry.addData("Distance", compteurBalle.getDistance(DistanceUnit.CM));
             telemetry.addData("is intaking", isIntaking);
+            telemetry.addData("Nbe Balles Inside Bot = ", nbeBallesInsideBot);
+            /*if (v == 1){
+                telemetry.addData("Shooter allumé");
+            }else if(v == -1){
+                telemetry.addData("Shooter éteint");
+            }*/
             telemetry.update();
         }
 

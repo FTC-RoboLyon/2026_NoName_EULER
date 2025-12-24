@@ -30,6 +30,7 @@ public class shooter {
         }else if (v == -1){
             ((DcMotorEx) shooter).setPower(0);
         }
+        return v;
     }
 
 
@@ -40,6 +41,16 @@ public class shooter {
             velocityShooter -= 100;
         }
         return velocityShooter;
+    }
+
+    public int compteurBalles(int nbeBallesInsideBot, int v, boolean x){
+        if(v == 1 && x){
+            nbeBallesInsideBot -= 1;
+        }
+        if(nbeBallesInsideBot < 0){
+            nbeBallesInsideBot = 0;
+        }
+        return nbeBallesInsideBot;
     }
 
 }

@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -37,7 +38,8 @@ public class ALDNC_brain extends LinearOpMode{
         Servo viseur = hardwareMap.get(Servo.class, VISEUR);
         imu = hardwareMap.get(IMU.class, "imu");
         ControlHub_VoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
-        DistanceSensor compteurBalle = hardwareMap.get(DistanceSensor.class, COMPTEUR_BALLE);
+        //DistanceSensor compteurBalle = hardwareMap.get(DistanceSensor.class, COMPTEUR_BALLE);
+        TouchSensor compteurBalle = hardwareMap.get(TouchSensor.class, COMPTEUR_BALLE);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -64,8 +66,7 @@ public class ALDNC_brain extends LinearOpMode{
         PowerShooter = (PowerShooter * seuil_shootter) / voltage;
         Power_bank = (Power_bank * seuil_shootter) / voltage;
         Power_far = (Power_far * seuil_shootter) / voltage;
-        double distance = compteurBalle.getDistance(DistanceUnit.CM);
-        boolean isIntaking = false;
+        boolean appuyage = compteurBalle.isPressed();
         boolean isShooting = false;
         int nbeBallesIn = 3;
         int vIntake = 0;
@@ -73,12 +74,6 @@ public class ALDNC_brain extends LinearOpMode{
 
         waitForStart();
         while (opModeIsActive()) {
-            if (distance < 25){
-                isIntaking = true;
-            } else {
-                isIntaking = false;
-            }
-
             // Se déplacer
             turn = gamepad1.right_stick_x;
             forward = -gamepad1.left_stick_y;
@@ -97,7 +92,7 @@ public class ALDNC_brain extends LinearOpMode{
             Intake.intake(gamepad1.left_bumper,
                     gamepad1.left_trigger);
 
-            nbeBallesIn = Intake.nbeBalles(distance, nbeBallesIn, vIntake);
+            nbeBallesIn = Intake.nbeBalles(appuyage, nbeBallesIn, vIntake);
 
 
             if (gamepad1.bWasPressed()){
@@ -141,12 +136,12 @@ public class ALDNC_brain extends LinearOpMode{
             Feeder.feeder(gamepad2.xWasPressed(), gamepad2.xWasReleased());
 
             real_velo = ((DcMotorEx) shooter).getVelocity();
-            distance = compteurBalle.getDistance(DistanceUnit.CM);
+            appuyage = compteurBalle.isPressed();
             telemetry.addData("Velocité programmé Shooter =", PowerShooter);
             telemetry.addData("Vrai vélocité Shooter =", real_velo);
             telemetry.addData("Position Viseur ", viseur.getPosition());
-            telemetry.addData("Distance", compteurBalle.getDistance(DistanceUnit.CM));
-            telemetry.addData("is intaking", isIntaking);
+            telemetry.addData("Distance", compteurBalle.isPressed());
+            telemetry.addData("is intaking", appuyage);
             telemetry.addData("Nbe Balles Inside Bot = ", nbeBallesIn);
             if (isShooting){
                 telemetry.addLine("Shooter allumé");

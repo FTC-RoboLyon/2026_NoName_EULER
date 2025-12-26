@@ -21,11 +21,11 @@ public class bouche_intake {
         }
     }
 
-    public int nbeBalles(boolean appuyage, int nbeBallesInsideBot, int vIntake){
-        if (appuyage && vIntake == 0){
+    public int nbeBalles(double distance, int nbeBallesInsideBot, int vIntake){
+        if (distance < 25 && vIntake == 0){
             nbeBallesInsideBot += 1;
             vIntake = 1;
-        }else if (!appuyage){
+        }else if (distance > 25){
             vIntake = 0;
         }
         if (nbeBallesInsideBot > 3){

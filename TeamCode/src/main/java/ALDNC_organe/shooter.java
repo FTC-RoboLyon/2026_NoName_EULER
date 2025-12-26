@@ -18,19 +18,17 @@ public class shooter {
 
     }
 
-    public void shooter(double PowerShooter, boolean right_bumperWR, double right_Trig, double shoot_velo, int v) {
+    public void shooter(double PowerShooter, boolean right_bumperWR, double right_Trig, boolean v) {
 
-        if (right_bumperWR) {
-            v = -v;
-        } else if (right_Trig > 0.3 || shoot_velo > 0) {
+        if (right_Trig > 0.3) {
             ((DcMotorEx) shooter).setPower(-0.3);
         }
-        if (v == 1){
+        if (v){
             ((DcMotorEx) shooter).setPower(PowerShooter);
-        }else if (v == -1){
+        }else if (!v){
             ((DcMotorEx) shooter).setPower(0);
         }
-        return v;
+
     }
 
 
@@ -43,8 +41,8 @@ public class shooter {
         return velocityShooter;
     }
 
-    public int compteurBalles(int nbeBallesInsideBot, int v, boolean x){
-        if(v == 1 && x){
+    public int compteurBalles(int nbeBallesInsideBot, boolean v, boolean x){
+        if(v && x){
             nbeBallesInsideBot -= 1;
         }
         if(nbeBallesInsideBot < 0){

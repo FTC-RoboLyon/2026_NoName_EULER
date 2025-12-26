@@ -82,7 +82,7 @@ public class ALDNC_brain extends LinearOpMode{
             /*if (!gamepad1.a) {
                 valueLeftMotor /= 2;
                 valueRightMotor /= 2;
-            }else if (gamepad1.a){
+            }else if (gamepad.a){
                 valueLeftMotor = valueLeftMotor /1;
                 valueRightMotor = valueRightMotor /1;
             }*/
@@ -143,11 +143,11 @@ public class ALDNC_brain extends LinearOpMode{
             telemetry.addData("Distance", compteurBalle.isPressed());
             telemetry.addData("is intaking", appuyage);
             telemetry.addData("Nbe Balles Inside Bot = ", nbeBallesIn);
-            if (isShooting){
-                telemetry.addLine("Shooter allumé");
-            }else if(!isShooting){
-                telemetry.addLine("Shooter éteint");
-            }
+            /*if (v == 1){
+                telemetry.addData("Shooter allumé");
+            }else if(v == -1){
+                telemetry.addData("Shooter éteint");
+            }*/
             telemetry.update();
         }
 

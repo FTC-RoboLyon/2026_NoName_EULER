@@ -70,6 +70,8 @@ public class ALDNC_brain extends LinearOpMode{
         int nbeBallesIn = 3;
         int vIntake = 0;
         boolean isFeeding = false;
+        int a = 0;
+        int b = 0;
 
         waitForStart();
         while (opModeIsActive()) {
@@ -111,21 +113,14 @@ public class ALDNC_brain extends LinearOpMode{
                 isShooting = !isShooting;
             }
 
-            if (feeder.getPosition() == 0.2){
-                isFeeding = true;
-            } else {
-                isFeeding = false;
-            }
-
-
+            //shooting
             Shooter.shooter(PowerShooter,
                     gamepad1.rightBumperWasReleased(),
                     gamepad1.right_trigger,
                     isShooting);
-            nbeBallesIn = Shooter.compteurBalles(nbeBallesIn, isShooting, isFeeding);
 
 
-
+            //vising
             Volet.viseur(gamepad1.a,
                     gamepad1.b,
                     gamepad1.y,
@@ -138,7 +133,9 @@ public class ALDNC_brain extends LinearOpMode{
 
 
             //feeder
-            Feeder.feeder(gamepad2.xWasPressed(), gamepad2.xWasReleased());
+            isFeeding = Feeder.feederPara(gamepad1.xWasPressed(), nbeBallesIn, isFeeding);
+            Feeder.feeder(isFeeding);
+            Feeder.compteurBalles(a, nbeBallesIn, isFeeding);
 
             real_velo = ((DcMotorEx) shooter).getVelocity();
             distance = compteurBalle.getDistance(DistanceUnit.CM);

@@ -13,48 +13,49 @@ public class feeder_v1 {
     }
 
     private final ElapsedTime timer = new ElapsedTime();
-    private final ElapsedTime timer2 = new ElapsedTime();
     private int b = 0;
-    private int c = 0;
-    private int d = 0;
     private int e = 0;
-    private int f = 0;
+    enum Etats { rien, monter, descendre }
+    Etats state = Etats.rien;
 
     public boolean feederPara(boolean xWasPressed, int nbeBallesInsideBot, boolean isFeeding) {
         if (xWasPressed) {
             b = 1;
         }
-        if (b == 1){
-            if(nbeBallesInsideBot > e) {
-                isFeeding = true;
-                if (c == 0) {
-                    timer.reset();
-                    c = 1;
-                }
-                if (timer.milliseconds() >= 1000) {
+        if(b == 1){
+            switch (state){
+                case rien:
+                    if (nbeBallesInsideBot > e){
+                        state = Etats.monter;
+                        timer.reset();
+                        break;
+                    } else if (nbeBallesInsideBot == e) {
+                        b = 0;
+                        isFeeding = false;
+                        break;
+                    }
+                    break;
+
+                case monter:
+                    isFeeding = true;
+                    if (timer.milliseconds() >= 1000){
+                        state = Etats.descendre;
+                        timer.reset();
+                        break;
+                    }
+                    break;
+
+                case descendre:
                     isFeeding = false;
-                }
-                if (!isFeeding){
-                    if(d == 0) {
-                        timer2.reset();
-                        d = 1;
-                        f = 0;
-                    }
-                }
-                if (timer2.milliseconds() >= 1000) {
-                    if (f == 0) {
-                        d = 0;
-                        c = 0;
+                    if (timer.milliseconds() >= 1000){
+                        state = Etats.rien;
                         e += 1;
-                        f = 1;
+                        break;
                     }
-                }
-            }else if (nbeBallesInsideBot == e){
-                b = 0;
-                e = 0;
-                isFeeding = false;
+                    break;
             }
         }
+
         return isFeeding;
     }
     public void feeder (boolean isFeeding){

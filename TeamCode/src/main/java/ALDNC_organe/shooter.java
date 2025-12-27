@@ -18,15 +18,15 @@ public class shooter {
 
     }
 
-    public void shooter(double PowerShooter, boolean right_bumperWR, double right_Trig, boolean v) {
+    public void shooter(double PowerShooter, double right_Trig, boolean v) {
 
         if (right_Trig > 0.3) {
-            ((DcMotorEx) shooter).setPower(-0.3);
+            shooter.setPower(-0.3);
         }
         if (v){
-            ((DcMotorEx) shooter).setPower(PowerShooter);
+            shooter.setPower(PowerShooter);
         }else if (!v){
-            ((DcMotorEx) shooter).setPower(0);
+            shooter.setPower(0);
         }
 
     }

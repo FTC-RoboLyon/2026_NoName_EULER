@@ -112,10 +112,12 @@ public class ALDNC_brain extends LinearOpMode{
             if (gamepad1.rightBumperWasPressed()){
                 isShooting = !isShooting;
             }
+            if (nbeBallesIn == 0) {
+                isShooting = false;
+            }
 
             //shooting
             Shooter.shooter(PowerShooter,
-                    gamepad1.rightBumperWasReleased(),
                     gamepad1.right_trigger,
                     isShooting);
 

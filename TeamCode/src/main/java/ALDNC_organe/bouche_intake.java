@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class bouche_intake {
 
     final DcMotor intake;
+    private int vIntake = 0;
 
     public bouche_intake (DcMotor intake){
         this.intake = intake;
@@ -21,7 +22,7 @@ public class bouche_intake {
         }
     }
 
-    public int nbeBalles(double distance, int nbeBallesInsideBot, int vIntake){
+    public int nbeBalles(double distance, int nbeBallesInsideBot){
         if (distance < 25 && vIntake == 0){
             nbeBallesInsideBot += 1;
             vIntake = 1;

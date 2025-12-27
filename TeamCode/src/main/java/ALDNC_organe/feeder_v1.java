@@ -18,65 +18,70 @@ public class feeder_v1 {
     enum Etats { rien, monter, descendre }
     Etats state = Etats.rien;
 
-    public boolean feederPara(boolean xWasPressed, int nbeBallesInsideBot, boolean isFeeding) {
-        if (xWasPressed) {
-            b = 1;
-        }
-        if(b == 1){
-            switch (state){
-                case rien:
-                    if (nbeBallesInsideBot > e){
-                        state = Etats.monter;
-                        timer.reset();
+    public boolean feederPara(boolean xWasPressed, int nbeBallesInsideBot, boolean isFeeding, boolean isShooting) {
+        if(isShooting) {
+            if (xWasPressed) {
+                b = 1;
+            }
+            if (b == 1) {
+                switch (state) {
+                    case rien:
+                        if (nbeBallesInsideBot > e) {
+                            state = Etats.monter;
+                            timer.reset();
+                            break;
+                        } else if (nbeBallesInsideBot == e) {
+                            b = 0;
+                            isFeeding = false;
+                            break;
+                        }
                         break;
-                    } else if (nbeBallesInsideBot == e) {
-                        b = 0;
+
+                    case monter:
+                        isFeeding = true;
+                        if (timer.milliseconds() >= 1000) {
+                            state = Etats.descendre;
+                            timer.reset();
+                            break;
+                        }
+                        break;
+
+                    case descendre:
                         isFeeding = false;
+                        if (timer.milliseconds() >= 1000) {
+                            state = Etats.rien;
+                            e += 1;
+                            break;
+                        }
                         break;
-                    }
-                    break;
-
-                case monter:
-                    isFeeding = true;
-                    if (timer.milliseconds() >= 1000){
-                        state = Etats.descendre;
-                        timer.reset();
-                        break;
-                    }
-                    break;
-
-                case descendre:
-                    isFeeding = false;
-                    if (timer.milliseconds() >= 1000){
-                        state = Etats.rien;
-                        e += 1;
-                        break;
-                    }
-                    break;
+                }
             }
         }
 
         return isFeeding;
     }
-    public void feeder (boolean isFeeding){
-        if (isFeeding) {
-            feeder.setPosition(0.2);
-        }
-        if (!isFeeding) {
-            feeder.setPosition(0.02);
+    public void feeder (boolean isFeeding, boolean isShooting){
+        if(isShooting) {
+            if (isFeeding) {
+                feeder.setPosition(0.2);
+            }
+            if (!isFeeding) {
+                feeder.setPosition(0.02);
+            }
         }
     }
-    public int compteurBalles(int a, int nbeBallesIn, boolean isFeeding){
-
-        if (a == 0 && isFeeding){
-            a = 1;
-        }
-        if (a == 1 && !isFeeding){
-            nbeBallesIn -= 1;
-            a = 0;
-        }
-        if (nbeBallesIn < 0){
-            nbeBallesIn = 0;
+    public int compteurBalles(int a, int nbeBallesIn, boolean isFeeding, boolean isShooting){
+        if(isShooting) {
+            if (a == 0 && isFeeding) {
+                a = 1;
+            }
+            if (a == 1 && !isFeeding) {
+                nbeBallesIn -= 1;
+                a = 0;
+            }
+            if (nbeBallesIn < 0) {
+                nbeBallesIn = 0;
+            }
         }
         return nbeBallesIn;
     }

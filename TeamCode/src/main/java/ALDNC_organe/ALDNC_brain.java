@@ -1,11 +1,11 @@
 package ALDNC_organe;
-import static org.firstinspires.ftc.teamcode.Constant.COMPTEUR_BALLE;
-import static org.firstinspires.ftc.teamcode.Constant.FEEDER;
-import static org.firstinspires.ftc.teamcode.Constant.INTAKE;
-import static org.firstinspires.ftc.teamcode.Constant.LEFT_MOTOR;
-import static org.firstinspires.ftc.teamcode.Constant.RIGHT_MOTOR;
-import static org.firstinspires.ftc.teamcode.Constant.SHOOTER;
-import static org.firstinspires.ftc.teamcode.Constant.VISEUR;
+import static ALDNC_organe.Constant.COMPTEUR_BALLE;
+import static ALDNC_organe.Constant.FEEDER;
+import static ALDNC_organe.Constant.INTAKE;
+import static ALDNC_organe.Constant.LEFT_MOTOR;
+import static ALDNC_organe.Constant.RIGHT_MOTOR;
+import static ALDNC_organe.Constant.SHOOTER;
+import static ALDNC_organe.Constant.VISEUR;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -99,7 +99,7 @@ public class ALDNC_brain extends LinearOpMode{
             Intake.intake(gamepad1.left_bumper,
                     gamepad1.left_trigger);
 
-            nbeBallesIn = Intake.nbeBalles(distance, nbeBallesIn, vIntake);
+            nbeBallesIn = Intake.nbeBalles(distance, nbeBallesIn);
 
 
             if (gamepad1.bWasPressed()){
@@ -135,9 +135,9 @@ public class ALDNC_brain extends LinearOpMode{
 
 
             //feeder
-            isFeeding = Feeder.feederPara(gamepad1.xWasPressed(), nbeBallesIn, isFeeding);
-            Feeder.feeder(isFeeding);
-            Feeder.compteurBalles(a, nbeBallesIn, isFeeding);
+            isFeeding = Feeder.feederPara(gamepad1.xWasPressed(), nbeBallesIn, isFeeding, isShooting);
+            Feeder.feeder(isFeeding, isShooting);
+            Feeder.compteurBalles(a, nbeBallesIn, isFeeding, isShooting);
 
             real_velo = ((DcMotorEx) shooter).getVelocity();
             distance = compteurBalle.getDistance(DistanceUnit.CM);

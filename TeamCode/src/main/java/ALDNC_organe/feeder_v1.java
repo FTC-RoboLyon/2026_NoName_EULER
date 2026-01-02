@@ -15,12 +15,12 @@ public class feeder_v1 {
     private final ElapsedTime timer = new ElapsedTime();
     private int b = 0;
     private int e = 0;
-    enum Etats { rien, monter, descendre }
+    enum Etats { rien, monter, descendre };
     Etats state = Etats.rien;
 
-    public boolean feederPara(boolean xWasPressed, int nbeBallesInsideBot, boolean isFeeding, boolean isShooting) {
+    public boolean feederPara(boolean x_was_pressed, int nbeBallesInsideBot, boolean isFeeding, boolean isShooting) {
         if(isShooting) {
-            if (xWasPressed) {
+            if (x_was_pressed) {
                 b = 1;
             }
             if (b == 1) {
@@ -39,7 +39,7 @@ public class feeder_v1 {
 
                     case monter:
                         isFeeding = true;
-                        if (timer.milliseconds() >= 1000) {
+                        if (timer.milliseconds() >= 500) {
                             state = Etats.descendre;
                             timer.reset();
                             break;
@@ -48,7 +48,7 @@ public class feeder_v1 {
 
                     case descendre:
                         isFeeding = false;
-                        if (timer.milliseconds() >= 1000) {
+                        if (timer.milliseconds() >= 500) {
                             state = Etats.rien;
                             e += 1;
                             break;

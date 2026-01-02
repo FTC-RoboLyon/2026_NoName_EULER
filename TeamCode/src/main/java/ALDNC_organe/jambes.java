@@ -23,5 +23,21 @@ public class jambes {
         left_motor.setPower(valueLeftMotor);
         right_motor.setPower(valueRightMotor);
     }
+    public void turn_antihoraire() {
+        left_motor.setPower(-1);
+        right_motor.setPower(1);
+    }
+    public void turn_horaire() {
+        left_motor.setPower(1);
+        right_motor.setPower(-1);
+    }
+    public void forward () {
+        left_motor.setPower(1);
+        right_motor.setPower(1);
+    }
+    public void backward () {
+        left_motor.setPower(-1);
+        right_motor.setPower(-1);
+    }
 
 }

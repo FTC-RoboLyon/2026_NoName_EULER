@@ -34,4 +34,12 @@ public class bouche_intake {
         }
         return nbeBallesInsideBot;
     }
+
+    public void intake_simple () {
+        intake.setPower(1);
+    }
+
+    public void stop_intake () {
+        intake.setPower(0);
+    }
 }

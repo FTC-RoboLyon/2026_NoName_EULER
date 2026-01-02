@@ -175,6 +175,7 @@ public class ALDNC_brain extends LinearOpMode {
                             Chassis.turn_horaire();
                         case centre:
                             Chassis.forward();
+                            Intake.intake_simple();
                         case non_detected:
                             robot = ModeRobot.Manuel;
                     }

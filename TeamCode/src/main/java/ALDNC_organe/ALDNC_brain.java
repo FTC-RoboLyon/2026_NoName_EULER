@@ -18,7 +18,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import Webcam_aldnc_yeux.vision;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
+import Webcam_aldnc_yeux.vision_opencv;
+import Webcam_aldnc_yeux.AprilTag_Reader;
 
 @TeleOp(name = "ALDNC_brain", group = "Euler")
 public class ALDNC_brain extends LinearOpMode {
@@ -26,7 +29,7 @@ public class ALDNC_brain extends LinearOpMode {
     private IMU imu;
     private VoltageSensor ControlHub_VoltageSensor;
 
-    vision vision;
+    vision_opencv vision;
 
     enum ModeRobot {Manuel, ChercheBalle, place_shoot}
     enum Pos_Balle {gauche, centre, droite, non_detected}
@@ -45,9 +48,10 @@ public class ALDNC_brain extends LinearOpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         ControlHub_VoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
         DistanceSensor compteurBalle = hardwareMap.get(DistanceSensor.class, COMPTEUR_BALLE);
-        vision = new vision(hardwareMap);
 
 
+        vision = new vision_opencv(hardwareMap);
+        AprilTag_Reader aprilJoke = new AprilTag_Reader(hardwareMap);
         shooter Shooter = new shooter(shooter);
         feeder_v1 Feeder = new feeder_v1(feeder);
         jambes Chassis = new jambes(left_motor, right_motor);
@@ -78,6 +82,7 @@ public class ALDNC_brain extends LinearOpMode {
         boolean isFeeding = false;
         int a = 0;
         int b = 0;
+        AprilTagDetection actual_april;
 
 
         telemetry.addData("Status", "Initialized");
@@ -100,6 +105,8 @@ public class ALDNC_brain extends LinearOpMode {
             } else {
                 telemetry.addLine("Aucun objet détecté");
             }
+
+            actual_april = aprilJoke.getBestAprilTag(null);
             isIntaking = distance < 25;
             nbeBallesIn = Intake.nbeBalles(distance, nbeBallesIn);
 
@@ -176,6 +183,10 @@ public class ALDNC_brain extends LinearOpMode {
                         case centre:
                             Chassis.forward();
                             Intake.intake_simple();
+                            if (Intake.isvIntake()) {
+                                Chassis.stop();
+                                Intake.stop_intake();
+                            }
                         case non_detected:
                             robot = ModeRobot.Manuel;
                     }
@@ -193,6 +204,11 @@ public class ALDNC_brain extends LinearOpMode {
             } else if (!isShooting) {
                 telemetry.addLine("Shooter éteint");
             }
+            telemetry.addData("ID de l'april", actual_april.id);
+            telemetry.addData("décalage gauche-droite a l'april", actual_april.ftcPose.x);
+            telemetry.addData("Hauteur a l'april", actual_april.ftcPose.y);
+            telemetry.addData("distance a l'april", actual_april.ftcPose.z);
+            telemetry.addData("orientation a l'april", actual_april.ftcPose.yaw);
             telemetry.update();
         }
         vision.stop();
@@ -207,8 +223,6 @@ public class ALDNC_brain extends LinearOpMode {
             robot = ModeRobot.ChercheBalle;
         } else if (gmp2_b) {
             robot = ModeRobot.place_shoot;
-        } else {
-            robot = ModeRobot.Manuel;
         }
     }
 }

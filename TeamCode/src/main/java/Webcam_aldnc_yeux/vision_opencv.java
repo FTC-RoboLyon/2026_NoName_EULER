@@ -7,12 +7,11 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-public class vision {
+public class vision_opencv {
 
     private OpenCvCamera camera;
 
-    public vision(HardwareMap hardwareMap) {
-
+    public vision_opencv(HardwareMap hardwareMap) {
         // Récupérer l'ID pour l'affichage de la caméra
         int cameraMonitorViewId = hardwareMap.appContext
                 .getResources()

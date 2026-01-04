@@ -40,4 +40,9 @@ public class jambes {
         right_motor.setPower(-1);
     }
 
+    public void stop () {
+        left_motor.setPower(0);
+        right_motor.setPower(0);
+    }
+
 }

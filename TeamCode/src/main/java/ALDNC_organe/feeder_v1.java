@@ -29,11 +29,9 @@ public class feeder_v1 {
                         if (nbeBallesInsideBot > e) {
                             state = Etats.monter;
                             timer.reset();
-                            break;
                         } else if (nbeBallesInsideBot == e) {
                             b = 0;
                             isFeeding = false;
-                            break;
                         }
                         break;
 
@@ -42,16 +40,14 @@ public class feeder_v1 {
                         if (timer.milliseconds() >= 500) {
                             state = Etats.descendre;
                             timer.reset();
-                            break;
                         }
                         break;
 
                     case descendre:
                         isFeeding = false;
-                        if (timer.milliseconds() >= 500) {
+                        if (timer.milliseconds() >= 100) {
                             state = Etats.rien;
                             e += 1;
-                            break;
                         }
                         break;
                 }

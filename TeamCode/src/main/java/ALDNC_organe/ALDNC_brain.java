@@ -172,14 +172,17 @@ public class ALDNC_brain extends LinearOpMode {
                     isFeeding = Feeder.feederPara(gamepad1.xWasPressed(), nbeBallesIn, isFeeding, isShooting);
                     Feeder.feeder(isFeeding, isShooting);
                     Feeder.compteurBalles(a, nbeBallesIn, isFeeding, isShooting);
+                    break;
 
 
                 case ChercheBalle:
                     switch (balle) {
                         case gauche:
                             Chassis.turn_antihoraire();
+                            break;
                         case droite:
                             Chassis.turn_horaire();
+                            break;
                         case centre:
                             Chassis.forward();
                             Intake.intake_simple();
@@ -187,9 +190,11 @@ public class ALDNC_brain extends LinearOpMode {
                                 Chassis.stop();
                                 Intake.stop_intake();
                             }
+                            break;
                         case non_detected:
                             robot = ModeRobot.Manuel;
                     }
+                    break;
             }
             real_velo = ((DcMotorEx) shooter).getVelocity();
             distance = compteurBalle.getDistance(DistanceUnit.CM);

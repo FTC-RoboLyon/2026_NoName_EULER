@@ -18,14 +18,14 @@ public class shooter {
 
     }
 
-    public void shooter(double PowerShooter, double right_Trig, boolean v) {
+    public void shooter(double PowerShooter, double right_Trig, boolean shoot) {
 
         if (right_Trig > 0.3) {
             shooter.setPower(-0.3);
         }
-        if (v){
+        if (shoot){
             shooter.setPower(PowerShooter);
-        }else if (!v){
+        }else if (!shoot){
             shooter.setPower(0);
         }
 
@@ -49,6 +49,10 @@ public class shooter {
             nbeBallesInsideBot = 0;
         }
         return nbeBallesInsideBot;
+    }
+
+    public double getPower (){
+        return shooter.getPower();
     }
 
 }

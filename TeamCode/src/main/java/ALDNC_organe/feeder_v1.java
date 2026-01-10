@@ -15,6 +15,7 @@ public class feeder_v1 {
     private final ElapsedTime timer = new ElapsedTime();
     private int b = 0;
     private int e = 0;
+    int a;
     enum Etats { rien, monter, descendre };
     Etats state = Etats.rien;
 
@@ -51,6 +52,9 @@ public class feeder_v1 {
                         }
                         break;
                 }
+            } else if (b == 0) {
+                e = 0;
+
             }
         }
 
@@ -62,11 +66,11 @@ public class feeder_v1 {
                 feeder.setPosition(0.2);
             }
             if (!isFeeding) {
-                feeder.setPosition(0.02);
+                feeder.setPosition(0);
             }
         }
     }
-    public int compteurBalles(int a, int nbeBallesIn, boolean isFeeding, boolean isShooting){
+    public int compteurBalles(int nbeBallesIn, boolean isFeeding, boolean isShooting){
         if(isShooting) {
             if (a == 0 && isFeeding) {
                 a = 1;

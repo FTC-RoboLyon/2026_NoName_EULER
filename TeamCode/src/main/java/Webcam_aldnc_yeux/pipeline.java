@@ -26,7 +26,7 @@ public class pipeline extends OpenCvPipeline{
         Moments moments = Imgproc.moments(mask);
         double area = moments.get_m00();
 
-        if (area > 1000) { // seuil à ajuster
+        if (area > 500) { // seuil à ajuster
             objectDetected = true;
             centerX = (int) (moments.get_m10() / area);
         } else {

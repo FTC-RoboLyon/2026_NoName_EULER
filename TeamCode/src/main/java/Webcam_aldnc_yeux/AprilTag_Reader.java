@@ -3,6 +3,8 @@ package Webcam_aldnc_yeux;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -11,11 +13,17 @@ import java.util.List;
 
 public class AprilTag_Reader {
     private final VisionPortal visionPortal;
-    private static AprilTagProcessor aprilTag = null;
+    private static AprilTagProcessor aprilTag ;
 
     public AprilTag_Reader(HardwareMap hardwareMap) {
 
-        aprilTag = AprilTagProcessor.easyCreateWithDefaults();
+        aprilTag = new AprilTagProcessor.Builder()
+                .setDrawTagID(true)
+                .setDrawTagOutline(true)
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
+                .build();
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
@@ -56,4 +64,6 @@ public class AprilTag_Reader {
     public AprilTagDetection getBestAprilTag(Integer priorityId) {
         return  priorityId != null ? getAprilTagById(priorityId) : getClosestApril();
     }
+
+
 }

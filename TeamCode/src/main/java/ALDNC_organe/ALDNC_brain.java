@@ -29,7 +29,7 @@ public class ALDNC_brain extends LinearOpMode {
     private IMU imu;
     private VoltageSensor ControlHub_VoltageSensor;
 
-    vision_opencv vision;
+    //vision_opencv vision;
 
     enum ModeRobot {Manuel, ChercheBalle, place_shoot}
     enum Pos_Balle {gauche, centre, droite, non_detected}
@@ -50,7 +50,7 @@ public class ALDNC_brain extends LinearOpMode {
         DistanceSensor compteurBalle = hardwareMap.get(DistanceSensor.class, COMPTEUR_BALLE);
 
 
-        vision = new vision_opencv(hardwareMap);
+        //vision = new vision_opencv(hardwareMap);
         AprilTag_Reader aprilJoke = new AprilTag_Reader(hardwareMap);
         shooter Shooter = new shooter(shooter);
         feeder_v1 Feeder = new feeder_v1(feeder);
@@ -77,7 +77,7 @@ public class ALDNC_brain extends LinearOpMode {
         double distance = compteurBalle.getDistance(DistanceUnit.CM);
         boolean isIntaking = false;
         boolean isShooting = false;
-        int nbeBallesIn = 3;
+        int nbeBallesIn = 0;
         int vIntake = 0;
         boolean isFeeding = false;
         int a = 0;
@@ -90,7 +90,7 @@ public class ALDNC_brain extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             //camera
-            if (vision.isObjectDetected()) {
+            /*if (vision.isObjectDetected()) {
                 int x = vision.getObjectX();
                 if (x < 213) {
                     telemetry.addLine("Objet à GAUCHE");
@@ -105,6 +105,8 @@ public class ALDNC_brain extends LinearOpMode {
             } else {
                 telemetry.addLine("Aucun objet détecté");
             }
+            /*
+             */
 
             actual_april = aprilJoke.getBestAprilTag(null);
             isIntaking = distance < 25;
@@ -139,7 +141,11 @@ public class ALDNC_brain extends LinearOpMode {
                     if (gamepad1.bWasPressed()) {
                         PowerShooter = Power_bank;
                     } else if (gamepad1.yWasPressed()) {
-                        PowerShooter = Power_far;
+                    PowerShooter = Power_far;
+                }
+
+                    if (Shooter.getPower() <= PowerShooter + 0.05 && Shooter.getPower() >= PowerShooter - 0.05){
+                        gamepad1.rumble(100);
                     }
 
 
@@ -171,7 +177,7 @@ public class ALDNC_brain extends LinearOpMode {
 
                     isFeeding = Feeder.feederPara(gamepad1.xWasPressed(), nbeBallesIn, isFeeding, isShooting);
                     Feeder.feeder(isFeeding, isShooting);
-                    Feeder.compteurBalles(a, nbeBallesIn, isFeeding, isShooting);
+                    Feeder.compteurBalles(nbeBallesIn, isFeeding, isShooting);
                     break;
 
 
@@ -204,6 +210,8 @@ public class ALDNC_brain extends LinearOpMode {
             telemetry.addData("Distance", compteurBalle.getDistance(DistanceUnit.CM));
             telemetry.addData("is intaking", isIntaking);
             telemetry.addData("Nbe Balles Inside Bot = ", nbeBallesIn);
+            telemetry.addData("distance", distance);
+            //telemetry.addData("objet detécté",vision.isObjectDetected() );
             if (isShooting) {
                 telemetry.addLine("Shooter allumé");
             } else if (!isShooting) {
@@ -216,7 +224,7 @@ public class ALDNC_brain extends LinearOpMode {
             telemetry.addData("orientation a l'april", actual_april.ftcPose.yaw);
             telemetry.update();
         }
-        vision.stop();
+        //vision.stop();
 
 
     }

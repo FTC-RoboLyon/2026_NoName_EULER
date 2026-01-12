@@ -1,23 +1,26 @@
 package Webcam_aldnc_yeux;
 
+import android.graphics.Canvas;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.opencv.core.Mat;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class AprilTag_Reader {
-    private final VisionPortal visionPortal;
-    private static AprilTagProcessor aprilTag ;
+public class Apriltag_reader extends AprilTagProcessor {
 
-    public AprilTag_Reader(HardwareMap hardwareMap) {
+    public static AprilTagProcessor aprilTag ;
 
-        aprilTag = new AprilTagProcessor.Builder()
+    public Apriltag_reader(HardwareMap hardwareMap) {
+
+         aprilTag = new AprilTagProcessor.Builder()
                 .setDrawTagID(true)
                 .setDrawTagOutline(true)
                 .setDrawAxes(true)
@@ -25,10 +28,8 @@ public class AprilTag_Reader {
                 .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
                 .build();
 
-        visionPortal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .addProcessor(aprilTag)
-                .build();
+
+
     }
 
     public static List<AprilTagDetection> getdetections() {
@@ -66,4 +67,43 @@ public class AprilTag_Reader {
     }
 
 
+    @Override
+    public void setDecimation(float decimation) {
+
+    }
+
+    @Override
+    public void setPoseSolver(PoseSolver poseSolver) {
+
+    }
+
+    @Override
+    public int getPerTagAvgPoseSolveTime() {
+        return 0;
+    }
+
+    @Override
+    public ArrayList<AprilTagDetection> getDetections() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<AprilTagDetection> getFreshDetections() {
+        return null;
+    }
+
+    @Override
+    public void init(int width, int height, CameraCalibration calibration) {
+
+    }
+
+    @Override
+    public Object processFrame(Mat frame, long captureTimeNanos) {
+        return null;
+    }
+
+    @Override
+    public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
+
+    }
 }

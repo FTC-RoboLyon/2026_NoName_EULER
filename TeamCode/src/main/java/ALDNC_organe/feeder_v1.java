@@ -19,7 +19,7 @@ public class feeder_v1 {
     enum Etats { rien, monter, descendre };
     Etats state = Etats.rien;
 
-    public boolean feederPara(boolean x_was_pressed, int nbeBallesInsideBot, boolean isFeeding, boolean isShooting) {
+    public boolean feederPara(boolean x_was_pressed, boolean isFeeding, boolean isShooting) {
         if(isShooting) {
             if (x_was_pressed) {
                 b = 1;
@@ -27,10 +27,10 @@ public class feeder_v1 {
             if (b == 1) {
                 switch (state) {
                     case rien:
-                        if (nbeBallesInsideBot > e) {
+                        if (e < 3) {
                             state = Etats.monter;
                             timer.reset();
-                        } else if (nbeBallesInsideBot == e) {
+                        } else if (e == 3) {
                             b = 0;
                             isFeeding = false;
                         }
@@ -38,7 +38,7 @@ public class feeder_v1 {
 
                     case monter:
                         isFeeding = true;
-                        if (timer.milliseconds() >= 500) {
+                        if (timer.milliseconds() >= 100) {
                             state = Etats.descendre;
                             timer.reset();
                         }
@@ -46,7 +46,7 @@ public class feeder_v1 {
 
                     case descendre:
                         isFeeding = false;
-                        if (timer.milliseconds() >= 100) {
+                        if (timer.milliseconds() >= 1000) {
                             state = Etats.rien;
                             e += 1;
                         }

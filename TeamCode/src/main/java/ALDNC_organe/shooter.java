@@ -16,18 +16,15 @@ public class shooter {
         this.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
     }
 
-    public void shooter(double PowerShooter, double right_Trig, boolean shoot) {
+    public void shooter(double PowerShooter, boolean opt, boolean shoot) {
 
-        if (right_Trig > 0.3) {
-            shooter.setPower(-0.3);
+        if (opt){
+            ((DcMotorEx) shooter).setVelocity(-700);
         }
-        if (shoot){
-            shooter.setPower(PowerShooter);
-        }else if (!shoot){
-            shooter.setPower(0);
-        }
+        shooter.setPower(shoot ? PowerShooter:0);
 
     }
 

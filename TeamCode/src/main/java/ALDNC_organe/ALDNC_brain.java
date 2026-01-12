@@ -17,11 +17,17 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.List;
+
+import Webcam_aldnc_yeux.Apriltag_reader;
+import Webcam_aldnc_yeux.Vrai_vision;
 import Webcam_aldnc_yeux.vision_opencv;
-import Webcam_aldnc_yeux.AprilTag_Reader;
 
 @TeleOp(name = "ALDNC_brain", group = "Euler")
 public class ALDNC_brain extends LinearOpMode {
@@ -29,13 +35,27 @@ public class ALDNC_brain extends LinearOpMode {
     private IMU imu;
     private VoltageSensor ControlHub_VoltageSensor;
 
-    //vision_opencv vision;
+    vision_opencv vision;
 
     enum ModeRobot {Manuel, ChercheBalle, place_shoot}
     enum Pos_Balle {gauche, centre, droite, non_detected}
 
+    public enum VisionMode {
+        APRILTAG,
+        OBJECT_TRACKING
+    }
+    private VisionMode visionMode = VisionMode.APRILTAG;
+
     static ModeRobot robot = ModeRobot.Manuel;
     static Pos_Balle balle = Pos_Balle.non_detected;
+    AprilTagProcessor aprilJoke = new Apriltag_reader(hardwareMap);
+    Vrai_vision objectProcessor = new Vrai_vision();
+
+    VisionPortal visionPortal = new VisionPortal.Builder()
+            .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+            .addProcessor(aprilJoke)
+            .addProcessor(objectProcessor)
+            .build();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -50,8 +70,6 @@ public class ALDNC_brain extends LinearOpMode {
         DistanceSensor compteurBalle = hardwareMap.get(DistanceSensor.class, COMPTEUR_BALLE);
 
 
-        //vision = new vision_opencv(hardwareMap);
-        AprilTag_Reader aprilJoke = new AprilTag_Reader(hardwareMap);
         shooter Shooter = new shooter(shooter);
         feeder_v1 Feeder = new feeder_v1(feeder);
         jambes Chassis = new jambes(left_motor, right_motor);
@@ -82,13 +100,25 @@ public class ALDNC_brain extends LinearOpMode {
         boolean isFeeding = false;
         int a = 0;
         int b = 0;
-        AprilTagDetection actual_april;
+        boolean left_trigger = false;
+        AprilTagDetection actual_april = null;
 
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
         while (opModeIsActive()) {
+            switch (visionMode) {
+                case APRILTAG:
+                    visionPortal.setProcessorEnabled(aprilJoke, true);
+                    visionPortal.setProcessorEnabled(objectProcessor, false);
+                    break;
+                case OBJECT_TRACKING:
+                    visionPortal.setProcessorEnabled(aprilJoke, false);
+                    visionPortal.setProcessorEnabled(objectProcessor, true);
+                    break;
+            }
+
             //camera
             /*if (vision.isObjectDetected()) {
                 int x = vision.getObjectX();
@@ -108,80 +138,67 @@ public class ALDNC_brain extends LinearOpMode {
             /*
              */
 
-            actual_april = aprilJoke.getBestAprilTag(null);
-            isIntaking = distance < 25;
-            nbeBallesIn = Intake.nbeBalles(distance, nbeBallesIn);
+            //actual_april = aprilJoke.getBestAprilTag(null);
+            //isIntaking = distance < 25;
+            //nbeBallesIn = Intake.nbeBalles(distance, nbeBallesIn);
 
-            switch_states(gamepad2.x, gamepad2.y, gamepad2.b);
-            switch (robot) {
-                case Manuel:
-
-
-                    // Se déplacer
-                    turn = gamepad1.right_stick_x;
-                    forward = -gamepad1.left_stick_y;
-                    float valueLeftMotor = forward + turn;
-                    float valueRightMotor = forward - turn;
-                    /*if (!gamepad1.a) {
-                        valueLeftMotor /= 2;
-                        valueRightMotor /= 2;
-                    }else if (gamepad1.a){
-                        valueLeftMotor = valueLeftMotor /1;
-                        valueRightMotor = valueRightMotor /1;
-                    }*/
-                    Chassis.drive(valueLeftMotor, valueRightMotor);
-
-                    //intake
-                    Intake.intake(gamepad1.left_bumper,
-                            gamepad1.left_trigger);
+            //switch_states(gamepad2.x, gamepad2.y, gamepad2.b);
+            //switch (robot) {
+            //case Manuel:
 
 
+            // Se déplacer
+            turn = gamepad1.right_stick_x;
+            forward = -gamepad1.left_stick_y;
+            float valueLeftMotor = forward + turn;
+            float valueRightMotor = forward - turn;
+            Chassis.drive(valueLeftMotor, valueRightMotor);
+
+            //intake
+            Intake.intake(gamepad1.left_bumper,
+                    gamepad1.left_trigger);
 
 
-                    if (gamepad1.bWasPressed()) {
-                        PowerShooter = Power_bank;
-                    } else if (gamepad1.yWasPressed()) {
-                    PowerShooter = Power_far;
-                }
+            if (gamepad1.bWasPressed()) {
+                PowerShooter = Power_bank;
+            } else if (gamepad1.yWasPressed()) {
+                PowerShooter = Power_far;
+            }
 
-                    if (Shooter.getPower() <= PowerShooter + 0.05 && Shooter.getPower() >= PowerShooter - 0.05){
+                    /*if (Shooter.getPower() <= PowerShooter + 0.05 && Shooter.getPower() >= PowerShooter - 0.05){
                         gamepad1.rumble(100);
-                    }
+                    }*/
 
 
-                    if (gamepad1.rightBumperWasPressed()) {
-                        isShooting = !isShooting;
-                    }
-                    if (nbeBallesIn == 0) {
-                        isShooting = false;
-                    }
+            if (gamepad1.rightBumperWasPressed()) {
+                isShooting = !isShooting;
+            }
+            left_trigger = gamepad1.right_trigger > 0.3;
 
-                    //shooting
-                    Shooter.shooter(PowerShooter,
-                            gamepad1.right_trigger,
-                            isShooting);
+            //shooting
+            Shooter.shooter(PowerShooter,
+                    left_trigger,
+                    isShooting);
 
 
-                    //vising
-                    Volet.viseur(gamepad1.a,
-                            gamepad1.b,
-                            gamepad1.y,
-                            gamepad1.dpadRightWasPressed(),
-                            gamepad1.dpadLeftWasPressed(),
-                            posviseur,
-                            posviseur_far,
-                            posviseur_bank);
+            //vising
+            Volet.viseur(gamepad1.a,
+                    gamepad1.b,
+                    gamepad1.y,
+                    gamepad1.dpadRightWasPressed(),
+                    gamepad1.dpadLeftWasPressed(),
+                    posviseur,
+                    posviseur_far,
+                    posviseur_bank);
 
 
-                    //feeder
+            //feeder
 
-                    isFeeding = Feeder.feederPara(gamepad1.xWasPressed(), nbeBallesIn, isFeeding, isShooting);
-                    Feeder.feeder(isFeeding, isShooting);
-                    Feeder.compteurBalles(nbeBallesIn, isFeeding, isShooting);
-                    break;
+            isFeeding = Feeder.feederPara(gamepad1.xWasPressed(), isFeeding, isShooting);
+            Feeder.feeder(isFeeding, isShooting);
 
 
-                case ChercheBalle:
+                /*case ChercheBalle:
                     switch (balle) {
                         case gauche:
                             Chassis.turn_antihoraire();
@@ -200,8 +217,9 @@ public class ALDNC_brain extends LinearOpMode {
                         case non_detected:
                             robot = ModeRobot.Manuel;
                     }
-                    break;
-            }
+                    break;*/
+
+
             real_velo = ((DcMotorEx) shooter).getVelocity();
             distance = compteurBalle.getDistance(DistanceUnit.CM);
             telemetry.addData("Velocité programmé Shooter =", PowerShooter);
@@ -212,24 +230,56 @@ public class ALDNC_brain extends LinearOpMode {
             telemetry.addData("Nbe Balles Inside Bot = ", nbeBallesIn);
             telemetry.addData("distance", distance);
             //telemetry.addData("objet detécté",vision.isObjectDetected() );
-            if (isShooting) {
-                telemetry.addLine("Shooter allumé");
-            } else if (!isShooting) {
-                telemetry.addLine("Shooter éteint");
-            }
-            telemetry.addData("ID de l'april", actual_april.id);
-            telemetry.addData("décalage gauche-droite a l'april", actual_april.ftcPose.x);
-            telemetry.addData("Hauteur a l'april", actual_april.ftcPose.y);
-            telemetry.addData("distance a l'april", actual_april.ftcPose.z);
-            telemetry.addData("orientation a l'april", actual_april.ftcPose.yaw);
+            telemetry.addLine(isShooting ? "Shooter allumé" : "Shooter éteint");
+
+            if (actual_april != null) {
+                telemetry.addData("ID de l'april", actual_april.id);
+                telemetry.addData("décalage gauche-droite a l'april", actual_april.ftcPose.x);
+                telemetry.addData("Hauteur a l'april", actual_april.ftcPose.y);
+                telemetry.addData("distance a l'april", actual_april.ftcPose.z);
+                telemetry.addData("orientation a l'april", actual_april.ftcPose.yaw);
+            } else telemetry.addLine("aucun apriltag détécté");
             telemetry.update();
+          }
         }
-        //vision.stop();
+    public AprilTagDetection getClosestApril() {
+        List<AprilTagDetection> detections = aprilJoke.getDetections();
+        if (detections.isEmpty()) {
+            return null;
+        }
+        AprilTagDetection tag = detections.get(0);
+        double minDistance = tag.ftcPose.z;
 
+        for (AprilTagDetection i : detections){
+            if (i.ftcPose.z < minDistance) {
+                minDistance = i.ftcPose.z;
+                tag = i;
+            }
+        }
 
+        return tag;
     }
 
-    public void switch_states(boolean gmp2_x, boolean gmp2_y, boolean gmp2_b) {
+    public AprilTagDetection getAprilTagById(int wantedId) {
+        for (AprilTagDetection detection : aprilJoke.getDetections()) {
+            if (detection.id == wantedId) {
+                return detection;
+            }
+        }
+        return null;
+    }
+
+    public AprilTagDetection getBestAprilTag(Integer priorityId) {
+        return  priorityId != null ? getAprilTagById(priorityId) : getClosestApril();
+    }
+    }
+
+
+
+
+
+
+    /*public void switch_states(boolean gmp2_x, boolean gmp2_y, boolean gmp2_b) {
         if (gmp2_x) {
             robot = ModeRobot.Manuel;
         } else if (gmp2_y) {
@@ -237,8 +287,8 @@ public class ALDNC_brain extends LinearOpMode {
         } else if (gmp2_b) {
             robot = ModeRobot.place_shoot;
         }
-    }
-}
+    }*/
+
 
 
 

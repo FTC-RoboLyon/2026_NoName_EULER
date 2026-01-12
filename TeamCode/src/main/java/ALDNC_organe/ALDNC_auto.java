@@ -15,9 +15,10 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import Webcam_aldnc_yeux.vision_opencv;
-import Webcam_aldnc_yeux.AprilTag_Reader;
+import Webcam_aldnc_yeux.Apriltag_reader;
 
 @Autonomous (name = "ALDNC_auto", group = "Euler")
 public class ALDNC_auto extends LinearOpMode {
@@ -41,12 +42,40 @@ public class ALDNC_auto extends LinearOpMode {
 
 
         vision = new vision_opencv(hardwareMap);
-        AprilTag_Reader aprilJoke = new AprilTag_Reader(hardwareMap);
+        Apriltag_reader aprilJoke = new Apriltag_reader(hardwareMap);
         shooter Shooter = new shooter(shooter);
         feeder_v1 Feeder = new feeder_v1(feeder);
         jambes Chassis = new jambes(left_motor, right_motor);
         bouche_intake Intake = new bouche_intake(intake);
         viseur Volet = new viseur(viseur);
+
+        boolean isshooting = true;
+        boolean isFeeding = false;
+        double posviseur = 0.6;
+        double posviseur_bank = 0.6;
+        double Power_bank = 0.5;
+        double posviseur_far = 0.37;
+        double Power_far = 1;
+        double PowerShooter = Power_far;
+        boolean left_trigger = false;
+        final ElapsedTime timer = new ElapsedTime();
+        int nbBalle = 0;
+
+
+
+        waitForStart();
+        timer.reset();
+        while (timer.milliseconds() < 5000) {
+            Shooter.shooter(PowerShooter,
+                    left_trigger,
+                    isshooting);
+            isFeeding = Feeder.feederPara(true, isFeeding, isshooting);
+            Feeder.feeder(isFeeding, isshooting);
+        }
+        while (opModeIsActive()){
+
+        }
+
 
     }
 

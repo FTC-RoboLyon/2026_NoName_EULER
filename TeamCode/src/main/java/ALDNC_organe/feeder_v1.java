@@ -15,9 +15,10 @@ public class feeder_v1 {
     private final ElapsedTime timer = new ElapsedTime();
     private int b = 0;
     private int e = 0;
-    int a;
+    int a = 0;
     enum Etats { rien, monter, descendre };
     Etats state = Etats.rien;
+
 
     public boolean feederPara(boolean x_was_pressed, boolean isFeeding, boolean isShooting) {
         if(isShooting) {

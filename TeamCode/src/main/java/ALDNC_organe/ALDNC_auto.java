@@ -60,15 +60,22 @@ public class ALDNC_auto extends LinearOpMode {
         boolean left_trigger = false;
         final ElapsedTime timer = new ElapsedTime();
         int nbBalle = 0;
+        boolean b_wpr = false;
+        boolean y_wpr = false;
+        float leftTrigger = 0;
 
 
 
         waitForStart();
         timer.reset();
         while (timer.milliseconds() < 5000) {
-            Shooter.shooter(PowerShooter,
-                    left_trigger,
-                    isshooting);
+            Shooter.shooter(isshooting,
+                    PowerShooter,
+                    leftTrigger,
+                    b_wpr,
+                    y_wpr,
+                    Power_bank,
+                    Power_far);
             isFeeding = Feeder.feederPara(true, isFeeding, isshooting);
             Feeder.feeder(isFeeding, isshooting);
         }

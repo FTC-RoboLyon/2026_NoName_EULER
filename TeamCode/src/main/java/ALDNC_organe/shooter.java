@@ -17,12 +17,18 @@ public class shooter {
         this.shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
+
     }
 
-    public void shooter(double PowerShooter, boolean opt, boolean shoot) {
 
-        if (opt){
-            ((DcMotorEx) shooter).setVelocity(-700);
+    public void shooter(boolean shoot, double PowerShooter, float left_trigger, boolean b_wrp, boolean y_wrp, double Power_bank, double Power_far) {
+        if (b_wrp) {
+            PowerShooter = Power_bank;
+        } else if (y_wrp) {
+            PowerShooter = Power_far;
+        }
+        if (left_trigger > 0.3){
+            shooter.setPower(-0.3);
         }
         shooter.setPower(shoot ? PowerShooter:0);
 

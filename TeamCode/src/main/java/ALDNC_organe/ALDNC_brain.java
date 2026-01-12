@@ -76,10 +76,8 @@ public class ALDNC_brain extends LinearOpMode {
         bouche_intake Intake = new bouche_intake(intake);
         viseur Volet = new viseur(viseur);
 
-        double posviseur = 0.6;
-        double posviseur_bank = 0.6;
+
         double Power_bank = 0.5;
-        double posviseur_far = 0.37;
         double Power_far = 1;
         double PowerShooter = Power_far;
         double robotOrienDegrees;
@@ -159,26 +157,22 @@ public class ALDNC_brain extends LinearOpMode {
                     gamepad1.left_trigger);
 
 
-            if (gamepad1.bWasPressed()) {
-                PowerShooter = Power_bank;
-            } else if (gamepad1.yWasPressed()) {
-                PowerShooter = Power_far;
-            }
 
                     /*if (Shooter.getPower() <= PowerShooter + 0.05 && Shooter.getPower() >= PowerShooter - 0.05){
                         gamepad1.rumble(100);
                     }*/
 
-
-            if (gamepad1.rightBumperWasPressed()) {
+            //shooting
+            if(gamepad1.rightBumperWasPressed()){
                 isShooting = !isShooting;
             }
-            left_trigger = gamepad1.right_trigger > 0.3;
-
-            //shooting
-            Shooter.shooter(PowerShooter,
-                    left_trigger,
-                    isShooting);
+            Shooter.shooter(isShooting,
+                    PowerShooter,
+                    gamepad1.left_trigger,
+                    gamepad1.bWasPressed(),
+                    gamepad1.yWasPressed(),
+                    Power_bank,
+                    Power_far);
 
 
             //vising
@@ -186,10 +180,7 @@ public class ALDNC_brain extends LinearOpMode {
                     gamepad1.b,
                     gamepad1.y,
                     gamepad1.dpadRightWasPressed(),
-                    gamepad1.dpadLeftWasPressed(),
-                    posviseur,
-                    posviseur_far,
-                    posviseur_bank);
+                    gamepad1.dpadLeftWasPressed());
 
 
             //feeder

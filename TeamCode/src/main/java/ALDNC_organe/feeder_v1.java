@@ -57,6 +57,10 @@ public class feeder_v1 {
                 e = 0;
 
             }
+        } else if (!isShooting) {
+            b = 0;
+            e = 0;
+            state = Etats.rien;
         }
 
         return isFeeding;
@@ -69,6 +73,8 @@ public class feeder_v1 {
             if (!isFeeding) {
                 feeder.setPosition(0);
             }
+        } else if (!isShooting) {
+            feeder.setPosition(0);
         }
     }
     public int compteurBalles(int nbeBallesIn, boolean isFeeding, boolean isShooting){

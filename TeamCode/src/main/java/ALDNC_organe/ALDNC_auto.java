@@ -42,7 +42,7 @@ public class ALDNC_auto extends LinearOpMode {
 
 
         vision = new vision_opencv(hardwareMap);
-        Apriltag_reader aprilJoke = new Apriltag_reader(hardwareMap);
+        Apriltag_reader aprilJoke = new Apriltag_reader();
         shooter Shooter = new shooter(shooter);
         feeder_v1 Feeder = new feeder_v1(feeder);
         jambes Chassis = new jambes(left_motor, right_motor);

@@ -48,7 +48,7 @@ public class ALDNC_brain extends LinearOpMode {
 
     static ModeRobot robot = ModeRobot.Manuel;
     static Pos_Balle balle = Pos_Balle.non_detected;
-    AprilTagProcessor aprilJoke = new Apriltag_reader(hardwareMap);
+    Apriltag_reader aprilJoke = new Apriltag_reader();
     Vrai_vision objectProcessor = new Vrai_vision();
 
     VisionPortal visionPortal = new VisionPortal.Builder()
@@ -116,6 +116,7 @@ public class ALDNC_brain extends LinearOpMode {
                     visionPortal.setProcessorEnabled(objectProcessor, true);
                     break;
             }
+            
 
             //camera
             /*if (vision.isObjectDetected()) {
@@ -233,36 +234,7 @@ public class ALDNC_brain extends LinearOpMode {
             telemetry.update();
           }
         }
-    public AprilTagDetection getClosestApril() {
-        List<AprilTagDetection> detections = aprilJoke.getDetections();
-        if (detections.isEmpty()) {
-            return null;
-        }
-        AprilTagDetection tag = detections.get(0);
-        double minDistance = tag.ftcPose.z;
 
-        for (AprilTagDetection i : detections){
-            if (i.ftcPose.z < minDistance) {
-                minDistance = i.ftcPose.z;
-                tag = i;
-            }
-        }
-
-        return tag;
-    }
-
-    public AprilTagDetection getAprilTagById(int wantedId) {
-        for (AprilTagDetection detection : aprilJoke.getDetections()) {
-            if (detection.id == wantedId) {
-                return detection;
-            }
-        }
-        return null;
-    }
-
-    public AprilTagDetection getBestAprilTag(Integer priorityId) {
-        return  priorityId != null ? getAprilTagById(priorityId) : getClosestApril();
-    }
     }
 
 

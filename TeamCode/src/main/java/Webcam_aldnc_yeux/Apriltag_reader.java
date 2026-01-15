@@ -18,7 +18,7 @@ public class Apriltag_reader extends AprilTagProcessor {
 
     public static AprilTagProcessor aprilTag ;
 
-    public Apriltag_reader(HardwareMap hardwareMap) {
+    public Apriltag_reader() {
 
          aprilTag = new AprilTagProcessor.Builder()
                 .setDrawTagID(true)

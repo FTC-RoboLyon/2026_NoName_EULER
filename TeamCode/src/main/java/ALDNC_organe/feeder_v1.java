@@ -73,7 +73,7 @@ public class feeder_v1 {
             if (!isFeeding) {
                 feeder.setPosition(0);
             }
-        } else if (!isShooting) {
+        } else {
             feeder.setPosition(0);
         }
     }

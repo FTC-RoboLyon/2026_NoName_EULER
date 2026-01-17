@@ -13,54 +13,59 @@ public class feeder_v1 {
     }
 
     private final ElapsedTime timer = new ElapsedTime();
-    private int b = 0;
+    private boolean b = false;
     private int e = 0;
     int a = 0;
+    int vIsShooting = 0;
     enum Etats { rien, monter, descendre };
     Etats state = Etats.rien;
 
 
     public boolean feederPara(boolean x_was_pressed, boolean isFeeding, boolean isShooting) {
-        if(isShooting) {
             if (x_was_pressed) {
-                b = 1;
+                b = !b;
             }
-            if (b == 1) {
-                switch (state) {
-                    case rien:
-                        if (e < 3) {
-                            state = Etats.monter;
-                            timer.reset();
-                        } else if (e == 3) {
-                            b = 0;
+            if(isShooting){
+                vIsShooting = 0;
+                if (b) {
+                    switch (state) {
+                        case rien:
+                            if (e < 3) {
+                                state = Etats.monter;
+                                timer.reset();
+                            } else if (e == 3) {
+                                b = false;
+                                isFeeding = false;
+                            }
+                            break;
+
+                        case monter:
+                            isFeeding = true;
+                            if (timer.milliseconds() >= 100) {
+                                state = Etats.descendre;
+                                timer.reset();
+                            }
+                            break;
+
+                        case descendre:
                             isFeeding = false;
-                        }
-                        break;
+                            if (timer.milliseconds() >= 1000) {
+                                state = Etats.rien;
+                                e += 1;
+                            }
+                            break;
+                    }
+                if(!b) {
+                    e = 0;
+                    state = Etats.rien;
 
-                    case monter:
-                        isFeeding = true;
-                        if (timer.milliseconds() >= 100) {
-                            state = Etats.descendre;
-                            timer.reset();
-                        }
-                        break;
-
-                    case descendre:
-                        isFeeding = false;
-                        if (timer.milliseconds() >= 1000) {
-                            state = Etats.rien;
-                            e += 1;
-                        }
-                        break;
                 }
-            } else if (b == 0) {
+            } else if (!isShooting && vIsShooting == 0) {
+                vIsShooting = 1;
+                b = false;
                 e = 0;
-
+                state = Etats.rien;
             }
-        } else if (!isShooting) {
-            b = 0;
-            e = 0;
-            state = Etats.rien;
         }
 
         return isFeeding;

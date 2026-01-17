@@ -32,11 +32,6 @@ import Webcam_aldnc_yeux.vision_opencv;
 @TeleOp(name = "ALDNC_brain", group = "Euler")
 public class ALDNC_brain extends LinearOpMode {
 
-    private IMU imu;
-    private VoltageSensor ControlHub_VoltageSensor;
-
-    vision_opencv vision;
-
     enum ModeRobot {Manuel, ChercheBalle, place_shoot}
     enum Pos_Balle {gauche, centre, droite, non_detected}
 
@@ -44,18 +39,25 @@ public class ALDNC_brain extends LinearOpMode {
         APRILTAG,
         OBJECT_TRACKING
     }
+    enum alliance {
+        Red,
+        Blue,
+        Teleop
+
+    }
+    private alliance selectauto = alliance.Teleop;
     private VisionMode visionMode = VisionMode.APRILTAG;
 
     static ModeRobot robot = ModeRobot.Manuel;
     static Pos_Balle balle = Pos_Balle.non_detected;
+<<<<<<< HEAD
+=======
     Apriltag_reader aprilJoke = new Apriltag_reader();
     Vrai_vision objectProcessor = new Vrai_vision();
+>>>>>>> fcd532dd6785eb74ec7b29f1558f1765db6e5a94
 
-    VisionPortal visionPortal = new VisionPortal.Builder()
-            .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-            .addProcessor(aprilJoke)
-            .addProcessor(objectProcessor)
-            .build();
+
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -65,8 +67,8 @@ public class ALDNC_brain extends LinearOpMode {
         DcMotor shooter = hardwareMap.get(DcMotor.class, SHOOTER);
         Servo feeder = hardwareMap.get(Servo.class, FEEDER);
         Servo viseur = hardwareMap.get(Servo.class, VISEUR);
-        imu = hardwareMap.get(IMU.class, "imu");
-        ControlHub_VoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
+        IMU imu = hardwareMap.get(IMU.class, "imu");
+        VoltageSensor controlHub_VoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
         DistanceSensor compteurBalle = hardwareMap.get(DistanceSensor.class, COMPTEUR_BALLE);
 
 
@@ -75,17 +77,25 @@ public class ALDNC_brain extends LinearOpMode {
         jambes Chassis = new jambes(left_motor, right_motor);
         bouche_intake Intake = new bouche_intake(intake);
         viseur Volet = new viseur(viseur);
+        Apriltag_reader aprilJoke = new Apriltag_reader();
+        Vrai_vision objectProcessor = new Vrai_vision();
+        VisionPortal visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .addProcessor(aprilJoke)
+                .addProcessor(objectProcessor)
+                .build();
 
 
         double Power_bank = 0.5;
+        double Power_mid = 0.75;
         double Power_far = 1;
-        double PowerShooter = Power_far;
+        double PowerShooter = Power_bank;
         double robotOrienDegrees;
         double real_velo = 0;
         float forward;
         float turn;
         double seuil_shootter = 12;
-        double voltage = ControlHub_VoltageSensor.getVoltage();
+        double voltage = controlHub_VoltageSensor.getVoltage();
         feeder.setPosition(0);
         PowerShooter = (PowerShooter * seuil_shootter) / voltage;
         Power_bank = (Power_bank * seuil_shootter) / voltage;
@@ -102,6 +112,7 @@ public class ALDNC_brain extends LinearOpMode {
         AprilTagDetection actual_april = null;
 
 
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -116,7 +127,11 @@ public class ALDNC_brain extends LinearOpMode {
                     visionPortal.setProcessorEnabled(objectProcessor, true);
                     break;
             }
+<<<<<<< HEAD
+            actual_april = aprilJoke.getBestAprilTag(null);
+=======
             
+>>>>>>> fcd532dd6785eb74ec7b29f1558f1765db6e5a94
 
             //camera
             /*if (vision.isObjectDetected()) {
@@ -151,6 +166,10 @@ public class ALDNC_brain extends LinearOpMode {
             forward = -gamepad1.left_stick_y;
             float valueLeftMotor = forward + turn;
             float valueRightMotor = forward - turn;
+            if(isShooting){
+                valueRightMotor /= 2;
+                valueLeftMotor /= 2;
+            }
             Chassis.drive(valueLeftMotor, valueRightMotor);
 
             //intake
@@ -167,12 +186,22 @@ public class ALDNC_brain extends LinearOpMode {
             if(gamepad1.rightBumperWasPressed()){
                 isShooting = !isShooting;
             }
+
+
             Shooter.shooter(isShooting,
                     PowerShooter,
-                    gamepad1.left_trigger,
+                    gamepad1.left_trigger);
+
+
+            PowerShooter = Shooter.regleurPuissanceShooter(PowerShooter,
+                    gamepad2.dpad_up,
+                    gamepad2.dpad_down,
+                    gamepad2.dpad_left,
+                    gamepad2.dpad_right,
                     gamepad1.bWasPressed(),
                     gamepad1.yWasPressed(),
-                    Power_bank,
+                    gamepad1.aWasPressed(),
+                    Power_bank, Power_mid,
                     Power_far);
 
 
@@ -223,6 +252,7 @@ public class ALDNC_brain extends LinearOpMode {
             telemetry.addData("distance", distance);
             //telemetry.addData("objet detécté",vision.isObjectDetected() );
             telemetry.addLine(isShooting ? "Shooter allumé" : "Shooter éteint");
+            telemetry.addData("puissance", PowerShooter);
 
             if (actual_april != null) {
                 telemetry.addData("ID de l'april", actual_april.id);
@@ -235,6 +265,10 @@ public class ALDNC_brain extends LinearOpMode {
           }
         }
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> fcd532dd6785eb74ec7b29f1558f1765db6e5a94
     }
 
 

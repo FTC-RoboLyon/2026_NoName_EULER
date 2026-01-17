@@ -66,6 +66,14 @@ public class feeder_v1 {
                 e = 0;
                 state = Etats.rien;
             }
+<<<<<<< HEAD
+=======
+
+         if(!isShooting){
+            b = 0;
+            e = 0;
+            state = Etats.rien;
+>>>>>>> 1f55af6f632709722060780a376f13024b935adb
         }
 
         return isFeeding;

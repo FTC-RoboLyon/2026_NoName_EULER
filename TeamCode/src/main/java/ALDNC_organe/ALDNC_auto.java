@@ -76,9 +76,26 @@ public class ALDNC_auto extends LinearOpMode {
         while (timer.milliseconds() < 5000) {
             Shooter.shooter(isshooting,
                     PowerShooter,
-                    leftTrigger);
+                    false);
             isFeeding = Feeder.feederPara(true, isFeeding, isshooting);
-            Feeder.feeder(isFeeding, isshooting);
+            Feeder.feed(isFeeding, isshooting);
+        }
+        timer.reset();
+        while (timer.milliseconds() < 5000){
+            Chassis.backward();
+        }
+        timer.reset();
+        while (timer.milliseconds() < 3000){
+            if (selectauto == alliance.AutoRed){
+                Chassis.turn_horaire();
+            }
+            else {
+                Chassis.turn_antihoraire();
+            }
+        }
+        timer.reset();
+        while (timer.milliseconds() < 2000){
+            Chassis.backward();
         }
         
 

@@ -1,9 +1,8 @@
 package ALDNC_organe;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
+
 
 public class shooter {
 
@@ -21,8 +20,8 @@ public class shooter {
     }
 
 
-    public void shooter(boolean shoot, double PowerShooter, float left_trigger) {
-        if (left_trigger > 0.3){
+    public void shooter(boolean shoot, double PowerShooter, boolean left_trigger) {
+        if (left_trigger){
             shooter.setPower(-0.3);
         }
         shooter.setPower(shoot ? PowerShooter:0);

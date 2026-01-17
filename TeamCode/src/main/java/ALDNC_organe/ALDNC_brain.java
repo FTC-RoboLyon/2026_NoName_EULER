@@ -50,11 +50,9 @@ public class ALDNC_brain extends LinearOpMode {
 
     static ModeRobot robot = ModeRobot.Manuel;
     static Pos_Balle balle = Pos_Balle.non_detected;
-<<<<<<< HEAD
-=======
+
     Apriltag_reader aprilJoke = new Apriltag_reader();
     Vrai_vision objectProcessor = new Vrai_vision();
->>>>>>> fcd532dd6785eb74ec7b29f1558f1765db6e5a94
 
 
 
@@ -109,6 +107,7 @@ public class ALDNC_brain extends LinearOpMode {
         int a = 0;
         int b = 0;
         boolean left_trigger = false;
+        boolean leftrig;
         AprilTagDetection actual_april = null;
 
 
@@ -127,11 +126,9 @@ public class ALDNC_brain extends LinearOpMode {
                     visionPortal.setProcessorEnabled(objectProcessor, true);
                     break;
             }
-<<<<<<< HEAD
+
             actual_april = aprilJoke.getBestAprilTag(null);
-=======
-            
->>>>>>> fcd532dd6785eb74ec7b29f1558f1765db6e5a94
+
 
             //camera
             /*if (vision.isObjectDetected()) {
@@ -186,11 +183,12 @@ public class ALDNC_brain extends LinearOpMode {
             if(gamepad1.rightBumperWasPressed()){
                 isShooting = !isShooting;
             }
+            leftrig = gamepad1.right_trigger > 0.3;
 
 
             Shooter.shooter(isShooting,
                     PowerShooter,
-                    gamepad1.left_trigger);
+                    leftrig);
 
 
             PowerShooter = Shooter.regleurPuissanceShooter(PowerShooter,
@@ -216,7 +214,7 @@ public class ALDNC_brain extends LinearOpMode {
             //feeder
 
             isFeeding = Feeder.feederPara(gamepad1.xWasPressed(), isFeeding, isShooting);
-            Feeder.feeder(isFeeding, isShooting);
+            Feeder.feed(isFeeding, isShooting);
 
 
                 /*case ChercheBalle:
@@ -253,6 +251,7 @@ public class ALDNC_brain extends LinearOpMode {
             //telemetry.addData("objet detécté",vision.isObjectDetected() );
             telemetry.addLine(isShooting ? "Shooter allumé" : "Shooter éteint");
             telemetry.addData("puissance", PowerShooter);
+            telemetry.addData("posfeed", Feeder.getposition());
 
             if (actual_april != null) {
                 telemetry.addData("ID de l'april", actual_april.id);
@@ -265,10 +264,7 @@ public class ALDNC_brain extends LinearOpMode {
           }
         }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> fcd532dd6785eb74ec7b29f1558f1765db6e5a94
     }
 
 

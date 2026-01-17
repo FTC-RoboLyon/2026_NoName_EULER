@@ -9,7 +9,6 @@ public class feeder_v1 {
 
     public feeder_v1 (Servo feeder){
         this.feeder = feeder;
-        this.feeder.setPosition(0.02);
     }
 
     private final ElapsedTime timer = new ElapsedTime();
@@ -20,42 +19,44 @@ public class feeder_v1 {
     enum Etats { rien, monter, descendre };
     Etats state = Etats.rien;
 
+    public double getposition(){return feeder.getPosition();}
+
 
     public boolean feederPara(boolean x_was_pressed, boolean isFeeding, boolean isShooting) {
-            if (x_was_pressed) {
-                b = !b;
-            }
-            if(isShooting){
-                vIsShooting = 0;
-                if (b) {
-                    switch (state) {
-                        case rien:
-                            if (e < 3) {
-                                state = Etats.monter;
-                                timer.reset();
-                            } else if (e == 3) {
-                                b = false;
-                                isFeeding = false;
-                            }
-                            break;
-
-                        case monter:
-                            isFeeding = true;
-                            if (timer.milliseconds() >= 100) {
-                                state = Etats.descendre;
-                                timer.reset();
-                            }
-                            break;
-
-                        case descendre:
+        if (x_was_pressed) {
+            b = !b;
+        }
+        if (isShooting) {
+            vIsShooting = 0;
+            if (b) {
+                switch (state) {
+                    case rien:
+                        if (e < 3) {
+                            state = Etats.monter;
+                            timer.reset();
+                        } else if (e == 3) {
+                            b = false;
                             isFeeding = false;
-                            if (timer.milliseconds() >= 1000) {
-                                state = Etats.rien;
-                                e += 1;
-                            }
-                            break;
-                    }
-                if(!b) {
+                        }
+                        break;
+
+                    case monter:
+                        isFeeding = true;
+                        if (timer.milliseconds() >= 100) {
+                            state = Etats.descendre;
+                            timer.reset();
+                        }
+                        break;
+
+                    case descendre:
+                        isFeeding = false;
+                        if (timer.milliseconds() >= 1000) {
+                            state = Etats.rien;
+                            e += 1;
+                        }
+                        break;
+                }
+                if (!b) {
                     e = 0;
                     state = Etats.rien;
 
@@ -66,36 +67,35 @@ public class feeder_v1 {
                 e = 0;
                 state = Etats.rien;
             }
-<<<<<<< HEAD
-=======
 
-         if(!isShooting){
-            b = 0;
-            e = 0;
-            state = Etats.rien;
->>>>>>> 1f55af6f632709722060780a376f13024b935adb
+            if (!isShooting) {
+                b = false;
+                e = 0;
+                state = Etats.rien;
+            }
+
+
         }
-
         return isFeeding;
     }
-    public void feeder (boolean isFeeding, boolean isShooting){
-        if(isShooting) {
-            if (isFeeding) {
+    public void feed(boolean isfeeding, boolean isshooting){
+        if(isshooting) {
+            if (isfeeding) {
                 feeder.setPosition(0.2);
             }
-            if (!isFeeding) {
+            if (!isfeeding) {
                 feeder.setPosition(0);
             }
         } else {
             feeder.setPosition(0);
         }
     }
-    public int compteurBalles(int nbeBallesIn, boolean isFeeding, boolean isShooting){
-        if(isShooting) {
-            if (a == 0 && isFeeding) {
+    public int compteurBalles(int nbeBallesIn, boolean isFEeding, boolean isSHooting){
+        if(isSHooting) {
+            if (a == 0 && isFEeding) {
                 a = 1;
             }
-            if (a == 1 && !isFeeding) {
+            if (a == 1 && !isFEeding) {
                 nbeBallesIn -= 1;
                 a = 0;
             }

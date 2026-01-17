@@ -22,10 +22,6 @@ public class feeder_v1 {
 
 
     public boolean feederPara(boolean x_was_pressed, boolean isFeeding, boolean isShooting) {
-<<<<<<< HEAD
-
-=======
->>>>>>> 5a24c03eb983b3b7d06e4c14db6d7cf6eb09f1c0
             if (x_was_pressed) {
                 b = !b;
             }
@@ -70,13 +66,11 @@ public class feeder_v1 {
                 e = 0;
                 state = Etats.rien;
             }
-<<<<<<< HEAD
+
          if(!isShooting){
             b = 0;
             e = 0;
             state = Etats.rien;
-=======
->>>>>>> 5a24c03eb983b3b7d06e4c14db6d7cf6eb09f1c0
         }
 
         return isFeeding;

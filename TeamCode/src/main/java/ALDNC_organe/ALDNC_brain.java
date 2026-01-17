@@ -50,6 +50,11 @@ public class ALDNC_brain extends LinearOpMode {
 
     static ModeRobot robot = ModeRobot.Manuel;
     static Pos_Balle balle = Pos_Balle.non_detected;
+<<<<<<< HEAD
+=======
+    Apriltag_reader aprilJoke = new Apriltag_reader();
+    Vrai_vision objectProcessor = new Vrai_vision();
+>>>>>>> fcd532dd6785eb74ec7b29f1558f1765db6e5a94
 
 
 
@@ -122,7 +127,11 @@ public class ALDNC_brain extends LinearOpMode {
                     visionPortal.setProcessorEnabled(objectProcessor, true);
                     break;
             }
+<<<<<<< HEAD
             actual_april = aprilJoke.getBestAprilTag(null);
+=======
+            
+>>>>>>> fcd532dd6785eb74ec7b29f1558f1765db6e5a94
 
             //camera
             /*if (vision.isObjectDetected()) {
@@ -256,7 +265,10 @@ public class ALDNC_brain extends LinearOpMode {
           }
         }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> fcd532dd6785eb74ec7b29f1558f1765db6e5a94
     }
 
 

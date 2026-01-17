@@ -21,12 +21,7 @@ public class shooter {
     }
 
 
-    public void shooter(boolean shoot, double PowerShooter, float left_trigger, boolean b_wrp, boolean y_wrp, double Power_bank, double Power_far) {
-        if (b_wrp) {
-            PowerShooter = Power_bank;
-        } else if (y_wrp) {
-            PowerShooter = Power_far;
-        }
+    public void shooter(boolean shoot, double PowerShooter, float left_trigger) {
         if (left_trigger > 0.3){
             shooter.setPower(-0.3);
         }
@@ -35,12 +30,25 @@ public class shooter {
     }
 
 
-    public double regleurPuissanceShooter(double velocityShooter, boolean fleche_haut, boolean fleche_bas) {
+    public double regleurPuissanceShooter(double velocityShooter, boolean fleche_haut, boolean fleche_bas,
+                                          boolean fleche_gauche, boolean fleche_droite, boolean bwp, boolean ywp, boolean awp, double puissance_bank,
+                                          double puissance_mid, double puissance_far) {
         if (fleche_haut) {
-            velocityShooter += 100;
-        } else if (fleche_bas) {
-            velocityShooter -= 100;
+            velocityShooter += 0.01;
+        } if (fleche_bas) {
+            velocityShooter -= 0.01;
+        } if (fleche_gauche) {
+            velocityShooter -= 0.01;
+        } if (fleche_droite) {
+            velocityShooter += 0.01;
+        } if (bwp) {
+            velocityShooter = puissance_bank;
+        } if (ywp) {
+            velocityShooter = puissance_mid;
+        } if (awp){
+            velocityShooter = puissance_far;
         }
+
         return velocityShooter;
     }
 

@@ -21,7 +21,7 @@ public class feeder_v1 {
 
 
     public boolean feederPara(boolean x_was_pressed, boolean isFeeding, boolean isShooting) {
-        if(isShooting) {
+
             if (x_was_pressed) {
                 b = 1;
             }
@@ -57,7 +57,7 @@ public class feeder_v1 {
                 e = 0;
 
             }
-        } else if (!isShooting) {
+         if(!isShooting){
             b = 0;
             e = 0;
             state = Etats.rien;

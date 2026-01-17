@@ -82,8 +82,9 @@ public class ALDNC_brain extends LinearOpMode {
 
 
         double Power_bank = 0.5;
+        double Power_mid = 0.75;
         double Power_far = 1;
-        double PowerShooter = Power_far;
+        double PowerShooter = Power_bank;
         double robotOrienDegrees;
         double real_velo = 0;
         float forward;
@@ -105,9 +106,6 @@ public class ALDNC_brain extends LinearOpMode {
         boolean left_trigger = false;
         AprilTagDetection actual_april = null;
 
-        while (opModeInInit()){
-            selecAuto(selectauto, gamepad2.leftBumperWasPressed());
-        }
 
 
         telemetry.addData("Status", "Initialized");
@@ -124,7 +122,7 @@ public class ALDNC_brain extends LinearOpMode {
                     visionPortal.setProcessorEnabled(objectProcessor, true);
                     break;
             }
-
+            actual_april = aprilJoke.getBestAprilTag(null);
 
             //camera
             /*if (vision.isObjectDetected()) {
@@ -183,10 +181,18 @@ public class ALDNC_brain extends LinearOpMode {
 
             Shooter.shooter(isShooting,
                     PowerShooter,
-                    gamepad1.left_trigger,
+                    gamepad1.left_trigger);
+
+
+            PowerShooter = Shooter.regleurPuissanceShooter(PowerShooter,
+                    gamepad2.dpad_up,
+                    gamepad2.dpad_down,
+                    gamepad2.dpad_left,
+                    gamepad2.dpad_right,
                     gamepad1.bWasPressed(),
                     gamepad1.yWasPressed(),
-                    Power_bank,
+                    gamepad1.aWasPressed(),
+                    Power_bank, Power_mid,
                     Power_far);
 
 
@@ -237,6 +243,7 @@ public class ALDNC_brain extends LinearOpMode {
             telemetry.addData("distance", distance);
             //telemetry.addData("objet detécté",vision.isObjectDetected() );
             telemetry.addLine(isShooting ? "Shooter allumé" : "Shooter éteint");
+            telemetry.addData("puissance", PowerShooter);
 
             if (actual_april != null) {
                 telemetry.addData("ID de l'april", actual_april.id);
@@ -248,20 +255,7 @@ public class ALDNC_brain extends LinearOpMode {
             telemetry.update();
           }
         }
-        public alliance selecAuto (alliance selectauto, boolean change){
-           if (change) {
-               if (selectauto == alliance.Teleop) {
-                   selectauto = alliance.Red;
-               }
-               else if (selectauto == alliance.Red) {
-                   selectauto = alliance.Blue;
-               }
-               else if (selectauto == alliance.Blue) {
-                   selectauto = alliance.Teleop;
-               }
-           }
-            return selectauto;
-        }
+
 
     }
 

@@ -12,7 +12,7 @@ public class viseur {
     }
     double posviseur = 0.6;
     double posviseur_bank = 0.6;
-    double posviseur_far = 0.37;
+    double posviseur_far = 0.42;
     double posviseur_mid = 0.47;
 
     public void viseur(boolean a, boolean b, boolean y, boolean FG2, boolean FD2) {

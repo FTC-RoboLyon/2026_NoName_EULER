@@ -8,26 +8,31 @@ import static ALDNC_organe.Constant.RIGHT_MOTOR;
 import static ALDNC_organe.Constant.SHOOTER;
 import static ALDNC_organe.Constant.VISEUR;
 
+import android.annotation.SuppressLint;
+import android.util.Size;
+
+import com.arcrobotics.ftclib.controller.PController;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import com.arcrobotics.ftclib.controller.PIDFController;
 
-import java.util.List;
 
 import Webcam_aldnc_yeux.Apriltag_reader;
 import Webcam_aldnc_yeux.Vrai_vision;
-import Webcam_aldnc_yeux.vision_opencv;
 
 @TeleOp(name = "ALDNC_brain", group = "Euler")
 public class ALDNC_brain extends LinearOpMode {
@@ -45,8 +50,8 @@ public class ALDNC_brain extends LinearOpMode {
         Teleop
 
     }
-    private alliance selectauto = alliance.Teleop;
-    private VisionMode visionMode = VisionMode.APRILTAG;
+    private final alliance selectauto = alliance.Teleop;
+    private final VisionMode visionMode = VisionMode.APRILTAG;
 
     static ModeRobot robot = ModeRobot.Manuel;
     static Pos_Balle balle = Pos_Balle.non_detected;
@@ -57,12 +62,13 @@ public class ALDNC_brain extends LinearOpMode {
 
 
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void runOpMode() throws InterruptedException {
         DcMotor left_motor = hardwareMap.get(DcMotor.class, LEFT_MOTOR);
         DcMotor right_motor = hardwareMap.get(DcMotor.class, RIGHT_MOTOR);
         DcMotor intake = hardwareMap.get(DcMotor.class, INTAKE);
-        DcMotor shooter = hardwareMap.get(DcMotor.class, SHOOTER);
+        DcMotorEx shooter = hardwareMap.get(DcMotorEx.class, SHOOTER);
         Servo feeder = hardwareMap.get(Servo.class, FEEDER);
         Servo viseur = hardwareMap.get(Servo.class, VISEUR);
         IMU imu = hardwareMap.get(IMU.class, "imu");
@@ -81,23 +87,33 @@ public class ALDNC_brain extends LinearOpMode {
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .addProcessor(aprilJoke)
                 .addProcessor(objectProcessor)
+                .setCameraResolution(new Size(1920, 1080))
+                .setStreamFormat(VisionPortal.StreamFormat.YUY2)
+                .setAutoStopLiveView(false)
                 .build();
 
 
-        double Power_bank = 0.5;
-        double Power_mid = 0.75;
-        double Power_far = 1;
-        double PowerShooter = Power_bank;
+        IMU.Parameters imu_parameters;
+        imu_parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.xyzOrientation(0, 0, 90)));
+        imu.initialize(imu_parameters);
+        imu.resetYaw();
+
+
+        double Power_bankMid = 0.41;
+        double powerMid = 0.56;
+        double Power_far = 0.7;
+        double PowerShooter = Power_bankMid;
         double robotOrienDegrees;
         double real_velo = 0;
         float forward;
         float turn;
-        double seuil_shootter = 12;
+        double seuil_shootter = 12.3;
         double voltage = controlHub_VoltageSensor.getVoltage();
         feeder.setPosition(0);
-        PowerShooter = (PowerShooter * seuil_shootter) / voltage;
-        Power_bank = (Power_bank * seuil_shootter) / voltage;
-        Power_far = (Power_far * seuil_shootter) / voltage;
+        //PowerShooter = (PowerShooter * seuil_shootter) / voltage;
+        //Power_bankMid = (Power_bankMid * seuil_shootter) / voltage;
+        //powerMid = (Power_bankMid * seuil_shootter) / voltage;
+        //Power_far = (Power_far * seuil_shootter) / voltage;
         double distance = compteurBalle.getDistance(DistanceUnit.CM);
         boolean isIntaking = false;
         boolean isShooting = false;
@@ -109,6 +125,13 @@ public class ALDNC_brain extends LinearOpMode {
         boolean left_trigger = false;
         boolean leftrig;
         AprilTagDetection actual_april = null;
+        double kP = 0;
+        double kI = 0;
+        double kD = 0;
+        double kF = 0;
+        PIDFController shoot_PIDF = new PIDFController(kP, kI, kD, kF);
+        double Output;
+
 
 
 
@@ -128,6 +151,8 @@ public class ALDNC_brain extends LinearOpMode {
             }
 
             actual_april = aprilJoke.getBestAprilTag(null);
+
+            robotOrienDegrees = imu.getRobotYawPitchRollAngles().getYaw();
 
 
             //camera
@@ -183,10 +208,10 @@ public class ALDNC_brain extends LinearOpMode {
             if(gamepad1.rightBumperWasPressed()){
                 isShooting = !isShooting;
             }
-            leftrig = gamepad1.right_trigger > 0.3;
+            leftrig = gamepad1.right_trigger > 0.1;
 
 
-            Shooter.shooter(isShooting,
+            Shooter.Shooter(isShooting,
                     PowerShooter,
                     leftrig);
 
@@ -197,9 +222,10 @@ public class ALDNC_brain extends LinearOpMode {
                     gamepad2.dpad_left,
                     gamepad2.dpad_right,
                     gamepad1.bWasPressed(),
-                    gamepad1.yWasPressed(),
                     gamepad1.aWasPressed(),
-                    Power_bank, Power_mid,
+                    gamepad1.yWasPressed(),
+                    Power_bankMid,
+                    powerMid,
                     Power_far);
 
 
@@ -213,8 +239,8 @@ public class ALDNC_brain extends LinearOpMode {
 
             //feeder
 
-            isFeeding = Feeder.feederPara(gamepad1.xWasPressed(), isFeeding, isShooting);
-            Feeder.feed(isFeeding, isShooting);
+
+            Feeder.FEEEder(gamepad1.xWasPressed(), gamepad1.xWasReleased());
 
 
                 /*case ChercheBalle:
@@ -238,30 +264,35 @@ public class ALDNC_brain extends LinearOpMode {
                     }
                     break;*/
 
-
-            real_velo = ((DcMotorEx) shooter).getVelocity();
             distance = compteurBalle.getDistance(DistanceUnit.CM);
-            telemetry.addData("Velocité programmé Shooter =", PowerShooter);
-            telemetry.addData("Vrai vélocité Shooter =", real_velo);
+            telemetry.addData("Puissance programmé Shooter =", PowerShooter);
+            telemetry.addData("Vrai vélocité Shooter =", shooter.getVelocity());
+            telemetry.addData("vrai puissance shooter", Shooter.getpower());
             telemetry.addData("Position Viseur ", viseur.getPosition());
+            telemetry.addData("posfeed", Feeder.getposition());
             telemetry.addData("Distance", compteurBalle.getDistance(DistanceUnit.CM));
-            telemetry.addData("is intaking", isIntaking);
-            telemetry.addData("Nbe Balles Inside Bot = ", nbeBallesIn);
-            telemetry.addData("distance", distance);
             //telemetry.addData("objet detécté",vision.isObjectDetected() );
             telemetry.addLine(isShooting ? "Shooter allumé" : "Shooter éteint");
-            telemetry.addData("puissance", PowerShooter);
-            telemetry.addData("posfeed", Feeder.getposition());
 
-            if (actual_april != null) {
-                telemetry.addData("ID de l'april", actual_april.id);
-                telemetry.addData("décalage gauche-droite a l'april", actual_april.ftcPose.x);
-                telemetry.addData("Hauteur a l'april", actual_april.ftcPose.y);
-                telemetry.addData("distance a l'april", actual_april.ftcPose.z);
-                telemetry.addData("orientation a l'april", actual_april.ftcPose.yaw);
+
+
+            if (actual_april.metadata != null) {
+                telemetry.addLine(String.format("\n==== (ID %d) %s", actual_april.id, actual_april.metadata.name));
+                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", actual_april.ftcPose.x, actual_april.ftcPose.y, actual_april.ftcPose.z));
+                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", actual_april.ftcPose.pitch, actual_april.ftcPose.roll, actual_april.ftcPose.yaw));
+                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", actual_april.ftcPose.range, actual_april.ftcPose.bearing, actual_april.ftcPose.elevation));
+                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
+                        actual_april.robotPose.getPosition().x,
+                        actual_april.robotPose.getPosition().y,
+                        actual_april.robotPose.getPosition().z));
+                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)",
+                        actual_april.robotPose.getOrientation().getPitch(AngleUnit.DEGREES),
+                        actual_april.robotPose.getOrientation().getRoll(AngleUnit.DEGREES),
+                        actual_april.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
             } else telemetry.addLine("aucun apriltag détécté");
             telemetry.update();
           }
+        visionPortal.close();
         }
 
 

@@ -1,5 +1,6 @@
 package ALDNC_organe;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import static ALDNC_organe.Constant.COMPTEUR_BALLE;
@@ -11,6 +12,7 @@ import static ALDNC_organe.Constant.SHOOTER;
 import static ALDNC_organe.Constant.VISEUR;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -38,12 +40,18 @@ public class ALDNC_auto extends LinearOpMode {
         DcMotor left_motor = hardwareMap.get(DcMotor.class, LEFT_MOTOR);
         DcMotor right_motor = hardwareMap.get(DcMotor.class, RIGHT_MOTOR);
         DcMotor intake = hardwareMap.get(DcMotor.class, INTAKE);
-        DcMotor shooter = hardwareMap.get(DcMotor.class, SHOOTER);
+        DcMotorEx shooter = hardwareMap.get(DcMotorEx.class, SHOOTER);
         Servo feeder = hardwareMap.get(Servo.class, FEEDER);
         Servo viseur = hardwareMap.get(Servo.class, VISEUR);
         IMU imu = hardwareMap.get(IMU.class, "imu");
         VoltageSensor controlHub_VoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
         DistanceSensor compteurBalle = hardwareMap.get(DistanceSensor.class, COMPTEUR_BALLE);
+
+        IMU.Parameters imu_parameters;
+        imu_parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.xyzOrientation(0, 0, 90)));
+        imu.initialize(imu_parameters);
+        imu.resetYaw();
+
 
 
         vision = new vision_opencv(hardwareMap);
@@ -54,6 +62,7 @@ public class ALDNC_auto extends LinearOpMode {
         bouche_intake Intake = new bouche_intake(intake);
         viseur Volet = new viseur(viseur);
 
+        double robotOrienDegrees = 0;
         boolean isshooting = true;
         boolean isFeeding = false;
         double posviseur = 0.6;
@@ -61,40 +70,51 @@ public class ALDNC_auto extends LinearOpMode {
         double Power_bank = 0.5;
         double posviseur_far = 0.37;
         double Power_far = 1;
-        double PowerShooter = Power_far;
+        double PowerShooter = Power_bank;
         boolean left_trigger = false;
         final ElapsedTime timer = new ElapsedTime();
         int nbBalle = 0;
         boolean b_wpr = false;
         boolean y_wpr = false;
         float leftTrigger = 0;
+        Volet.viseur(false, true, false, false, false);
         while (opModeInInit()){
             selecAuto(selectauto, gamepad2.leftBumperWasPressed());
+            telemetry.addData("Mode", selectauto);
         }
         waitForStart();
         timer.reset();
-        while (timer.milliseconds() < 5000) {
-            Shooter.shooter(isshooting,
+        while (timer.milliseconds() < 3000) {
+            Shooter.Shooter(isshooting,
                     PowerShooter,
                     false);
-            isFeeding = Feeder.feederPara(true, isFeeding, isshooting);
-            Feeder.feed(isFeeding, isshooting);
         }
-        timer.reset();
-        while (timer.milliseconds() < 5000){
-            Chassis.backward();
-        }
-        timer.reset();
-        while (timer.milliseconds() < 3000){
-            if (selectauto == alliance.AutoRed){
-                Chassis.turn_horaire();
+
+        for (int i = 0; i <= 3; i++){
+
+            timer.reset();
+            while (timer.milliseconds()<500){
+                Feeder.FEEEder(true, false);
             }
-            else {
+            timer.reset();
+            while (timer.milliseconds()<100){
+                Feeder.FEEEder(false, true);
+
+            }
+        }
+        timer.reset();
+        while (timer.milliseconds()<300){
+            robotOrienDegrees = imu.getRobotYawPitchRollAngles().getYaw();
+
+            if (selectauto == alliance.AutoRed){
                 Chassis.turn_antihoraire();
             }
+            else {
+                Chassis.turn_horaire();
+            }
         }
         timer.reset();
-        while (timer.milliseconds() < 2000){
+        while (timer.milliseconds() < 500){
             Chassis.backward();
         }
         

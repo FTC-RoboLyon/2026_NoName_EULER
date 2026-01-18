@@ -21,6 +21,14 @@ public class feeder_v1 {
 
     public double getposition(){return feeder.getPosition();}
 
+    public void FEEEder(boolean xwp, boolean xwrl){
+        if (xwp){
+        feeder.setPosition(0.2);
+    } else if (xwrl) {
+            feeder.setPosition(0);
+        }
+    }
+
 
     public boolean feederPara(boolean x_was_pressed, boolean isFeeding, boolean isShooting) {
         if (x_was_pressed) {

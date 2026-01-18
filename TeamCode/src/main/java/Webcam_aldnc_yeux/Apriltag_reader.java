@@ -26,6 +26,7 @@ public class Apriltag_reader extends AprilTagProcessor {
                 .setDrawAxes(true)
                 .setDrawCubeProjection(true)
                 .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
+                 .setLensIntrinsics(1666.94, 1666.94, 930.463, 618.081)
                 .build();
 
 

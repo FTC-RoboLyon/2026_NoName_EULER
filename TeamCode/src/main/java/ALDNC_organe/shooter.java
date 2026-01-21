@@ -18,9 +18,9 @@ public class shooter {
     public static double Velo_far = 3000;
     public static double Aspirer = -0.3;
     public static double VeloShooter = Velo_bank;
-    public static double kp = 25;
-    public static double ki = 0.1;
-    public static double kd = 5;
+    public static double kp = 20;
+    public static double ki = 5;
+    public static double kd = 10;
     public static double kf = 15;
 
     public static boolean isShooting = false;

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class feeder_v1 {
 
     public static Servo feeder;
-    public static double PosFeed = 0.3;
+    public static double PosFeed = 0.4;
     public static double PosRepos = 0.10;
     private final ElapsedTime timer = new ElapsedTime();
     private boolean b = false;

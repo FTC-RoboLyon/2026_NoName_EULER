@@ -21,7 +21,7 @@ public class shooter {
     public static double kp = 20;
     public static double ki = 5;
     public static double kd = 10;
-    public static double kf = 15;
+    public static double kf = 0;
 
     public static boolean isShooting = false;
 
@@ -40,16 +40,16 @@ public class shooter {
     public double getpower() {return shooter.getPower();}
     public void setPIDFcoefficient(Gamepad gamepad1, Gamepad gamepad2){
         if (gamepad1.dpad_up) {
-            kf += 1;
+            kd += 1;
         }
         if (gamepad1.dpad_down) {
-            kf -= 1;
+            kd -= 1;
         }
         if (gamepad1.dpad_left) {
-            kf -= 0.1;
+            kd -= 0.1;
         }
         if (gamepad1.dpad_right) {
-            kf += 0.1;
+            kd += 0.1;
         }
         if (gamepad2.dpad_up) {
             kp += 1;

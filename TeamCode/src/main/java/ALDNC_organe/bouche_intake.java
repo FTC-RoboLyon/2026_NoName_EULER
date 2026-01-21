@@ -1,16 +1,19 @@
 package ALDNC_organe;
 
+import static ALDNC_organe.Constant.INTAKE;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class bouche_intake {
 
     final DcMotor intake;
     public boolean vIntake = false;
 
-    public bouche_intake (DcMotor intake){
-        this.intake = intake;
-        this.intake.setDirection(DcMotorSimple.Direction.FORWARD);
+    public bouche_intake (HardwareMap hardware){
+        intake = hardware.get(DcMotor.class, INTAKE);
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
     }
     public void intake(boolean left_bumper, double Left_Trig) {
         if (left_bumper) {

@@ -1,16 +1,17 @@
 package ALDNC_organe;
 
+import static ALDNC_organe.Constant.FEEDER;
+
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class feeder_v1 {
 
-    final Servo feeder;
-
-    public feeder_v1 (Servo feeder){
-        this.feeder = feeder;
-    }
-
+    public static Servo feeder;
+    public static double PosFeed = 0.3;
+    public static double PosRepos = 0.10;
     private final ElapsedTime timer = new ElapsedTime();
     private boolean b = false;
     private int e = 0;
@@ -19,13 +20,22 @@ public class feeder_v1 {
     enum Etats { rien, monter, descendre };
     Etats state = Etats.rien;
 
-    public double getposition(){return feeder.getPosition();}
 
-    public void FEEEder(boolean xwp, boolean xwrl){
-        if (xwp){
-        feeder.setPosition(0.2);
-    } else if (xwrl) {
-            feeder.setPosition(0);
+    public feeder_v1 (HardwareMap hardware){
+        feeder = hardware.get(Servo.class, FEEDER);
+        feeder.setPosition(0);
+    }
+
+    public double getposition(){return feeder.getPosition();}
+    public void setPosFeed(){feeder.setPosition(PosFeed);}
+    public void setPosRepos(){feeder.setPosition(PosRepos);}
+    public boolean isPosFeed(){return Math.abs(feeder.getPosition()-PosFeed) <=0.01;}
+
+    public void Feeder(Gamepad gamepad1){
+        if (gamepad1.xWasPressed()){
+        feeder.setPosition(PosFeed);
+    } else if (gamepad1.xWasReleased()) {
+            feeder.setPosition(PosRepos);
         }
     }
 

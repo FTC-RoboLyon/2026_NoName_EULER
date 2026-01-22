@@ -6,7 +6,6 @@ import static ALDNC_organe.Constant.INTAKE;
 import android.annotation.SuppressLint;
 import android.util.Size;
 
-import com.arcrobotics.ftclib.controller.PController;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -156,13 +155,13 @@ public class ALDNC_brain extends LinearOpMode {
             //switch_states(gamepad2.x, gamepad2.y, gamepad2.b);
             //switch (robot) {
             //case Manuel:
-
-
             // Se déplacer
+
+
             turn = gamepad1.right_stick_x;
             forward = -gamepad1.left_stick_y;
-            double valueLeftMotor    = forward + turn ;
-            double valueRightMotor   = forward - turn ;
+            double valueLeftMotor = forward + turn ;
+            double valueRightMotor = forward - turn ;
             if(shooter.isShooting){
                 valueRightMotor /= 2;
                 valueLeftMotor /= 2;

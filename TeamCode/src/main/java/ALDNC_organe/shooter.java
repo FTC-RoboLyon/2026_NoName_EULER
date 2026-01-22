@@ -14,8 +14,8 @@ public class shooter {
 
     final DcMotorEx shooter;
     public static double Velo_bank = 940;
-    public static double Velo_Mid = 2000;
-    public static double Velo_far = 3000;
+    public static double Velo_Mid = 1400;
+    public static double Velo_far = 1800;
     public static double Aspirer = -0.3;
     public static double VeloShooter = Velo_bank;
     public static double kp = 20;
@@ -102,10 +102,10 @@ public class shooter {
                 VeloShooter = Velo_bank;
             }
             if (gamepad1.aWasPressed()) {
-                VeloShooter = Velo_Mid;
+                VeloShooter = Velo_far;
             }
             if (gamepad1.yWasPressed()) {
-                VeloShooter = Velo_far;
+                VeloShooter = Velo_Mid;
             }
             if (gamepad1.right_trigger > 0.1) {
                 shooter.setPower(Aspirer);

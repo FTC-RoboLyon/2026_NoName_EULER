@@ -23,7 +23,7 @@ public class feeder_v1 {
 
     public feeder_v1 (HardwareMap hardware){
         feeder = hardware.get(Servo.class, FEEDER);
-        feeder.setPosition(0);
+        feeder.setPosition(0.10);
     }
 
     public double getposition(){return feeder.getPosition();}

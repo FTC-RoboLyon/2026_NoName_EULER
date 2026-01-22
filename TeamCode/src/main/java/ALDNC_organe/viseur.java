@@ -36,9 +36,9 @@ public class viseur {
             posviseur = posviseur_bank;
         } else if (gamepad1.y) {
             posviseur = posviseur_mid;
-        } else if (gamepad2.rightBumperWasPressed()) {
+        } else if (gamepad2.dpadRightWasPressed()) {
             posviseur += 0.05;
-        } else if (gamepad2.leftBumperWasPressed()){
+        } else if (gamepad2.dpadLeftWasPressed()){
             posviseur -= 0.05;
         }
         viseur.setPosition(posviseur);

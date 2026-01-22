@@ -71,6 +71,8 @@ public class inchallah_brain extends LinearOpMode {
                     gamepad1.right_trigger,
                     gamepad2.dpadLeftWasPressed(),
                     gamepad2.dpadRightWasPressed(),
+                    gamepad2.dpadUpWasPressed(),
+                    gamepad2.dpadDownWasPressed(),
                     gamepad2.aWasPressed(),
                     gamepad2.bWasPressed(),
                     gamepad2.yWasPressed(),

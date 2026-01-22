@@ -31,7 +31,9 @@ public class trouDuFion {
                      boolean rightBumperWpr,
                      double rightTrigger,
                      boolean left_DpadRight,
-                     boolean leeftDpadleft,
+                     boolean right_DpadLeft,
+                     boolean up,
+                     boolean down,
                      boolean deux_aWpr,
                      boolean deux_bWpr,
                      boolean deux_yWpr,
@@ -46,7 +48,16 @@ public class trouDuFion {
             veloFion = veloFionFar;
         }
         if(left_DpadRight){
-            veloFion = veloFion - 100;
+            veloFion = veloFion + 100;
+        }
+        if (right_DpadLeft){
+            veloFion -= 100;
+        }
+        if (up){
+            veloFion += 50;
+        }
+        if (down){
+            veloFion -= 50;
         }
         if(rightBumperWpr){
             isShooting = !isShooting;

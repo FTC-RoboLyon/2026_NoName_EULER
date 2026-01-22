@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -18,13 +17,8 @@ import static inchallah_organe.inchallah.Constant.LEFT_MOTOR;
 import static inchallah_organe.inchallah.Constant.RIGHT_MORTOR;
 import static inchallah_organe.inchallah.Constant.SHOOTER;
 import static inchallah_organe.inchallah.Constant.VISEUR;
-import static inchallah_organe.inchallah.trouDuFion.p;
-import static inchallah_organe.inchallah.trouDuFion.i;
-import static inchallah_organe.inchallah.trouDuFion.d;
-import static inchallah_organe.inchallah.trouDuFion.f;
 
 
-import static inchallah_organe.inchallah.Constant.VISEUR;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;

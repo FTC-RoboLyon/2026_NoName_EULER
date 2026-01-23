@@ -68,7 +68,7 @@ public class ALDNC_brain extends LinearOpMode {
 
         shooter Shooter = new shooter(hardwareMap);
         feeder_v1 Feeder = new feeder_v1(hardwareMap);
-        jambes Chassis = new jambes(hardwareMap);
+        jambes Chassis = new jambes(hardwareMap, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bouche_intake Intake = new bouche_intake(hardwareMap);
         viseur Volet = new viseur(hardwareMap);
 
@@ -184,6 +184,7 @@ public class ALDNC_brain extends LinearOpMode {
 
             Shooter.setPIDFcoefficient(gamepad1, gamepad2);
 
+            if (Shooter.isAtgoodspeed()){gamepad1.rumble(100);}
 
             //vising
             Volet.viseur(gamepad1, gamepad2);
@@ -216,7 +217,7 @@ public class ALDNC_brain extends LinearOpMode {
 
 
             telemetry.addData("Velocité programmé Shooter =", Shooter.getVeloShooter());
-            telemetry.addData("PIDF shooter =", Shooter.getpidfcoeff());
+            telemetry.addData("PIDF shooter %6.1f %6.1f %6.1f =", Shooter.getpidfcoeff());
             telemetry.addData("Vrai vélocité Shooter =", Shooter.shooter.getVelocity());
             telemetry.addData("vrai puissance shooter", Shooter.getpower());
             telemetry.addData("Position Viseur ", viseur.viseur.getPosition());

@@ -49,12 +49,11 @@ public class ALDNC_auto extends LinearOpMode {
         Apriltag_reader aprilJoke = new Apriltag_reader();
         shooter Shooter = new shooter(hardwareMap);
         feeder_v1 Feeder = new feeder_v1(hardwareMap);
-        jambes Chassis = new jambes(hardwareMap);
+        jambes Chassis = new jambes(hardwareMap, DcMotor.RunMode.RUN_USING_ENCODER);
         bouche_intake Intake = new bouche_intake(hardwareMap);
         viseur Volet = new viseur(hardwareMap);
 
         double robotOrienDegrees = 0;
-        boolean isFeeding = false;
         final ElapsedTime timer = new ElapsedTime();
         Volet.setPosBank();
 

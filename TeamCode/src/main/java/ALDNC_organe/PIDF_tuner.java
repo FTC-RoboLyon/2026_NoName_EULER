@@ -3,6 +3,7 @@ package ALDNC_organe;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
@@ -12,7 +13,7 @@ public class PIDF_tuner extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         shooter shooter = new shooter(hardwareMap);
-        jambes Chassis = new jambes(hardwareMap);
+        jambes Chassis = new jambes(hardwareMap, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         viseur Volet = new viseur(hardwareMap);
         feeder_v1 Feeder = new feeder_v1(hardwareMap);
         bouche_intake Intake = new bouche_intake(hardwareMap);

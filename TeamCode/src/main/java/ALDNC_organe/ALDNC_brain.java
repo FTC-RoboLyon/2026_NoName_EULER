@@ -217,12 +217,12 @@ public class ALDNC_brain extends LinearOpMode {
 
 
             telemetry.addData("Velocité programmé Shooter =", Shooter.getVeloShooter());
-            telemetry.addData("PIDF shooter %6.1f %6.1f %6.1f =", Shooter.getpidfcoeff());
+            telemetry.addData("shooter", Shooter.getpidfcoeff());
             telemetry.addData("Vrai vélocité Shooter =", Shooter.shooter.getVelocity());
-            telemetry.addData("vrai puissance shooter", Shooter.getpower());
-            telemetry.addData("Position Viseur ", viseur.viseur.getPosition());
-            telemetry.addData("posfeed", Feeder.getposition());
-            telemetry.addData("Distance", compteurBalle.getDistance(DistanceUnit.CM));
+            //telemetry.addData("vrai puissance shooter", Shooter.getpower());
+            //telemetry.addData("Position Viseur ", viseur.viseur.getPosition());
+            //telemetry.addData("posfeed", Feeder.getposition());
+            //telemetry.addData("Distance", compteurBalle.getDistance(DistanceUnit.CM));
             telemetry.addLine(shooter.isShooting ? "Shooter allumé" : "Shooter éteint");
 
 

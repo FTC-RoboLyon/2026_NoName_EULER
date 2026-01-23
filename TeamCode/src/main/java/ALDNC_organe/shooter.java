@@ -18,10 +18,10 @@ public class shooter {
     public static double Velo_far = 1800;
     public static double Aspirer = -0.3;
     public static double VeloShooter = Velo_bank;
-    public static double kp = 20;
-    public static double ki = 5;
-    public static double kd = 10;
-    public static double kf = 0;
+    public static double kp = 0;
+    public static double ki = 0.0001;
+    public static double kd = 0.0001;
+    public static double kf = 0.0001;
 
     public static boolean isShooting = false;
 
@@ -86,16 +86,16 @@ public class shooter {
 
 
     public void regleurVeloShooteur(Gamepad gamepad1, Gamepad gamepad2) {
-            if (gamepad2.dpad_up) {
+            if (gamepad2.yWasPressed()) {
                 VeloShooter += 100;
             }
-            if (gamepad2.dpad_down) {
+            if (gamepad2.aWasPressed()) {
                 VeloShooter -= 100;
             }
-            if (gamepad2.dpad_left) {
+            if (gamepad2.xWasPressed()) {
                 VeloShooter -= 50;
             }
-            if (gamepad2.dpad_right) {
+            if (gamepad2.bWasPressed()) {
                 VeloShooter += 50;
             }
             if (gamepad1.bWasPressed()) {

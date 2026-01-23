@@ -11,7 +11,7 @@ public class feeder_v1 {
 
     public static Servo feeder;
     public static double PosFeed = 0.4;
-    public static double PosRepos = 0.10;
+    public static double PosRepos = 0.125;
     private final ElapsedTime timer = new ElapsedTime();
     private boolean b = false;
     private int e = 0;

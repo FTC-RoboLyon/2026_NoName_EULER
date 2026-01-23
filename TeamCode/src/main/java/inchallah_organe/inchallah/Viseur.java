@@ -9,7 +9,7 @@ public class Viseur {
 
         viseur.setPosition(posViseur);
     }
-    public double posViseurBank = 0.6;
+    public double posViseurBank = 0.8;
     public double posViseurMid = 0.47;
     public double posViseurFar = 0.42;
     public double posViseur = posViseurBank;
@@ -17,19 +17,22 @@ public class Viseur {
     public void visage(boolean a, boolean b, boolean y, boolean leftFlecheGaucheWpr, boolean leftFlecheDroiteWpr){
         if(b){
             posViseur = posViseurBank;
-        }
-        if(y){
+        } else if(y){
             posViseur = posViseurMid;
-        }
-        if(a){
+        } else if(a){
             posViseur = posViseurFar;
         }
         if(leftFlecheGaucheWpr){
             posViseur = posViseur + 0.05;
-        }
-        if(leftFlecheDroiteWpr){
+        } else if(leftFlecheDroiteWpr){
             posViseur = posViseur - 0.05;
         }
         viseur.setPosition(posViseur);
+    }
+    public boolean test1(boolean a, boolean b, boolean y, boolean leftFlecheGaucheWpr, boolean leftFlecheDroiteWpr, boolean caca){
+        if(a||b||y||leftFlecheGaucheWpr||leftFlecheDroiteWpr){
+            caca = true;
+        }
+        return caca;
     }
 }

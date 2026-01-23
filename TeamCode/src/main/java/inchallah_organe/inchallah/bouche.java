@@ -13,11 +13,17 @@ public class bouche {
     public void manger(boolean leftBumper, double leftTrigger ){
         if(leftBumper){
             dents.setPower(1);
-        }
-        if(leftTrigger > 0.2){
+        } else if(leftTrigger > 0.2){
             dents.setPower(-1);
         }
         else{
+            dents.setPower(0);
+        }
+    }
+    public void test(boolean left_bumper){
+        if(left_bumper){
+            dents.setPower(1);
+        }else{
             dents.setPower(0);
         }
     }

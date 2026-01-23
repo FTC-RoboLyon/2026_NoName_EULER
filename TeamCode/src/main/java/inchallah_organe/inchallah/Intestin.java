@@ -8,8 +8,8 @@ public class Intestin {
         this.rectum = rectum;
         rectum.setPosition(posfeederBas);
     }
-    public double posfeederHaut = 0.4;
-    public double posfeederBas = 0.1;
+    public double posfeederHaut = 0.3;
+    public double posfeederBas = 0.125;
     public void grosseCommition(boolean xpr, boolean xrl){
         if(xpr) {
             rectum.setPosition(posfeederHaut);

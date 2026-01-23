@@ -21,7 +21,7 @@ public class shooter {
     public static double kp = 20;
     public static double ki = 5;
     public static double kd = 10;
-    public static double kf = 0;
+    public static double kf = 10;
 
     public static boolean isShooting = false;
 

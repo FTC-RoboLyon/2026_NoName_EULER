@@ -16,7 +16,7 @@ public class trouDuFion {
         fion.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidf);
     }
     PIDFCoefficients pidf = new PIDFCoefficients(p, i, d, f);
-    public static double p = 0.0;
+    public static double p = 10.0;
     public static double i = 0.0;
     public static double d = 0.0;
     public static double f = 0.0;
@@ -40,23 +40,19 @@ public class trouDuFion {
                      boolean deux_xWpr){
         if(b){
             veloFion = veloFionBank;
-        }
-        if(y){
+        }else if(y){
             veloFion = veloFionMid;
         }
-        if(a){
+        else if(a){
             veloFion = veloFionFar;
         }
         if(DpadRight){
             veloFion = veloFion + 100;
-        }
-        if (DpadLeft){
+        }else if (DpadLeft){
             veloFion -= 100;
-        }
-        if (up){
+        }else if (up){
             veloFion += 50;
-        }
-        if (down){
+        }else if (down){
             veloFion -= 50;
         }
         if(rightBumperWpr){
@@ -64,22 +60,22 @@ public class trouDuFion {
         }
         if(isShooting) {
             fion.setVelocity(veloFion);
-        }
-        if(rightTrigger > 0.2){
+        } else if(rightTrigger > 0.2){
             fion.setPower(-0.1);
+        }else{
+            fion.setPower(0);
         }
         if(deux_aWpr){
             p = p+0.01;
-        }
-        if(deux_bWpr){
+        }else if(deux_bWpr){
             p = p-0.01;
-        }
-        if(deux_yWpr){
+        }else if(deux_yWpr){
             p = p+0.1;
-        }
-        if(deux_xWpr){
+        }else if(deux_xWpr){
             p = p-0.1;
         }
+
+
 
     }
 }

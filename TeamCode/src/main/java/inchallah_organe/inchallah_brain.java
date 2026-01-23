@@ -23,6 +23,7 @@ import static inchallah_organe.inchallah.Constant.VISEUR;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import ALDNC_organe.viseur;
 import inchallah_organe.inchallah.Intestin;
 import inchallah_organe.inchallah.Viseur;
 import inchallah_organe.inchallah.bouche;
@@ -33,7 +34,10 @@ import inchallah_organe.inchallah.trouDuFion;
 public class inchallah_brain extends LinearOpMode {
     public double VeloFion;
     public PIDFCoefficients PidCoef;
+    double value_jambeDroite;
+    double value_jambeGauche;
 
+    boolean isShooting = false;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -56,7 +60,11 @@ public class inchallah_brain extends LinearOpMode {
         telemetry.update();
         waitForStart();
         while (opModeIsActive()) {
-            jambes.jambage(gamepad1.right_stick_x, gamepad1.left_stick_y);
+            float leftY = -gamepad1.left_stick_y;
+            float rightX = -gamepad1.right_stick_x;
+            value_jambeDroite = leftY + rightX;
+            value_jambeGauche = leftY - rightX;
+            jambes.jambage(value_jambeDroite, value_jambeGauche);
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
             fesse.caca(gamepad1.b,
                     gamepad1.a,
@@ -73,12 +81,15 @@ public class inchallah_brain extends LinearOpMode {
                     gamepad2.xWasPressed());
             intestin.grosseCommition(gamepad1.xWasPressed(), gamepad1.xWasReleased());
             viseur1.visage(gamepad1.a, gamepad1.b, gamepad1.y, gamepad2.dpadUpWasPressed(), gamepad2.dpadDownWasPressed());
-
             VeloFion = fion.getVelocity();
             PidCoef = fion.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
             telemetry.addData("P",PidCoef.p);
             telemetry.addData("velo", VeloFion);
+            telemetry.addData("posviseur", viseur1.viseur.getPosition());
+            telemetry.update();
+
 
         }
     }

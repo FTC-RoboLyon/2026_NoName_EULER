@@ -17,17 +17,9 @@ public class jambes {
         jambe_droite.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         jambe_gauche.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
-    public double value_jambeDroite;
-    public double value_jambeGauche;
 
-    public void jambage(double stickX, double stickY){
-        stickY = -stickY;
-        value_jambeDroite = stickY - stickX;
-        value_jambeGauche = stickY + stickX;
-
+    public void jambage(double value_jambeDroite, double value_jambeGauche){
         jambe_gauche.setPower(value_jambeGauche);
         jambe_droite.setPower(value_jambeDroite);
-
-
     }
 }

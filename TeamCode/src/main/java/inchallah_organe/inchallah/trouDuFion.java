@@ -30,8 +30,8 @@ public class trouDuFion {
                      boolean y,
                      boolean rightBumperWpr,
                      double rightTrigger,
-                     boolean left_DpadRight,
-                     boolean right_DpadLeft,
+                     boolean DpadRight,
+                     boolean DpadLeft,
                      boolean up,
                      boolean down,
                      boolean deux_aWpr,
@@ -47,10 +47,10 @@ public class trouDuFion {
         if(a){
             veloFion = veloFionFar;
         }
-        if(left_DpadRight){
+        if(DpadRight){
             veloFion = veloFion + 100;
         }
-        if (right_DpadLeft){
+        if (DpadLeft){
             veloFion -= 100;
         }
         if (up){

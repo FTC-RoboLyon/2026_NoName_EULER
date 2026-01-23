@@ -22,8 +22,8 @@ public class jambes {
 
     public void jambage(double stickX, double stickY){
         stickY = -stickY;
-        value_jambeDroite = stickX - stickY;
-        value_jambeGauche = stickX + stickY;
+        value_jambeDroite = stickY - stickX;
+        value_jambeGauche = stickY + stickX;
 
         jambe_gauche.setPower(value_jambeGauche);
         jambe_droite.setPower(value_jambeDroite);

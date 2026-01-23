@@ -17,5 +17,8 @@ public class bouche {
         if(leftTrigger > 0.2){
             dents.setPower(-1);
         }
+        else{
+            dents.setPower(0);
+        }
     }
 }

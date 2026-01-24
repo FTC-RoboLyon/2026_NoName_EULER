@@ -11,8 +11,8 @@ public class trouDuFion {
         this.fion = fion;
         fion.setDirection(DcMotorSimple.Direction.FORWARD);
         fion.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fion.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         fion.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        fion.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         fion.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidf);
     }
     PIDFCoefficients pidf = new PIDFCoefficients(p, i, d, f);
@@ -24,11 +24,10 @@ public class trouDuFion {
     public float veloFionFar = 2000;
     public float veloFionMid = 1500;
     public float veloFion = veloFionBank;
-    public boolean isShooting = false;
     public void caca(boolean b,
                      boolean a,
                      boolean y,
-                     boolean rightBumperWpr,
+                     boolean isShooting,
                      double rightTrigger,
                      boolean DpadRight,
                      boolean DpadLeft,
@@ -55,9 +54,6 @@ public class trouDuFion {
         }else if (down){
             veloFion -= 50;
         }
-        if(rightBumperWpr){
-            isShooting = !isShooting;
-        }
         if(isShooting) {
             fion.setVelocity(veloFion);
         } else if(rightTrigger > 0.2){
@@ -74,8 +70,39 @@ public class trouDuFion {
         }else if(deux_xWpr){
             p = p-0.1;
         }
+        updatePID();
 
 
 
+    }
+    public float veloShooter (boolean b,
+                     boolean a,
+                     boolean y,
+                     boolean DpadRightWpr,
+                     boolean DpadLeftWpr,
+                     boolean upWpr,
+                     boolean downWpr){
+        if(b){
+            veloFion = veloFionBank;
+        }else if(y){
+            veloFion = veloFionMid;
+        }
+        else if(a){
+            veloFion = veloFionFar;
+        }
+        if(DpadRightWpr){
+            veloFion = veloFion + 100;
+        }else if (DpadLeftWpr){
+            veloFion -= 100;
+        }else if (upWpr){
+            veloFion += 50;
+        }else if (downWpr){
+            veloFion -= 50;
+        }
+        return veloFion;
+    }
+    public void updatePID(){
+        pidf = new PIDFCoefficients(p, i, d, f);
+        fion.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidf);
     }
 }

@@ -36,6 +36,7 @@ public class inchallah_brain extends LinearOpMode {
     public PIDFCoefficients PidCoef;
     double value_jambeDroite;
     double value_jambeGauche;
+    float veloProg;
 
     boolean isShooting = false;
     @Override
@@ -61,15 +62,22 @@ public class inchallah_brain extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             float leftY = -gamepad1.left_stick_y;
-            float rightX = -gamepad1.right_stick_x;
+            float rightX = -gamepad1.right_stick_x/2;
             value_jambeDroite = leftY + rightX;
             value_jambeGauche = leftY - rightX;
+            if(gamepad1.rightBumperWasPressed()){
+                isShooting = !isShooting;
+            }
+            if(isShooting){
+                value_jambeDroite = value_jambeDroite/2;
+                value_jambeGauche = value_jambeGauche/2;
+            }
             jambes.jambage(value_jambeDroite, value_jambeGauche);
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
             fesse.caca(gamepad1.b,
                     gamepad1.a,
                     gamepad1.y,
-                    gamepad1.rightBumperWasPressed(),
+                    isShooting,
                     gamepad1.right_trigger,
                     gamepad2.dpadLeftWasPressed(),
                     gamepad2.dpadRightWasPressed(),
@@ -79,6 +87,14 @@ public class inchallah_brain extends LinearOpMode {
                     gamepad2.bWasPressed(),
                     gamepad2.yWasPressed(),
                     gamepad2.xWasPressed());
+            veloProg = fesse.veloShooter(gamepad1.b,
+                    gamepad1.a,
+                    gamepad1.y,
+                    gamepad2.dpadLeftWasPressed(),
+                    gamepad2.dpadRightWasPressed(),
+                    gamepad2.dpadUpWasPressed(),
+                    gamepad2.dpadDownWasPressed());
+
             intestin.grosseCommition(gamepad1.xWasPressed(), gamepad1.xWasReleased());
             viseur1.visage(gamepad1.a, gamepad1.b, gamepad1.y, gamepad2.dpadUpWasPressed(), gamepad2.dpadDownWasPressed());
             VeloFion = fion.getVelocity();
@@ -86,9 +102,11 @@ public class inchallah_brain extends LinearOpMode {
 
 
             telemetry.addData("P",PidCoef.p);
+            telemetry.addData("velo programmée", veloProg);
             telemetry.addData("velo", VeloFion);
             telemetry.addData("posviseur", viseur1.viseur.getPosition());
             telemetry.update();
+
 
 
         }

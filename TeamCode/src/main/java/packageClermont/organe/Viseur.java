@@ -1,4 +1,4 @@
-package inchallah_organe.inchallah;
+package packageClermont.organe;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Viseur {

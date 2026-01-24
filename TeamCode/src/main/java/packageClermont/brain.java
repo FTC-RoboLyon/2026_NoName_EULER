@@ -1,4 +1,4 @@
-package inchallah_organe;
+package packageClermont;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,30 +8,22 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
-import static inchallah_organe.inchallah.Constant.FEEDER;
-import static inchallah_organe.inchallah.Constant.INTAKE;
-import static inchallah_organe.inchallah.Constant.LEFT_MOTOR;
-import static inchallah_organe.inchallah.Constant.RIGHT_MORTOR;
-import static inchallah_organe.inchallah.Constant.SHOOTER;
-import static inchallah_organe.inchallah.Constant.VISEUR;
+import static packageClermont.organe.Constant.FEEDER;
+import static packageClermont.organe.Constant.INTAKE;
+import static packageClermont.organe.Constant.LEFT_MOTOR;
+import static packageClermont.organe.Constant.RIGHT_MORTOR;
+import static packageClermont.organe.Constant.SHOOTER;
+import static packageClermont.organe.Constant.VISEUR;
 
 
+import packageClermont.organe.Feeder;
+import packageClermont.organe.Viseur;
+import packageClermont.organe.bouche;
+import packageClermont.organe.jambes;
+import packageClermont.organe.Shooter;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import ALDNC_organe.viseur;
-import inchallah_organe.inchallah.Intestin;
-import inchallah_organe.inchallah.Viseur;
-import inchallah_organe.inchallah.bouche;
-import inchallah_organe.inchallah.jambes;
-import inchallah_organe.inchallah.trouDuFion;
-
-@TeleOp(name = "Inchallah_brain", group = "Euler")
-public class inchallah_brain extends LinearOpMode {
+@TeleOp(name = "Compet_brain", group = "Euler")
+public class brain extends LinearOpMode {
     public double VeloFion;
     public PIDFCoefficients PidCoef;
     double value_jambeDroite;
@@ -45,16 +37,16 @@ public class inchallah_brain extends LinearOpMode {
         DcMotor jambe_droite = hardwareMap.get(DcMotor.class,RIGHT_MORTOR);
         DcMotor jambe_gauche = hardwareMap.get(DcMotor.class , LEFT_MOTOR);
         DcMotorEx machoire = hardwareMap.get(DcMotorEx.class, INTAKE);
-        DcMotorEx fion = hardwareMap.get(DcMotorEx.class , SHOOTER);
-        Servo rectum = hardwareMap.get(Servo.class, FEEDER);
+        DcMotorEx shooter = hardwareMap.get(DcMotorEx.class , SHOOTER);
+        Servo feeder = hardwareMap.get(Servo.class, FEEDER);
         Servo viseur = hardwareMap.get(Servo.class, VISEUR);
 
 
 
         jambes jambes = new jambes(jambe_droite, jambe_gauche);
         bouche bouche = new bouche(machoire);
-        trouDuFion fesse = new trouDuFion(fion);
-        Intestin intestin = new Intestin(rectum);
+        Shooter shooter1 = new Shooter(shooter);
+        Feeder feeder1 = new Feeder(feeder);
         Viseur viseur1 = new Viseur(viseur);
 
         telemetry.addData("Status", "Initialized");
@@ -74,7 +66,7 @@ public class inchallah_brain extends LinearOpMode {
             }
             jambes.jambage(value_jambeDroite, value_jambeGauche);
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
-            fesse.caca(gamepad1.b,
+            shooter1.Tir(gamepad1.b,
                     gamepad1.a,
                     gamepad1.y,
                     isShooting,
@@ -87,7 +79,7 @@ public class inchallah_brain extends LinearOpMode {
                     gamepad2.bWasPressed(),
                     gamepad2.yWasPressed(),
                     gamepad2.xWasPressed());
-            veloProg = fesse.veloShooter(gamepad1.b,
+            veloProg = shooter1.veloShooter(gamepad1.b,
                     gamepad1.a,
                     gamepad1.y,
                     gamepad2.dpadLeftWasPressed(),
@@ -95,10 +87,10 @@ public class inchallah_brain extends LinearOpMode {
                     gamepad2.dpadUpWasPressed(),
                     gamepad2.dpadDownWasPressed());
 
-            intestin.grosseCommition(gamepad1.xWasPressed(), gamepad1.xWasReleased());
+            feeder1.grosseCommition(gamepad1.xWasPressed(), gamepad1.xWasReleased());
             viseur1.visage(gamepad1.a, gamepad1.b, gamepad1.y, gamepad2.dpadUpWasPressed(), gamepad2.dpadDownWasPressed());
-            VeloFion = fion.getVelocity();
-            PidCoef = fion.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+            VeloFion = shooter.getVelocity();
+            PidCoef = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
             telemetry.addData("P",PidCoef.p);

@@ -1,7 +1,6 @@
-package inchallah_organe.inchallah;
+package packageClermont.organe;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class bouche {
     public DcMotorEx dents;

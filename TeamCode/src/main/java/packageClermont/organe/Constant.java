@@ -1,4 +1,4 @@
-package inchallah_organe.inchallah;
+package packageClermont.organe;
 
 public class Constant {
     public final static String LEFT_MOTOR = "left motor";

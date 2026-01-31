@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+
 
 public class Shooter {
     public DcMotorEx shooter;
@@ -14,16 +16,23 @@ public class Shooter {
         shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         shooter.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidf);
+
     }
+
     PIDFCoefficients pidf = new PIDFCoefficients(p, i, d, f);
-    public static double p = 10.0;
+    public static double p = 20.0;
     public static double i = 0.0;
     public static double d = 0.0;
     public static double f = 0.0;
+    //private float veloShooterBank = 2300;
     private float veloShooterBank = 900;
-    private float veloShooterFar = 2000;
-    private float veloShooterMid = 1500;
+    //private float veloShooterFar = 3600;
+    private float veloShooterFar = 1400;
+    //private float veloShooterMid = 2900;
+    private float veloShooterMid = 1200;
     private float veloShooter = veloShooterBank;
+    double realVelo;
+    double erreur;
     public void Tir(boolean b,
                      boolean a,
                      boolean y,
@@ -32,11 +41,10 @@ public class Shooter {
                      boolean DpadRight,
                      boolean DpadLeft,
                      boolean up,
-                     boolean down,
-                     boolean deux_aWpr,
-                     boolean deux_bWpr,
-                     boolean deux_yWpr,
-                     boolean deux_xWpr){
+                     boolean down){
+        //realVelo = shooter.getVelocity();
+        //erreur = veloShooter - realVelo;
+
         if(b){
             veloShooter = veloShooterBank;
         }else if(y){
@@ -57,18 +65,9 @@ public class Shooter {
         if(isShooting) {
             shooter.setVelocity(veloShooter);
         } else if(rightTrigger > 0.2){
-            shooter.setPower(-0.1);
+            shooter.setPower(-0.3);
         }else{
             shooter.setPower(0);
-        }
-        if(deux_aWpr){
-            p = p+0.01;
-        }else if(deux_bWpr){
-            p = p-0.01;
-        }else if(deux_yWpr){
-            p = p+0.1;
-        }else if(deux_xWpr){
-            p = p-0.1;
         }
         updatePID();
 
@@ -103,6 +102,22 @@ public class Shooter {
     }
     public void updatePID(){
         pidf = new PIDFCoefficients(p, i, d, f);
-        shooter.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidf);
+        shooter.setVelocityPIDFCoefficients(p, i, d, f);
     }
+    public double p(boolean deux_aWpr,
+                    boolean deux_bWpr,
+                    boolean deux_yWpr,
+                    boolean deux_xWpr) {
+        if (deux_aWpr) {
+            p = p + 0.5;
+        } else if (deux_bWpr) {
+            p = p + 1;
+        } else if (deux_yWpr) {
+            p = p - 0.5;
+        } else if (deux_xWpr) {
+            p = p - 1;
+        }
+        return p;
+    }
+
 }

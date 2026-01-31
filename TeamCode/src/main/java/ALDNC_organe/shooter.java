@@ -14,8 +14,8 @@ public class shooter {
 
     final DcMotorEx shooter;
     public static double Velo_bank = 940;
-    public static double Velo_Mid = 1400;
-    public static double Velo_far = 1800;
+    public static double Velo_Mid = 1200;
+    public static double Velo_far = 1400;
     public static double Aspirer = -0.3;
     public static double VeloShooter = Velo_bank;
     public static double kp = 20;
@@ -64,7 +64,6 @@ public class shooter {
             kp += 0.1;
         }
         PIDFCoefficients pidf = new PIDFCoefficients(kp, ki, kd, kf);
-        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
     }
     public double getVelocity(){return shooter.getVelocity();}
     public PIDFCoefficients getpidfcoeff(){return shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);}

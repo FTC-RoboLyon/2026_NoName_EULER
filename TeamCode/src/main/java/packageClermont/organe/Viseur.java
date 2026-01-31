@@ -9,9 +9,9 @@ public class Viseur {
 
         viseur.setPosition(posViseur);
     }
-    public double posViseurBank = 0.8;
-    public double posViseurMid = 0.47;
-    public double posViseurFar = 0.42;
+    public double posViseurBank = 1;
+    public double posViseurMid = 0.6;
+    public double posViseurFar = 0.5;
     public double posViseur = posViseurBank;
 
     public void visage(boolean a, boolean b, boolean y, boolean leftFlecheGaucheWpr, boolean leftFlecheDroiteWpr){

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import static packageClermont.organe.Constant.FEEDER;
 import static packageClermont.organe.Constant.INTAKE;
@@ -14,7 +15,6 @@ import static packageClermont.organe.Constant.LEFT_MOTOR;
 import static packageClermont.organe.Constant.RIGHT_MORTOR;
 import static packageClermont.organe.Constant.SHOOTER;
 import static packageClermont.organe.Constant.VISEUR;
-
 
 import packageClermont.organe.Feeder;
 import packageClermont.organe.Viseur;
@@ -29,11 +29,22 @@ public class brain extends LinearOpMode {
     double value_jambeDroite;
     double value_jambeGauche;
     float veloProg;
+    double p;
 
     boolean isShooting = false;
     @Override
     public void runOpMode() throws InterruptedException {
+        VoltageSensor controlHub_VoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
+
+        double seuil_shootter = 12.3;
+        double voltage = controlHub_VoltageSensor.getVoltage();
+        //PowerShooter = (PowerShooter * seuil_shootter) / voltage;
+        //Power_bankMid = (Power_bankMid * seuil_shootter) / voltage;
+        //powerMid = (Power_bankMid * seuil_shootter) / voltage;
+        //Power_far = (Power_far * seuil_shootter) / voltage;
+        boolean isShooting = false;
+        int nbeBallesIn = 0;
         DcMotor jambe_droite = hardwareMap.get(DcMotor.class,RIGHT_MORTOR);
         DcMotor jambe_gauche = hardwareMap.get(DcMotor.class , LEFT_MOTOR);
         DcMotorEx machoire = hardwareMap.get(DcMotorEx.class, INTAKE);
@@ -54,7 +65,7 @@ public class brain extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             float leftY = -gamepad1.left_stick_y;
-            float rightX = -gamepad1.right_stick_x/2;
+            float rightX = -gamepad1.right_stick_x;
             value_jambeDroite = leftY + rightX;
             value_jambeGauche = leftY - rightX;
             if(gamepad1.rightBumperWasPressed()){
@@ -74,11 +85,7 @@ public class brain extends LinearOpMode {
                     gamepad2.dpadLeftWasPressed(),
                     gamepad2.dpadRightWasPressed(),
                     gamepad2.dpadUpWasPressed(),
-                    gamepad2.dpadDownWasPressed(),
-                    gamepad2.aWasPressed(),
-                    gamepad2.bWasPressed(),
-                    gamepad2.yWasPressed(),
-                    gamepad2.xWasPressed());
+                    gamepad2.dpadDownWasPressed());
             veloProg = shooter1.veloShooter(gamepad1.b,
                     gamepad1.a,
                     gamepad1.y,
@@ -86,14 +93,18 @@ public class brain extends LinearOpMode {
                     gamepad2.dpadRightWasPressed(),
                     gamepad2.dpadUpWasPressed(),
                     gamepad2.dpadDownWasPressed());
+            p = shooter1.p(gamepad1.dpadDownWasPressed(),
+                    gamepad1.dpadRightWasPressed(),
+                    gamepad1.dpadUpWasPressed(),
+                    gamepad1.dpadLeftWasPressed());
 
             feeder1.grosseCommition(gamepad1.xWasPressed(), gamepad1.xWasReleased());
             viseur1.visage(gamepad1.a, gamepad1.b, gamepad1.y, gamepad2.dpadUpWasPressed(), gamepad2.dpadDownWasPressed());
             VeloFion = shooter.getVelocity();
             PidCoef = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
-            telemetry.addData("P",PidCoef.p);
+            telemetry.addData("p", p);
+            //telemetry.addData("Tension", )
             telemetry.addData("velo programmée", veloProg);
             telemetry.addData("velo", VeloFion);
             telemetry.addData("posviseur", viseur1.viseur.getPosition());

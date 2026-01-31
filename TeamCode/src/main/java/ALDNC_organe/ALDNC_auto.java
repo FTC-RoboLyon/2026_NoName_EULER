@@ -75,6 +75,7 @@ public class ALDNC_auto extends LinearOpMode {
             timer.reset();
             while (timer.milliseconds()<1000){
                 Feeder.setPosRepos();
+                Intake.intake_simple();
             }
 
         }

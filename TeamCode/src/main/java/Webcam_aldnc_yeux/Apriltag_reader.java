@@ -1,5 +1,6 @@
 package Webcam_aldnc_yeux;
 
+import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.util.Size;
 
@@ -42,7 +43,7 @@ public class Apriltag_reader {
         builder.addProcessor(aprilTag);
         builder.setCameraResolution(new Size(640, 480));
         //.setStreamFormat(VisionPortal.StreamFormat.YUY2)
-        //.setAutoStopLiveView(false)
+        builder.setAutoStopLiveView(false);
 
         visionPortal = builder.build();
 
@@ -71,6 +72,7 @@ public class Apriltag_reader {
         return tag;
     }
 
+    @SuppressLint("DefaultLocale")
     public void telemetry(AprilTagDetection Detection){
         if (Detection == null){return;}
         if (Detection.metadata != null) {

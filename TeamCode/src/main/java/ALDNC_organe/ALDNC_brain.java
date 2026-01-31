@@ -204,6 +204,7 @@ public class ALDNC_brain extends LinearOpMode {
             telemetry.addData("posfeed", Feeder.getposition());
             telemetry.addData("Distance", compteurBalle.getDistance(DistanceUnit.CM));
             telemetry.addLine(shooter.isShooting ? "Shooter allumé" : "Shooter éteint");
+            aprilJoke.telemetry(actual_april);
 
 
 

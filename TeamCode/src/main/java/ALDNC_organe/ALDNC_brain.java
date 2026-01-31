@@ -48,7 +48,6 @@ public class ALDNC_brain extends LinearOpMode {
     static ModeRobot robot = ModeRobot.Manuel;
     static Pos_Balle balle = Pos_Balle.non_detected;
 
-    Apriltag_reader aprilJoke = new Apriltag_reader();
     Vrai_vision objectProcessor = new Vrai_vision();
 
 
@@ -72,17 +71,9 @@ public class ALDNC_brain extends LinearOpMode {
         bouche_intake Intake = new bouche_intake(hardwareMap);
         viseur Volet = new viseur(hardwareMap);
 
-        Apriltag_reader aprilJoke = new Apriltag_reader();
-        Vrai_vision objectProcessor = new Vrai_vision();
+        Apriltag_reader aprilJoke = new Apriltag_reader(hardwareMap, telemetry);
 
-        VisionPortal visionPortal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .addProcessor(aprilJoke)
-                .addProcessor(objectProcessor)
-                .setCameraResolution(new Size(1920, 1080))
-                .setStreamFormat(VisionPortal.StreamFormat.YUY2)
-                .setAutoStopLiveView(false)
-                .build();
+
 
 
         IMU.Parameters imu_parameters;
@@ -113,19 +104,8 @@ public class ALDNC_brain extends LinearOpMode {
         telemetry.update();
         waitForStart();
         while (opModeIsActive()) {
-            switch (visionMode) {
-                case APRILTAG:
-                    visionPortal.setProcessorEnabled(aprilJoke, true);
-                    visionPortal.setProcessorEnabled(objectProcessor, false);
-                    break;
-                case OBJECT_TRACKING:
-                    visionPortal.setProcessorEnabled(aprilJoke, false);
-                    visionPortal.setProcessorEnabled(objectProcessor, true);
-                    break;
-            }
-
-            actual_april = aprilJoke.getBestAprilTag(null);
-
+            aprilJoke.updtade();
+            actual_april = aprilJoke.getAprilTagById(21);
             robotOrienDegrees = imu.getRobotYawPitchRollAngles().getYaw();
 
 
@@ -227,23 +207,9 @@ public class ALDNC_brain extends LinearOpMode {
 
 
 
-            if (actual_april != null) {
-                telemetry.addLine(String.format("\n==== (ID %d) %s", actual_april.id, actual_april.metadata.name));
-                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", actual_april.ftcPose.x, actual_april.ftcPose.y, actual_april.ftcPose.z));
-                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", actual_april.ftcPose.pitch, actual_april.ftcPose.roll, actual_april.ftcPose.yaw));
-                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", actual_april.ftcPose.range, actual_april.ftcPose.bearing, actual_april.ftcPose.elevation));
-                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
-                        actual_april.robotPose.getPosition().x,
-                        actual_april.robotPose.getPosition().y,
-                        actual_april.robotPose.getPosition().z));
-                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)",
-                        actual_april.robotPose.getOrientation().getPitch(AngleUnit.DEGREES),
-                        actual_april.robotPose.getOrientation().getRoll(AngleUnit.DEGREES),
-                        actual_april.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
-            } else telemetry.addLine("aucun apriltag détécté");
+
             telemetry.update();
           }
-        visionPortal.close();
         }
 
 

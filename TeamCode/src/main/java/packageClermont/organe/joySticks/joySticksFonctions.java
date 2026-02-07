@@ -37,7 +37,7 @@ public class joySticksFonctions {
         if(nVecteur < vDeadZone){
             nVecteur = 0;
         }else if(nVecteur >= vDeadZone){
-            nVecteur = 1-vDeadZone*(nVecteur-vDeadZone);
+            nVecteur = (1-vDeadZone)*nVecteur;
         }
         return nVecteur;
     }

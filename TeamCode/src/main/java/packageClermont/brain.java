@@ -16,6 +16,7 @@ import static packageClermont.organe.Constant.RIGHT_MORTOR;
 import static packageClermont.organe.Constant.SHOOTER;
 import static packageClermont.organe.Constant.VISEUR;
 
+import Webcam_aldnc_yeux.Apriltag_reader;
 import packageClermont.organe.Feeder;
 import packageClermont.organe.Viseur;
 import packageClermont.organe.bouche;
@@ -59,6 +60,7 @@ public class brain extends LinearOpMode {
         DcMotorEx shooter = hardwareMap.get(DcMotorEx.class , SHOOTER);
         Servo feeder = hardwareMap.get(Servo.class, FEEDER);
         Servo viseur = hardwareMap.get(Servo.class, VISEUR);
+        Apriltag_reader apriljoke = new Apriltag_reader(hardwareMap);
 
 
 
@@ -91,7 +93,8 @@ public class brain extends LinearOpMode {
             }
             jambes.jambage(value_jambeDroite, value_jambeGauche);
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
-            /*shooter1.Tir(gamepad1.b,
+            apriljoke.updtade();
+            shooter1.Tir(gamepad1.b,
                     gamepad1.a,
                     gamepad1.y,
                     isShooting,
@@ -107,10 +110,10 @@ public class brain extends LinearOpMode {
                     gamepad2.dpadRightWasPressed(),
                     gamepad2.dpadUpWasPressed(),
                     gamepad2.dpadDownWasPressed());
-            p = shooter1.p(gamepad1.dpadDownWasPressed(),
+            /*p = shooter1.p(gamepad1.dpadDownWasPressed(),
                     gamepad1.dpadRightWasPressed(),
                     gamepad1.dpadUpWasPressed(),
-                    gamepad1.dpadLeftWasPressed());*/
+                    gamepad1.dpadLeftWasPressed());
             powerShooter = shooter1.powerShooter(gamepad2.aWasPressed(),
                     gamepad2.bWasPressed(),
                     gamepad2.yWasPressed(),
@@ -119,7 +122,7 @@ public class brain extends LinearOpMode {
                 shooter.setPower(powerShooter);
             }else if(!isShooting){
                 shooter.setPower(0);
-            }
+            }*/
             feeder1.grosseCommition(gamepad1.xWasPressed(), gamepad1.xWasReleased());
             viseur1.visage(gamepad1.a, gamepad1.b, gamepad1.y, gamepad2.dpadUpWasPressed(), gamepad2.dpadDownWasPressed());
             VeloFion = shooter.getVelocity();
@@ -133,6 +136,7 @@ public class brain extends LinearOpMode {
             telemetry.addData("Tension", powerShooter);
             telemetry.addData("value_jambe droite", value_jambeDroite);
             telemetry.addData("value_jambe_gauche", value_jambeGauche);
+            apriljoke.telemetry(telemetry);
             telemetry.update();
 
 

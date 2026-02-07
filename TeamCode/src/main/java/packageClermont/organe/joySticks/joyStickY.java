@@ -19,9 +19,10 @@ public class joyStickY {
         nouveauY = joyStickY.smoothY(nouveauY, y1);
         angle = joyStickY.angle(nouveauX, nouveauY);
         nVecteur = joyStickY.normeVecteur(nouveauX, nouveauY);
-        //nouveauY = joyStickY.normalisationCirculaireY(nVecteur, angle, nouveauY);
+        nouveauY = joyStickY.normalisationCirculaireY(nVecteur,nouveauY);
         //nouveauY = joyStickY.deadZoneY(angle, nVecteur, nouveauY);
-        //nouveauY = joyStickY.yPower(nouveauY);
+        nVecteur = joyStickY.Power(nVecteur);
+        nouveauY = joyStickY.
         telemetry.addData("angle", angle);
         telemetry.addData("nVecteur", nVecteur);
         telemetry.addData("nouveauX", nouveauX);

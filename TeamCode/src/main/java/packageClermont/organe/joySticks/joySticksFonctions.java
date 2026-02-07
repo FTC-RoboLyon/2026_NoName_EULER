@@ -3,7 +3,7 @@ package packageClermont.organe.joySticks;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class joySticksFonctions {
-    private double kp = 0.3;
+    private double kp = 0.25;
     private double nVecteur;
     private double vDeadZone = 0.05;
     public double PX;
@@ -41,19 +41,15 @@ public class joySticksFonctions {
         }
         return nVecteur;
     }
-    public double normalisationCirculaireX(double nVecteur, double angle, double x){
+    public double normalisationCirculaireX(double nVecteur,double x){
         if(nVecteur > 1){
-            vecteurTrop = nVecteur -1;
-            PX = Math.cos(angle)*vecteurTrop;
-            x = x-PX;
+            x = x/nVecteur;
         }
         return x;
     }
-    public double normalisationCirculaireY(double nVecteur, double angle, double y){
+    public double normalisationCirculaireY(double nVecteur,double y){
         if(nVecteur > 1){
-            vecteurTrop = nVecteur - 1;
-            PY = Math.sin(angle)*vecteurTrop;
-            y = y-PY;
+           y = y/nVecteur;
         }
         return y;
     }
@@ -69,14 +65,16 @@ public class joySticksFonctions {
         y = Math.cos(angle)*nVecteur;
         return y;
     }
-    public double xPower(double x){
-        x = Math.pow(x, vPower);
-        return x;
+    public double Power(double nVecteur){
+        nVecteur = Math.pow(nVecteur, 2);
+        return nVecteur;
     }
-
-    public double yPower(double y){
-        y = Math.pow(y, vPower);
-        return y;
+    public double calculageX(double nVecteur, double angle, double nouveauX){
+        nouveauX = nVecteur*Math.sin(angle);
+        return nouveauX;
+    }
+    public double calculageY(double nVecteur, double angle, double nouveauY){
+        nouveauY = nVecteur*Math.cos(angle);
     }
 
 }

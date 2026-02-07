@@ -22,7 +22,7 @@ public class Shooter {
     }
 
     PIDFCoefficients pidf = new PIDFCoefficients(p, i, d, f);
-    public static double p = 20.0;
+    public static double p = 1400;
     public static double i = 0.0;
     public static double d = 0.0;
     public static double f = 0.0;
@@ -69,7 +69,7 @@ public class Shooter {
             veloShooter -= 50;
         }
         if(isShooting) {
-            shooter.setVelocity(veloShooter + p*erreur);
+            shooter.setVelocity(veloShooter);
         } else if(rightTrigger > 0.2){
             shooter.setPower(-0.3);
         }else{
@@ -120,7 +120,7 @@ public class Shooter {
         return veloShooter;
     }
     public void updatePID(){
-        //pidf = new PIDFCoefficients(p, i, d, f);
+        pidf = new PIDFCoefficients(p, i, d, f);
         shooter.setVelocityPIDFCoefficients(p, i, d, f);
     }
     public double p(boolean deux_aWpr,

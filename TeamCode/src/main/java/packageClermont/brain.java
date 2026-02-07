@@ -94,7 +94,7 @@ public class brain extends LinearOpMode {
             jambes.jambage(value_jambeDroite, value_jambeGauche);
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
             apriljoke.updtade();
-            /*shooter1.Tir(gamepad1.b,
+            shooter1.Tir(gamepad1.b,
                     gamepad1.a,
                     gamepad1.y,
                     isShooting,
@@ -118,7 +118,7 @@ public class brain extends LinearOpMode {
                     gamepad2.bWasPressed(),
                     gamepad2.yWasPressed(),
                     gamepad2.xWasPressed());*/
-            if(gamepad1.dpadRightWasPressed()){
+            /*if(gamepad1.dpadRightWasPressed()){
                 powerShooter = powerShooter + 0.05;
             }else if(gamepad1.dpadLeftWasPressed()){
                 powerShooter = powerShooter - 0.05;
@@ -131,16 +131,15 @@ public class brain extends LinearOpMode {
                 shooter.setPower(powerShooter);
             }else if(!isShooting){
                 shooter.setPower(0);
-            }
+            }*/
             feeder1.grosseCommition(gamepad1.xWasPressed(), gamepad1.xWasReleased());
             viseur1.visage(gamepad1.a, gamepad1.b, gamepad1.y, gamepad2.dpadUpWasPressed(), gamepad2.dpadDownWasPressed());
             VeloFion = shooter.getVelocity();
             PidCoef = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 
             //telemetry.addData("p", p);
-            telemetry.addData("Tension", powerShooter);
             telemetry.addData("vitesse", shooter.getVelocity());
-            //telemetry.addData("velo programmée", veloProg);
+            telemetry.addData("velo programmée", veloProg);
             //telemetry.addData("velo", VeloFion);
             //telemetry.addData("posviseur", viseur1.viseur.getPosition());
             //telemetry.addData("Tension", powerShooter);

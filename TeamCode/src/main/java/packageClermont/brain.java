@@ -94,7 +94,7 @@ public class brain extends LinearOpMode {
             jambes.jambage(value_jambeDroite, value_jambeGauche);
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
             apriljoke.updtade();
-            shooter1.Tir(gamepad1.b,
+            shooter1.Tir_using_velo(gamepad1.b,
                     gamepad1.a,
                     gamepad1.y,
                     isShooting,

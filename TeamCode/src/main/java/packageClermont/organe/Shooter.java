@@ -1,14 +1,14 @@
 package packageClermont.organe;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-
-
+@Config
 public class Shooter {
     public DcMotorEx shooter;
     public Shooter(DcMotorEx shooter){
@@ -39,7 +39,7 @@ public class Shooter {
     private float veloShooter = veloShooterBank;
     double realVelo;
     double erreur;
-    public void Tir(boolean b,
+    public void Tir_using_velo(boolean b,
                      boolean a,
                      boolean y,
                      boolean isShooting,
@@ -51,23 +51,6 @@ public class Shooter {
         realVelo = shooter.getVelocity();
         erreur = veloShooter - realVelo;
 
-        if(b){
-            veloShooter = veloShooterBank;
-        }else if(y){
-            veloShooter = veloShooterMid;
-        }
-        else if(a){
-            veloShooter = veloShooterFar;
-        }
-        if(DpadRight){
-            veloShooter = veloShooter + 100;
-        }else if (DpadLeft){
-            veloShooter -= 100;
-        }else if (up){
-            veloShooter += 50;
-        }else if (down){
-            veloShooter -= 50;
-        }
         if(isShooting) {
             shooter.setVelocity(veloShooter);
         } else if(rightTrigger > 0.2){
@@ -107,15 +90,6 @@ public class Shooter {
         }
         else if(a){
             veloShooter = veloShooterFar;
-        }
-        if(DpadRightWpr){
-            veloShooter = veloShooter + 100;
-        }else if (DpadLeftWpr){
-            veloShooter -= 100;
-        }else if (upWpr){
-            veloShooter += 50;
-        }else if (downWpr){
-            veloShooter -= 50;
         }
         return veloShooter;
     }

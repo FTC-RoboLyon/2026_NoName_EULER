@@ -3,16 +3,16 @@ package packageClermont.organe.joySticks;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class joySticksFonctions {
-    private double kp = 0.3;
-    private double nVecteur;
-    private double vDeadZone = 0.05;
-    public double PX;
-    public double PY;
-    public double vecteurTrop;
-    public double angle;
-    private double nouveauX;
-    private double nouveauY;
-    private double vPower = 2;
+    public static double kp = 0.3;
+    public static double nVecteur;
+    public static double vDeadZone = 0.05;
+    public static double PX;
+    public static double PY;
+    public static double vecteurTrop;
+    public static double angle;
+    public static double nouveauX;
+    public static double nouveauY;
+    public static double vPower = 2;
     public joySticksFonctions(){
 
     }

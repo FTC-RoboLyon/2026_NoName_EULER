@@ -8,10 +8,10 @@ public class joystickX {
         this.telemetry = telemetry;
     }
     joySticksFonctions joyStickX = new joySticksFonctions();
-    private double nouveauX;
-    private double nouveauY;
-    private double nVecteur;
-    private double angle;
+    public static double nouveauX;
+    public static double nouveauY;
+    public static double nVecteur;
+    public static double angle;
 
     public double joyStickXPara(float x, double x1, float y, double y1){
         nouveauX = joyStickX.repositionneX(y);

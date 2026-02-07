@@ -16,6 +16,7 @@ import static packageClermont.organe.Constant.RIGHT_MORTOR;
 import static packageClermont.organe.Constant.SHOOTER;
 import static packageClermont.organe.Constant.VISEUR;
 
+import Webcam_aldnc_yeux.Apriltag_reader;
 import packageClermont.organe.Feeder;
 import packageClermont.organe.Viseur;
 import packageClermont.organe.bouche;
@@ -59,6 +60,7 @@ public class brain extends LinearOpMode {
         DcMotorEx shooter = hardwareMap.get(DcMotorEx.class , SHOOTER);
         Servo feeder = hardwareMap.get(Servo.class, FEEDER);
         Servo viseur = hardwareMap.get(Servo.class, VISEUR);
+        Apriltag_reader apriljoke = new Apriltag_reader(hardwareMap);
 
 
 
@@ -79,6 +81,7 @@ public class brain extends LinearOpMode {
             leftY = joyStickY.joyStickYPara(gamepad1.right_stick_x, x1, gamepad1.left_stick_y, y1);
             x1 = rightX;
             y1 = leftY;
+            apriljoke.updtade();
 
             value_jambeDroite = rightX - leftY;
             value_jambeGauche = rightX + leftY;
@@ -133,6 +136,7 @@ public class brain extends LinearOpMode {
             telemetry.addData("Tension", powerShooter);
             telemetry.addData("value_jambe droite", value_jambeDroite);
             telemetry.addData("value_jambe_gauche", value_jambeGauche);
+            apriljoke.telemetry(telemetry);
             telemetry.update();
 
 

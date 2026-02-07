@@ -75,13 +75,13 @@ public class brain extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
 
-            rightX = joystickX.joyStickXPara(gamepad1.right_stick_x, x1,gamepad1.left_stick_y, y1);
+            rightX = joystickX.joyStickXPara(gamepad1.right_stick_x, x1, gamepad1.left_stick_y, y1);
             leftY = joyStickY.joyStickYPara(gamepad1.right_stick_x, x1, gamepad1.left_stick_y, y1);
             x1 = rightX;
             y1 = leftY;
 
-            value_jambeDroite = rightX + leftY;
-            value_jambeGauche = rightX - leftY;
+            value_jambeDroite = rightX - leftY;
+            value_jambeGauche = rightX + leftY;
             if(gamepad1.rightBumperWasPressed()){
                 isShooting = !isShooting;
             }
@@ -131,6 +131,8 @@ public class brain extends LinearOpMode {
             telemetry.addData("velo", VeloFion);
             telemetry.addData("posviseur", viseur1.viseur.getPosition());
             telemetry.addData("Tension", powerShooter);
+            telemetry.addData("value_jambe droite", value_jambeDroite);
+            telemetry.addData("value_jambe_gauche", value_jambeGauche);
             telemetry.update();
 
 

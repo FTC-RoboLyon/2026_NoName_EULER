@@ -15,17 +15,17 @@ public class joyStickY {
     public double joyStickYPara(float x, double x1, float y, double y1){
         nouveauX = joyStickY.repositionneX(y);
         nouveauY = joyStickY.repositionneY(x);
-        nouveauX = joyStickY.smoothX(x, x1);
-        nouveauY = joyStickY.smoothY(y, y1);
+        nouveauX = joyStickY.smoothX(nouveauX, x1);
+        nouveauY = joyStickY.smoothY(nouveauY, y1);
         angle = joyStickY.angle(nouveauX, nouveauY);
         nVecteur = joyStickY.normeVecteur(nouveauX, nouveauY);
-        nouveauY = joyStickY.normalisationCirculaireY(nVecteur, angle, nouveauY);
-        nouveauY = joyStickY.deadZoneY(angle, nVecteur, nouveauY);
-        nouveauY = joyStickY.yPower(nouveauY);
+        //nouveauY = joyStickY.normalisationCirculaireY(nVecteur, angle, nouveauY);
+        //nouveauY = joyStickY.deadZoneY(angle, nVecteur, nouveauY);
+        //nouveauY = joyStickY.yPower(nouveauY);
         telemetry.addData("angle", angle);
+        telemetry.addData("nVecteur", nVecteur);
         telemetry.addData("nouveauX", nouveauX);
         telemetry.addData("nouveauY", nouveauY);
-        telemetry.addData("nVecteur", nVecteur);
         return nouveauY;
     }
 }

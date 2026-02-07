@@ -1,9 +1,7 @@
 package packageClermont.organe.joySticks;
 
-import com.acmerobotics.dashboard.config.Config;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-@Config
+
 public class joySticksFonctions {
     private double kp = 0.3;
     private double nVecteur;
@@ -46,7 +44,7 @@ public class joySticksFonctions {
     public double normalisationCirculaireX(double nVecteur, double angle, double x){
         if(nVecteur > 1){
             vecteurTrop = nVecteur -1;
-            PX = Math.sin(angle)*vecteurTrop;
+            PX = Math.cos(angle)*vecteurTrop;
             x = x-PX;
         }
         return x;
@@ -54,7 +52,7 @@ public class joySticksFonctions {
     public double normalisationCirculaireY(double nVecteur, double angle, double y){
         if(nVecteur > 1){
             vecteurTrop = nVecteur - 1;
-            PY = Math.cos(angle)*vecteurTrop;
+            PY = Math.sin(angle)*vecteurTrop;
             y = y-PY;
         }
         return y;

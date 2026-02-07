@@ -1,9 +1,7 @@
 package packageClermont.organe.joySticks;
 
-import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-@Config
 public class joyStickY {
     private  Telemetry telemetry;
     public joyStickY(Telemetry telemetry){

@@ -22,7 +22,7 @@ public class joyStickY {
         nouveauY = joyStickY.normalisationCirculaireY(nVecteur,nouveauY);
         //nouveauY = joyStickY.deadZoneY(angle, nVecteur, nouveauY);
         nVecteur = joyStickY.Power(nVecteur);
-        nouveauY = joyStickY.
+        nouveauY = joyStickY.calculageY(nVecteur, angle, nouveauY);
         telemetry.addData("angle", angle);
         telemetry.addData("nVecteur", nVecteur);
         telemetry.addData("nouveauX", nouveauX);

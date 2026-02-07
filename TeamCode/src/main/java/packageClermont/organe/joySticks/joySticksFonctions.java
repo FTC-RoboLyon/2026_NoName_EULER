@@ -75,6 +75,7 @@ public class joySticksFonctions {
     }
     public double calculageY(double nVecteur, double angle, double nouveauY){
         nouveauY = nVecteur*Math.cos(angle);
+        return nouveauY;
     }
 
 }

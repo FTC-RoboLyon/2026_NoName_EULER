@@ -4,6 +4,9 @@ public class joySticksFonctions {
     private double kp = 0.8;
     private double nVecteur;
     private double vDeadZone = 0.05;
+    public double PX;
+    public double PY;
+    public double vecteurTrop;
     public double angle;
     private double nouveauX;
     private double nouveauY;
@@ -29,15 +32,28 @@ public class joySticksFonctions {
     }
     public double normeVecteur(double x, double y) {
         nVecteur = Math.sqrt(x * x + y * y);
-        if(nVecteur > 1){
-            nVecteur  = 1;
-        }
         if(nVecteur < vDeadZone){
             nVecteur = 0;
         }else if(nVecteur >= vDeadZone){
             nVecteur = 1-vDeadZone*(nVecteur-vDeadZone);
         }
         return nVecteur;
+    }
+    public double normalisationCirculaireX(double nVecteur, double angle, double x){
+        if(nVecteur > 1){
+            vecteurTrop = nVecteur -1;
+            PX = Math.sin(angle)*vecteurTrop;
+            x = x-PX;
+        }
+        return x;
+    }
+    public double normalisationCirculaireY(double nVecteur, double angle, double y){
+        if(nVecteur > 1){
+            vecteurTrop = nVecteur - 1;
+            PY = Math.cos(angle)*vecteurTrop;
+            y = y-PY;
+        }
+        return y;
     }
     public double angle (double x, double y){
         angle = Math.atan(x/y);

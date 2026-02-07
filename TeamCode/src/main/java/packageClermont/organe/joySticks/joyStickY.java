@@ -14,8 +14,9 @@ public class joyStickY {
         nouveauY = joyStickY.repositionneY(x);
         nouveauX = joyStickY.smoothX(x, x1);
         nouveauY = joyStickY.smoothY(y, y1);
-        nVecteur = joyStickY.normeVecteur(nouveauX, nouveauY);
         angle = joyStickY.angle(nouveauX, nouveauY);
+        nVecteur = joyStickY.normeVecteur(nouveauX, nouveauY);
+        nouveauY = joyStickY.normalisationCirculaireY(nVecteur, angle, nouveauY);
         nouveauY = joyStickY.deadZoneY(angle, nVecteur, nouveauY);
         nouveauY = joyStickY.yPower(nouveauY);
         return nouveauY;

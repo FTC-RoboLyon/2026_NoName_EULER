@@ -8,4 +8,5 @@ public class Constant {
     public final static String FEEDER = "feeder";
     public final static String VISEUR = "viseur";
     public final static String  COMPTEUR_BALLE = "compteur balles";
+    public static double kp_shooter;
 }

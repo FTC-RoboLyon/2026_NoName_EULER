@@ -8,66 +8,66 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class jambes {
-    final DcMotor left_motor;
-    final DcMotor right_motor;
+    final DcMotor left_drive;
+    final DcMotor right_drive;
     final double Ticks_Per_Revolution = 0;  // a regler avec la valeur du site
     final double NB_Of_Revolution_Right = 0;
     final double NB_Of_Revolution_Left = 0;
 
 
     public jambes (HardwareMap hardware, DcMotor.RunMode runMode) {
-        left_motor = hardware.get(DcMotor.class, LEFT_MOTOR);
-        right_motor = hardware.get(DcMotor.class, RIGHT_MOTOR);
+        left_drive = hardware.get(DcMotor.class, LEFT_MOTOR);
+        right_drive = hardware.get(DcMotor.class, RIGHT_MOTOR);
 
-        left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        right_motor.setDirection(DcMotorSimple.Direction.FORWARD);
-        left_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        right_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        left_drive.setDirection(DcMotorSimple.Direction.REVERSE);
+        right_drive.setDirection(DcMotorSimple.Direction.FORWARD);
+        left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if (runMode == DcMotor.RunMode.RUN_USING_ENCODER){
-            left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            left_drive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            right_drive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            right_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         } else {
-            left_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            right_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            left_drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            right_drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
 
     public void drive(double valueLeftMotor, double valueRightMotor) {
 
-        left_motor.setPower(valueLeftMotor);
-        right_motor.setPower(valueRightMotor);
+        left_drive.setPower(valueLeftMotor);
+        right_drive.setPower(valueRightMotor);
     }
     public void run_to_pos(double leftDistance, double rightDistance){
-        left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_drive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right_drive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        right_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
     }
     public void turn_left() {
-        left_motor.setPower(-1);
-        right_motor.setPower(1);
+        left_drive.setPower(-1);
+        right_drive.setPower(1);
     }
     public void turn_right() {
-        left_motor.setPower(1);
-        right_motor.setPower(-1);
+        left_drive.setPower(1);
+        right_drive.setPower(-1);
     }
     public void forward () {
-        left_motor.setPower(1);
-        right_motor.setPower(1);
+        left_drive.setPower(1);
+        right_drive.setPower(1);
     }
     public void backward () {
-        left_motor.setPower(-1);
-        right_motor.setPower(-1);
+        left_drive.setPower(-1);
+        right_drive.setPower(-1);
     }
 
     public void stop () {
-        left_motor.setPower(0);
-        right_motor.setPower(0);
+        left_drive.setPower(0);
+        right_drive.setPower(0);
     }
 
 }

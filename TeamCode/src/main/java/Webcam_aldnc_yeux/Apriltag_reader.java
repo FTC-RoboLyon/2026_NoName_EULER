@@ -26,8 +26,7 @@ public class Apriltag_reader {
     private List<AprilTagDetection> detections = new ArrayList<>();
     private Telemetry telemetry;
 
-    public Apriltag_reader(HardwareMap hardware, Telemetry telemetry) {
-        this.telemetry = telemetry;
+    public Apriltag_reader(HardwareMap hardware) {
 
          aprilTag = new AprilTagProcessor.Builder()
                 .setDrawTagID(true)
@@ -40,12 +39,13 @@ public class Apriltag_reader {
 
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(hardware.get(WebcamName.class, "Webcam 1"));
-        builder.addProcessor(aprilTag);
-        builder.setCameraResolution(new Size(640, 480));
-        //.setStreamFormat(VisionPortal.StreamFormat.YUY2)
+        builder.setCameraResolution(new Size(1920, 1080));
+        builder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
         builder.setAutoStopLiveView(false);
-
+        builder.addProcessor(aprilTag);
         visionPortal = builder.build();
+        visionPortal.setProcessorEnabled(aprilTag, true);
+
 
 
 
@@ -72,17 +72,20 @@ public class Apriltag_reader {
         return tag;
     }
 
-    @SuppressLint("DefaultLocale")
-    public void telemetry(AprilTagDetection Detection){
-        if (Detection == null){return;}
-        if (Detection.metadata != null) {
-            telemetry.addLine(String.format("\n==== (ID %d) %s", Detection.id, Detection.metadata.name));
-            telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", Detection.ftcPose.x, Detection.ftcPose.y, Detection.ftcPose.z));
-            telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", Detection.ftcPose.pitch, Detection.ftcPose.roll, Detection.ftcPose.yaw));
-            telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", Detection.ftcPose.range, Detection.ftcPose.bearing, Detection.ftcPose.elevation));
-        } else {
-            telemetry.addLine(String.format("\n==== (ID %d) Unknown", Detection.id));
-            telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", Detection.center.x, Detection.center.y));
+    public void telemetry(Telemetry telemetry){
+        telemetry.addData("# AprilTags Detected", detections.size());
+
+        // Step through the list of detections and display info for each one.
+        for (AprilTagDetection detection : detections) {
+            if (detection.metadata != null) {
+                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+            } else {
+                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+            }
         }
     }
 

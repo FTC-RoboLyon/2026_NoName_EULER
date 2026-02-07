@@ -1,14 +1,18 @@
 package packageClermont.organe.joySticks;
 
-public class joystickX {
-    public joystickX(){
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+public class joystickX {
+    private Telemetry telemetry;
+    public joystickX(Telemetry telemetry){
+        this.telemetry = telemetry;
     }
     joySticksFonctions joyStickX = new joySticksFonctions();
     private double nouveauX;
     private double nouveauY;
     private double nVecteur;
     private double angle;
+
     public double joyStickXPara(float x, double x1, float y, double y1){
         nouveauX = joyStickX.repositionneX(y);
         nouveauY = joyStickX.repositionneY(x);
@@ -19,6 +23,10 @@ public class joystickX {
         nouveauX = joyStickX.normalisationCirculaireX(nVecteur, angle,nouveauX);
         nouveauX = joyStickX.deadZoneX(angle, nVecteur, nouveauX);
         nouveauX = joyStickX.xPower(nouveauX);
+        telemetry.addData("angle", angle);
+        telemetry.addData("nouveauX", nouveauX);
+        telemetry.addData("nouveauY", nouveauY);
+        telemetry.addData("nVecteur", nVecteur);
         return nouveauX;
     }
 

@@ -71,7 +71,7 @@ public class ALDNC_brain extends LinearOpMode {
         bouche_intake Intake = new bouche_intake(hardwareMap);
         viseur Volet = new viseur(hardwareMap);
 
-        Apriltag_reader aprilJoke = new Apriltag_reader(hardwareMap, telemetry);
+        Apriltag_reader aprilJoke = new Apriltag_reader(hardwareMap);
 
 
 
@@ -204,7 +204,20 @@ public class ALDNC_brain extends LinearOpMode {
             telemetry.addData("posfeed", Feeder.getposition());
             telemetry.addData("Distance", compteurBalle.getDistance(DistanceUnit.CM));
             telemetry.addLine(shooter.isShooting ? "Shooter allumé" : "Shooter éteint");
-            aprilJoke.telemetry(actual_april);
+            telemetry.addData("# AprilTags Detected", aprilJoke.getdetections().size());
+
+            // Step through the list of detections and display info for each one.
+            for (AprilTagDetection detection : aprilJoke.getdetections()) {
+                if (detection.metadata != null) {
+                    telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                    telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+                    telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+                    telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+                } else {
+                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                    telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+                }
+            }
 
 
 

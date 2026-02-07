@@ -67,8 +67,8 @@ public class brain extends LinearOpMode {
         Shooter shooter1 = new Shooter(shooter);
         Feeder feeder1 = new Feeder(feeder);
         Viseur viseur1 = new Viseur(viseur);
-        joyStickY joyStickY = new joyStickY();
-        joystickX joystickX = new joystickX();
+        joyStickY joyStickY = new joyStickY(telemetry);
+        joystickX joystickX = new joystickX(telemetry);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();

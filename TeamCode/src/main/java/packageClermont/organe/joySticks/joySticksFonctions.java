@@ -1,7 +1,9 @@
 package packageClermont.organe.joySticks;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class joySticksFonctions {
-    private double kp = 0.8;
+    private double kp = 0.95;
     private double nVecteur;
     private double vDeadZone = 0.05;
     public double PX;
@@ -56,7 +58,7 @@ public class joySticksFonctions {
         return y;
     }
     public double angle (double x, double y){
-        angle = Math.atan(x/y);
+        angle = Math.atan(y/x);
         return angle;
     }
     public double deadZoneX(double angle, double nVecteur, double x){
@@ -71,6 +73,7 @@ public class joySticksFonctions {
         x = Math.pow(x, vPower);
         return x;
     }
+
     public double yPower(double y){
         y = Math.pow(y, vPower);
         return y;

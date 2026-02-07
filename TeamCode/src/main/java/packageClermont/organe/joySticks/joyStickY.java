@@ -1,8 +1,11 @@
 package packageClermont.organe.joySticks;
 
-public class joyStickY {
-    public joyStickY(){
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+public class joyStickY {
+    private  Telemetry telemetry;
+    public joyStickY(Telemetry telemetry){
+        this.telemetry = telemetry;
     }
     joySticksFonctions joyStickY = new joySticksFonctions();
     private double nouveauX;
@@ -19,6 +22,10 @@ public class joyStickY {
         nouveauY = joyStickY.normalisationCirculaireY(nVecteur, angle, nouveauY);
         nouveauY = joyStickY.deadZoneY(angle, nVecteur, nouveauY);
         nouveauY = joyStickY.yPower(nouveauY);
+        telemetry.addData("angle", angle);
+        telemetry.addData("nouveauX", nouveauX);
+        telemetry.addData("nouveauY", nouveauY);
+        telemetry.addData("nVecteur", nVecteur);
         return nouveauY;
     }
 }

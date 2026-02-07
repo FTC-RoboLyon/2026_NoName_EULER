@@ -23,9 +23,9 @@ public class joystickX {
         nouveauX = joyStickX.normalisationCirculaireX(nVecteur,nouveauX);
         //nouveauX = joyStickX.deadZoneX(angle, nVecteur, nouveauX);
         nVecteur = joyStickX.Power(nVecteur);
-        nouveauX = joyStickX.calculageX(nVecteur, angle, nouveauX);
-        telemetry.addData("angle", angle);
-        telemetry.addData("nVecteur", nVecteur);
+        //nouveauX = joyStickX.calculageX(nVecteur, angle, nouveauX);
+        //telemetry.addData("angle", angle);
+        //telemetry.addData("nVecteur", nVecteur);
         telemetry.addData("nouveauX", nouveauX);
         telemetry.addData("nouveauY", nouveauY);
         return nouveauX;

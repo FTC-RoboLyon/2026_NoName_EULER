@@ -1,5 +1,7 @@
 package packageClermont.organe;
 
+import static java.lang.Math.pow;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -19,7 +21,15 @@ public class jambes {
     }
 
     public void jambage(double value_jambeDroite, double value_jambeGauche){
-        jambe_gauche.setPower(value_jambeGauche);
-        jambe_droite.setPower(value_jambeDroite);
+        if(value_jambeDroite >= 0){
+            jambe_droite.setPower(Math.pow(value_jambeDroite, 2));
+        }else if(value_jambeDroite < 0){
+            jambe_droite.setPower(-Math.pow(value_jambeDroite, 2));
+        }
+        if(value_jambeGauche >= 0){
+            jambe_gauche.setPower(Math.pow(value_jambeGauche, 2));
+        }else if(value_jambeGauche < 0){
+            jambe_gauche.setPower(-Math.pow(value_jambeGauche, 2));
+        }
     }
 }

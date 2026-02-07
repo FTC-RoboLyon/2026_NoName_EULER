@@ -3,6 +3,8 @@ package FRC_ALDNC.programmes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
 import FRC_ALDNC.SubSystem.Drive_Train;
 import FRC_ALDNC.SubSystem.Shooter_Subsystem;
 import Webcam_aldnc_yeux.Apriltag_reader;
@@ -17,6 +19,7 @@ public class FRC_ALDNC_firtsprogramme extends LinearOpMode {
     double y1 = 0;
     double value_jambeDroite;
     double value_jambeGauche;
+    AprilTagDetection red_target_april;
     @Override
     public void runOpMode() throws InterruptedException {
         Drive_Train chassis = new Drive_Train(hardwareMap);
@@ -38,9 +41,13 @@ public class FRC_ALDNC_firtsprogramme extends LinearOpMode {
             chassis.drive(value_jambeGauche, value_jambeDroite);
             chassis.periodic();
 
+            red_target_april = apriljoke.getAprilTagById(24);
             apriljoke.updtade();
             if (gamepad1.left_stick_button){
-                chassis.align_rotation(0, apriljoke.getAprilTagById(24).ftcPose.bearing);
+                if (red_target_april != null){
+                    chassis.align_rotation(0, red_target_april.ftcPose.bearing);
+
+                }
             }
 
         }

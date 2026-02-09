@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.util.Size;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -45,6 +46,7 @@ public class Apriltag_reader {
         builder.addProcessor(aprilTag);
         visionPortal = builder.build();
         visionPortal.setProcessorEnabled(aprilTag, true);
+        FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
 
 
 

@@ -1,14 +1,15 @@
 package packageClermont.organe;
 
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
-@Config
+
 public class Shooter {
     public DcMotorEx shooter;
     public Shooter(DcMotorEx shooter){
@@ -21,11 +22,11 @@ public class Shooter {
 
     }
 
-    PIDFCoefficients pidf = new PIDFCoefficients(p, i, d, f);
-    public static double p = 1400;
-    public static double i = 0.0;
-    public static double d = 0.0;
-    public static double f = 0.0;
+    //PIDFCoefficients pidf = new PIDFCoefficients(p, i, d, f);
+    public double p = 1400;
+    public double i = 0.0;
+    public double d = 0.0;
+    public double f = 0.0;
     private double powerShooter = 0.0;
     private double powerShooterBank = 0.0;
     private double powerShooterMid = 0.0;
@@ -37,8 +38,6 @@ public class Shooter {
     //private float veloShooterMid = 2900;
     private float veloShooterMid = 1200;
     private float veloShooter = veloShooterBank;
-    double realVelo;
-    double erreur;
     public void Tir_using_velo(boolean b,
                      boolean a,
                      boolean y,
@@ -48,13 +47,11 @@ public class Shooter {
                      boolean DpadLeft,
                      boolean up,
                      boolean down){
-        realVelo = shooter.getVelocity();
-        erreur = veloShooter - realVelo;
 
         if(isShooting) {
             shooter.setVelocity(veloShooter);
         } else if(rightTrigger > 0.2){
-            shooter.setPower(-0.3);
+            shooter.setVelocity(-200);
         }else{
             shooter.setPower(0);
         }
@@ -94,23 +91,45 @@ public class Shooter {
         return veloShooter;
     }
     public void updatePID(){
-        pidf = new PIDFCoefficients(p, i, d, f);
+        //pidf = new PIDFCoefficients(p, i, d, f);
         shooter.setVelocityPIDFCoefficients(p, i, d, f);
     }
-    public double p(boolean deux_aWpr,
+    public void p(boolean deux_aWpr,
                     boolean deux_bWpr,
                     boolean deux_yWpr,
-                    boolean deux_xWpr) {
+                    boolean deux_xWpr,
+                    Telemetry tele) {
         if (deux_aWpr) {
-            p = p + 0.5;
+            p = p - 5;
+            tele.addData("blabla", "1");
         } else if (deux_bWpr) {
-            p = p + 1;
+            p = p + 5;
+            tele.addData("blabla", "2");
         } else if (deux_yWpr) {
-            p = p - 0.5;
+            p = p - 10;
+            tele.addData("blabla", "3");
         } else if (deux_xWpr) {
-            p = p - 1;
+            p = p + 10;
+            tele.addData("blabla", "4");
         }
-        return p;
+        updatePID();
+        tele.addData("p", p);
     }
+
+    public void d(Gamepad gamepad2, Telemetry tele){
+        if(gamepad2.aWasPressed()){
+            d = d+5;
+        }else if(gamepad2.yWasPressed()){
+            d  = d-5;
+        }else if(gamepad2.bWasPressed()){
+            d = d+10;
+        }else if(gamepad2.xWasPressed()){
+            d  = d-10;
+        }
+        tele.addData("d", d);
+
+    }
+
+
 
 }

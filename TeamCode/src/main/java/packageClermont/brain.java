@@ -40,6 +40,7 @@ public class brain extends LinearOpMode {
     float x;
     float y;
 
+
     boolean isShooting = false;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -99,22 +100,25 @@ public class brain extends LinearOpMode {
                     gamepad1.y,
                     isShooting,
                     gamepad1.right_trigger,
-                    gamepad2.dpadLeftWasPressed(),
-                    gamepad2.dpadRightWasPressed(),
-                    gamepad2.dpadUpWasPressed(),
-                    gamepad2.dpadDownWasPressed());
+                    gamepad1.dpadLeftWasPressed(),
+                    gamepad1.dpadRightWasPressed(),
+                    gamepad1.dpadUpWasPressed(),
+                    gamepad1.dpadDownWasPressed());
             veloProg = shooter1.veloShooter(gamepad1.b,
                     gamepad1.a,
                     gamepad1.y,
-                    gamepad2.dpadLeftWasPressed(),
-                    gamepad2.dpadRightWasPressed(),
-                    gamepad2.dpadUpWasPressed(),
-                    gamepad2.dpadDownWasPressed());
-            /*p = shooter1.p(gamepad1.dpadDownWasPressed(),
+                    gamepad1.dpadLeftWasPressed(),
                     gamepad1.dpadRightWasPressed(),
                     gamepad1.dpadUpWasPressed(),
-                    gamepad1.dpadLeftWasPressed());
-            powerShooter = shooter1.powerShooter(gamepad2.aWasPressed(),
+                    gamepad1.dpadDownWasPressed());
+
+
+            shooter1.p(gamepad2.dpadDownWasPressed(),
+                    gamepad2.dpadRightWasPressed(),
+                    gamepad2.dpadUpWasPressed(),
+                    gamepad2.dpadLeftWasPressed(), telemetry);
+            shooter1.d(gamepad2, telemetry);
+            /*powerShooter = shooter1.powerShooter(gamepad2.aWasPressed(),
                     gamepad2.bWasPressed(),
                     gamepad2.yWasPressed(),
                     gamepad2.xWasPressed());*/
@@ -137,9 +141,10 @@ public class brain extends LinearOpMode {
             VeloFion = shooter.getVelocity();
             PidCoef = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            //telemetry.addData("p", p);
             telemetry.addData("vitesse", shooter.getVelocity());
             telemetry.addData("velo programmée", veloProg);
+            //telemetry.addData("p", shooter1.getP());
+            telemetry.addData("bouton", gamepad2.dpad_down);
             //telemetry.addData("velo", VeloFion);
             //telemetry.addData("posviseur", viseur1.viseur.getPosition());
             //telemetry.addData("Tension", powerShooter);

@@ -1,7 +1,7 @@
 package packageClermont.organe.joySticks;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+@Config
 public class joySticksFonctions {
     private double kp = 0.25;
     private double nVecteur;

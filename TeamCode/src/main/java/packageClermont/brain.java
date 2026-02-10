@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -34,7 +35,7 @@ public class brain extends LinearOpMode {
     public PIDFCoefficients PidCoef;
     double value_jambeDroite;
     double value_jambeGauche;
-    float veloProg;
+    double veloProg;
     double x1 = 0;
     double y1 = 0;
     float x;
@@ -83,16 +84,22 @@ public class brain extends LinearOpMode {
             x1 = rightX;
             y1 = leftY;
 
-            value_jambeDroite = rightX - leftY;
-            value_jambeGauche = rightX + leftY;
+            if(gamepad1.left_bumper){
+                leftY = leftY /1.5;
+            }
             if(gamepad1.rightBumperWasPressed()){
                 isShooting = !isShooting;
             }
             if(isShooting){
-                value_jambeDroite = value_jambeDroite/2;
-                value_jambeGauche = value_jambeGauche/2;
+                rightX = rightX/1.3;
+                leftY = leftY/1.3;
             }
-            jambes.jambage(value_jambeDroite, value_jambeGauche);
+
+
+            value_jambeDroite = rightX - leftY;
+            value_jambeGauche = rightX + leftY;
+
+            jambes.jambage(value_jambeDroite, value_jambeGauche, gamepad1);
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
             apriljoke.updtade();
             shooter1.Tir_using_velo(gamepad1.b,

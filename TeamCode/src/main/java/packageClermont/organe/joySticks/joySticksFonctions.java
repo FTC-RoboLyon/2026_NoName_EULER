@@ -1,9 +1,15 @@
 package packageClermont.organe.joySticks;
 
+import static packageClermont.organe.jambes.variablePower;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-@Config
+import com.qualcomm.robotcore.hardware.Gamepad;
+import packageClermont.organe.jambes;
+
+
+
 public class joySticksFonctions {
-    private double kp = 0.25;
+    private double ksmouth = 0.25;
     private double nVecteur;
     private double vDeadZone = 0.05;
     public double PX;
@@ -16,6 +22,7 @@ public class joySticksFonctions {
     public joySticksFonctions(){
 
     }
+
     public double repositionneX(float y){
         nouveauX = -y;
         return nouveauX;
@@ -25,11 +32,11 @@ public class joySticksFonctions {
         return nouveauY;
     }
     public double smoothX(double nouveauX, double vieuxX){
-        nouveauX = vieuxX + (nouveauX - vieuxX)*kp;
+        nouveauX = vieuxX + (nouveauX - vieuxX)*ksmouth;
         return nouveauX;
     }
     public double smoothY(double nouveauY, double vieuxY){
-        nouveauY = vieuxY + (nouveauY - vieuxY)*kp;
+        nouveauY = vieuxY + (nouveauY - vieuxY)*ksmouth;
         return nouveauY;
     }
     public double normeVecteur(double x, double y) {

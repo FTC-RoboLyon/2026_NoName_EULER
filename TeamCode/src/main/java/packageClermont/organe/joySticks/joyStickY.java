@@ -1,7 +1,13 @@
 package packageClermont.organe.joySticks;
 
 
+import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+
 public class joyStickY {
     private  Telemetry telemetry;
     public joyStickY(Telemetry telemetry){

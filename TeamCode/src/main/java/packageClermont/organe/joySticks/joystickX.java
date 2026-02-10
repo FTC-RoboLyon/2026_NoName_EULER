@@ -1,6 +1,8 @@
 package packageClermont.organe.joySticks;
 
 
+import com.qualcomm.robotcore.hardware.Gamepad;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class joystickX {
     private Telemetry telemetry;

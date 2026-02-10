@@ -25,19 +25,19 @@ public class Shooter {
     //PIDFCoefficients pidf = new PIDFCoefficients(p, i, d, f);
     public double p = 1400;
     public double i = 0.0;
-    public double d = 0.0;
+    public double d = 200;
     public double f = 0.0;
     private double powerShooter = 0.0;
     private double powerShooterBank = 0.0;
     private double powerShooterMid = 0.0;
     private double powerShooterFar = 0.0;
     //private float veloShooterBank = 2300;
-    private float veloShooterBank = 900;
+    private double veloShooterBank = 900;
     //private float veloShooterFar = 3600;
-    private float veloShooterFar = 1400;
+    private double veloShooterFar = 1400;
     //private float veloShooterMid = 2900;
-    private float veloShooterMid = 1200;
-    private float veloShooter = veloShooterBank;
+    private double veloShooterMid = 1200;
+    private double veloShooter = veloShooterBank;
     public void Tir_using_velo(boolean b,
                      boolean a,
                      boolean y,
@@ -73,7 +73,7 @@ public class Shooter {
         return powerShooter;
     }
 
-    public float veloShooter (boolean b,
+    public double veloShooter (boolean b,
                      boolean a,
                      boolean y,
                      boolean DpadRightWpr,

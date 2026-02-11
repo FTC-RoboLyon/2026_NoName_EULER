@@ -6,6 +6,8 @@ import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -22,10 +24,11 @@ import java.util.List;
 
 public class Apriltag_reader {
 
-    public static AprilTagProcessor aprilTag ;
+    public static AprilTagProcessor aprilTag;
     private  VisionPortal visionPortal;
     private List<AprilTagDetection> detections = new ArrayList<>();
     private Telemetry telemetry;
+
 
     public Apriltag_reader(HardwareMap hardware) {
 
@@ -51,6 +54,20 @@ public class Apriltag_reader {
 
 
 
+    }
+    public double getTagXInPixels(int tagId) {
+        AprilTagDetection tag = getAprilTagById(tagId);
+        if (tag == null) return 0; // Aucun tag trouvé
+        int imageWidth = 1920; // largeur de la caméra en pixels
+        return tag.center.x - (imageWidth / 2.0);
+    }
+
+    // Récupère la position X normalisée entre -1 et 1, pratique pour PID
+    public double getTagXNormalized(int tagId) {
+        AprilTagDetection tag = getAprilTagById(tagId);
+        if (tag == null) return 0; // Aucun tag trouvé
+        int imageWidth = 1920;
+        return (tag.center.x - (imageWidth / 2.0)) / (imageWidth / 2.0);
     }
 
     public List<AprilTagDetection> getdetections() {

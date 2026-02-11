@@ -1,7 +1,7 @@
 package packageClermont;
 
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -25,9 +25,11 @@ import packageClermont.organe.jambes;
 import packageClermont.organe.Shooter;
 import packageClermont.organe.joySticks.joyStickY;
 import packageClermont.organe.joySticks.joystickX;
-@Config
+//@Config
 @TeleOp(name = "Compet_brain", group = "Euler")
 public class brain extends LinearOpMode {
+    private double p = 200;
+    private double erreur;
     public double visionX;
     public double VeloFion;
     double rightX;
@@ -41,7 +43,7 @@ public class brain extends LinearOpMode {
     double y1 = 0;
     float x;
     float y;
-    public  static  double vvision = 0.2;
+    public  static  double vvision = 0;
 
 
     boolean isShooting = false;
@@ -58,8 +60,8 @@ public class brain extends LinearOpMode {
         //Power_far = (Power_far * seuil_shootter) / voltage;
         boolean isShooting = false;
         int nbeBallesIn = 0;
-        DcMotor jambe_droite = hardwareMap.get(DcMotor.class,RIGHT_MORTOR);
-        DcMotor jambe_gauche = hardwareMap.get(DcMotor.class , LEFT_MOTOR);
+        DcMotorEx jambe_droite = hardwareMap.get(DcMotorEx.class,RIGHT_MORTOR);
+        DcMotorEx jambe_gauche = hardwareMap.get(DcMotorEx.class , LEFT_MOTOR);
         DcMotorEx machoire = hardwareMap.get(DcMotorEx.class, INTAKE);
         DcMotorEx shooter = hardwareMap.get(DcMotorEx.class , SHOOTER);
         Servo feeder = hardwareMap.get(Servo.class, FEEDER);
@@ -106,12 +108,13 @@ public class brain extends LinearOpMode {
 
             apriljoke.updtade();
             visionX = apriljoke.getTagXNormalized(24);
+            erreur = visionX;
             if(visionX > 0){
-                jambe_droite.setPower(-vvision);
-                jambe_gauche.setPower(vvision);
+                jambe_droite.setVelocity(-vvision - p*erreur);
+                jambe_gauche.setVelocity(vvision + p*erreur);
             }else if(visionX < 0){
-                jambe_droite.setPower(vvision);
-                jambe_gauche.setPower(-vvision);
+                jambe_droite.setVelocity(vvision + p*erreur);
+                jambe_gauche.setVelocity(-vvision - p*erreur);
             }else if(visionX == 0){
                 jambe_droite.setPower(0);
                 jambe_gauche.setPower(0);

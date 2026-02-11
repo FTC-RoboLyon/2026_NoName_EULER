@@ -26,6 +26,6 @@ public class Shoot_a_ball_command extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return super.isFinished();
+        return true;
     }
 }

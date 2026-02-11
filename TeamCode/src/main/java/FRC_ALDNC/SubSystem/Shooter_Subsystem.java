@@ -1,16 +1,15 @@
 package FRC_ALDNC.SubSystem;
 
-import static FRC_ALDNC.Constant.SHOOTER;
-import static FRC_ALDNC.Constant.VISEUR;
-import static FRC_ALDNC.Constant.posviseur_bank;
-import static FRC_ALDNC.Constant.posviseur_far;
-import static FRC_ALDNC.Constant.posviseur_mid;
-import static FRC_ALDNC.Constant.shooter_velo_tolerance;
-import static FRC_ALDNC.Constant.velo_shoot_bank;
-import static FRC_ALDNC.Constant.velo_shoot_far;
-import static FRC_ALDNC.Constant.velo_shoot_mid;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.SHOOTER;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.VISEUR;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posviseur_bank;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posviseur_far;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posviseur_mid;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.shooter_velo_tolerance;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_bank;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_far;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_mid;
 
-import com.acmerobotics.dashboard.DashboardCore;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -23,8 +22,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import lib.Dashboard;
 import lib.Utils;
-import packageClermont.organe.Shooter;
-@Config
+
+
 public class Shooter_Subsystem extends SubsystemBase {
     public DcMotorEx shooter;
     public Servo viseur;

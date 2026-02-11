@@ -4,7 +4,6 @@ import static ALDNC_organe.Constant.COMPTEUR_BALLE;
 import static ALDNC_organe.Constant.INTAKE;
 
 import android.annotation.SuppressLint;
-import android.util.Size;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,15 +13,11 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import com.qualcomm.robotcore.util.Range;
 
 
-import Webcam_aldnc_yeux.Apriltag_reader;
+import FRC_ALDNC.SubSystem.Apriltag_reader;
 import Webcam_aldnc_yeux.Vrai_vision;
 
 @TeleOp(name = "ALDNC_brain", group = "Euler")

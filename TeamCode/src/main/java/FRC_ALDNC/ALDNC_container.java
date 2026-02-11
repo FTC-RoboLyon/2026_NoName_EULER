@@ -2,7 +2,7 @@ package FRC_ALDNC;
 
 
 
-import com.qualcomm.robotcore.hardware.Gamepad;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.arcrobotics.ftclib.command.button.Button;
@@ -17,7 +17,9 @@ import FRC_ALDNC.SubSystem.joystick_subsystem;
 import FRC_ALDNC.commands.Drive_command;
 import FRC_ALDNC.commands.Let_a_ball_pass;
 import FRC_ALDNC.commands.Shoot_a_ball_command;
-import Webcam_aldnc_yeux.Apriltag_reader;
+import FRC_ALDNC.commands.Collect_command;
+import FRC_ALDNC.commands.Configure_shooter;
+import FRC_ALDNC.SubSystem.Apriltag_reader;
 
 public class ALDNC_container{
     Drive_Train chassis_subsystem;
@@ -37,7 +39,7 @@ public class ALDNC_container{
     public double m_voltageSensorValue;
     VoltageSensor voltageSensor;
 
-    public ALDNC_container (HardwareMap hmap, RobotMode wich_programme, Gamepad gamepad, Telemetry telemetry){
+    public ALDNC_container (HardwareMap hmap, RobotMode wich_programme, GamepadEx gamepad, Telemetry telemetry){
         chassis_subsystem = new Drive_Train(hmap);
         shooter_subsystem = new Shooter_Subsystem(hmap);
         intake = new Intake_subsystem(hmap);
@@ -57,11 +59,21 @@ public class ALDNC_container{
             Button shoot_mid_button,
             Button shoot_far_butto,
             Button intake_button){
+
         feeder_button.whenPressed(new Shoot_a_ball_command(shooter_subsystem, feeder));
         feeder_button.whenReleased(new Let_a_ball_pass(feeder));
 
+        intake_button.whenPressed(new Collect_command(intake, Intake_subsystem.WantedState.COLLECT));
+        intake_button.whenReleased(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
 
+        shoot_bank_button.whenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.SHOOT_BANK));
+        shoot_bank_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
+        shoot_mid_button.whenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.SHOOT_MID));
+        shoot_mid_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
+
+        shoot_far_butto.whenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.SHOOT_FAR));
+        shoot_far_butto.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
     }
     public void ActualiseVoltageSensorValue()
     {

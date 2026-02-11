@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import Webcam_aldnc_yeux.vision_opencv;
-import Webcam_aldnc_yeux.Apriltag_reader;
+import FRC_ALDNC.SubSystem.Apriltag_reader;
 
 @Autonomous (name = "ALDNC_auto", group = "Euler")
 public class ALDNC_auto extends LinearOpMode {

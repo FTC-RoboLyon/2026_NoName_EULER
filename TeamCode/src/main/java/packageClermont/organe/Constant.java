@@ -2,7 +2,6 @@ package packageClermont.organe;
 
 import com.acmerobotics.dashboard.config.Config;
 
-@Config
 public class Constant {
     public final static String LEFT_MOTOR = "left motor";
     public final static String RIGHT_MORTOR = "right motor";

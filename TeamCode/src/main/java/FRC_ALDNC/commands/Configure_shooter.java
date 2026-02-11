@@ -4,10 +4,11 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import FRC_ALDNC.SubSystem.Shooter_Subsystem;
 
-public class prepare_the_shoot extends CommandBase {
+public class Configure_shooter extends CommandBase {
     Shooter_Subsystem shooter;
+
     Shooter_Subsystem.WantedState postir;
-    public prepare_the_shoot(Shooter_Subsystem shooter, Shooter_Subsystem.WantedState postir){
+    public Configure_shooter(Shooter_Subsystem shooter, Shooter_Subsystem.WantedState postir){
         this.shooter = shooter;
         this.postir = postir;
         addRequirements(shooter);

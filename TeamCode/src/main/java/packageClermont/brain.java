@@ -1,11 +1,11 @@
 package packageClermont;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -17,7 +17,7 @@ import static packageClermont.organe.Constant.RIGHT_MORTOR;
 import static packageClermont.organe.Constant.SHOOTER;
 import static packageClermont.organe.Constant.VISEUR;
 
-import Webcam_aldnc_yeux.Apriltag_reader;
+import FRC_ALDNC.SubSystem.Apriltag_reader;
 import packageClermont.organe.Feeder;
 import packageClermont.organe.Viseur;
 import packageClermont.organe.bouche;
@@ -25,7 +25,7 @@ import packageClermont.organe.jambes;
 import packageClermont.organe.Shooter;
 import packageClermont.organe.joySticks.joyStickY;
 import packageClermont.organe.joySticks.joystickX;
-
+@Config
 @TeleOp(name = "Compet_brain", group = "Euler")
 public class brain extends LinearOpMode {
     public double visionX;
@@ -41,6 +41,7 @@ public class brain extends LinearOpMode {
     double y1 = 0;
     float x;
     float y;
+    public  static  double vvision = 0.2;
 
 
     boolean isShooting = false;
@@ -103,14 +104,14 @@ public class brain extends LinearOpMode {
             jambes.jambage(value_jambeDroite, value_jambeGauche, gamepad1);
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);*/
 
-            //apriljoke.updtade();
-            visionX = apriljoke.getTagXNormalized(1);
+            apriljoke.updtade();
+            visionX = apriljoke.getTagXNormalized(24);
             if(visionX > 0){
-                jambe_droite.setPower(-0.1);
-                jambe_gauche.setPower(0.1);
+                jambe_droite.setPower(-vvision);
+                jambe_gauche.setPower(vvision);
             }else if(visionX < 0){
-                jambe_droite.setPower(0.1);
-                jambe_gauche.setPower(-0.1);
+                jambe_droite.setPower(vvision);
+                jambe_gauche.setPower(-vvision);
             }else if(visionX == 0){
                 jambe_droite.setPower(0);
                 jambe_gauche.setPower(0);

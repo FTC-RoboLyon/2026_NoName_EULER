@@ -1,14 +1,14 @@
 package FRC_ALDNC.SubSystem;
 
-import static FRC_ALDNC.Constant.coef_smooth_stickleft;
-import static FRC_ALDNC.Constant.coef_smooth_stickright;
-import static FRC_ALDNC.Constant.deadzone_stickright;
-import static FRC_ALDNC.Constant.deadzone_sticktleft;
-import static FRC_ALDNC.Constant.vpower_stickleft;
-import static FRC_ALDNC.Constant.vpower_stickright;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.coef_smooth_stickleft;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.coef_smooth_stickright;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.deadzone_stickright;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.deadzone_sticktleft;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.vpower_stickleft;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.vpower_stickright;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.qualcomm.robotcore.hardware.Gamepad;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 public class joystick_subsystem extends SubsystemBase {
 
@@ -27,10 +27,10 @@ public class joystick_subsystem extends SubsystemBase {
         left, right
     }
     private Witch_stick stick;
-    private Gamepad gamepad;
+    private GamepadEx gamepad;
     public static Drive_Train driveTrain;
 
-    public joystick_subsystem(Gamepad gamepad, Witch_stick witchStick, Drive_Train driveTrain1){
+    public joystick_subsystem(GamepadEx gamepad, Witch_stick witchStick, Drive_Train driveTrain1){
         driveTrain = driveTrain1;
         this.gamepad = gamepad;
         if (witchStick == Witch_stick.left){
@@ -48,14 +48,12 @@ public class joystick_subsystem extends SubsystemBase {
     }
     public void actualise(){
         if (stick == Witch_stick.left){
-            nouveauX = -gamepad.left_stick_y;
-            nouveauY = gamepad.left_stick_x;
+            nouveauX = -gamepad.getLeftY();
+            nouveauY = gamepad.getLeftX();
         } else if (stick == Witch_stick.right){
-            nouveauX = -gamepad.right_stick_y;
-            nouveauY = gamepad.right_stick_x;
+            nouveauX = -gamepad.getRightY();
+            nouveauY = gamepad.getRightX();
         }
-        nouveauX = X_brut;
-        nouveauY = Y_brut;
     }
     public void repositionneX(){
         nouveauX = -Y_brut;

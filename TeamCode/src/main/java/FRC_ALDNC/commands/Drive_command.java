@@ -26,4 +26,9 @@ public class Drive_command extends CommandBase {
         chassi.drive(stick_left.getX(), stick_right.getY());
         telemetry.addLine("I am executing");
     }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

@@ -1,16 +1,12 @@
 package FRC_ALDNC.SubSystem;
 
-import static FRC_ALDNC.Constant.FEEDER;
-import static FRC_ALDNC.Constant.posFeed;
-import static FRC_ALDNC.Constant.posFeedrepos;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.FEEDER;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posFeed;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posFeedrepos;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import lib.Dashboard;
-import packageClermont.organe.Feeder;
 
 public class Feeder_subsystem extends SubsystemBase {
     Servo feeder;

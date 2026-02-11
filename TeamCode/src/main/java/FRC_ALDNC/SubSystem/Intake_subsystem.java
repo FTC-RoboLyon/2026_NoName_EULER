@@ -1,8 +1,8 @@
 package FRC_ALDNC.SubSystem;
 
-import static FRC_ALDNC.Constant.COMPTEUR_BALLE;
-import static FRC_ALDNC.Constant.INTAKE;
-import static FRC_ALDNC.Constant.distance_ou_le_capteur_detecte_balle;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.COMPTEUR_BALLE;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.INTAKE;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.distance_ou_le_capteur_detecte_balle;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,8 +11,6 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import lib.Dashboard;
 
 public class Intake_subsystem extends SubsystemBase {
     DcMotor intake;

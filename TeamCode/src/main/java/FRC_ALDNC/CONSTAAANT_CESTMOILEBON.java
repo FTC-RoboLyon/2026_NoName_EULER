@@ -3,7 +3,7 @@ package FRC_ALDNC;
 import com.acmerobotics.dashboard.config.Config;
 
 @Config
-public class Constant {
+public class CONSTAAANT_CESTMOILEBON {
     public static String LEFT_MOTOR = "left motor", RIGHT_MOTOR = "right motor", INTAKE = "intake", SHOOTER = "shooter", FEEDER = "feeder", VISEUR = "viseur", COMPTEUR_BALLE = "compteur balles";
     public static double ShooterKP= 1400, ShooterKI = 0.0, ShooterKD = 0.0; //TUNEME
     public static double rotation_P,rotation_I,rotation_D = 0 ; //tunme

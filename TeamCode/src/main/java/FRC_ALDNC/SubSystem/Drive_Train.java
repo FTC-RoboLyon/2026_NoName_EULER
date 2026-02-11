@@ -1,9 +1,9 @@
 package FRC_ALDNC.SubSystem;
 import static ALDNC_organe.Constant.LEFT_MOTOR;
 import static ALDNC_organe.Constant.RIGHT_MOTOR;
-import static FRC_ALDNC.Constant.rotation_D;
-import static FRC_ALDNC.Constant.rotation_I;
-import static FRC_ALDNC.Constant.rotation_P;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_D;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_I;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_P;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
@@ -14,7 +14,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import lib.PidRBL;
-@Config
 public class Drive_Train extends SubsystemBase {
     DcMotor left_drive, right_drive;
     private double left_motor_power, right_motor_power;

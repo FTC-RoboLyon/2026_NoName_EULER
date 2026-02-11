@@ -110,11 +110,11 @@ public class brain extends LinearOpMode {
             visionX = apriljoke.getTagXNormalized(24);
             erreur = visionX;
             if(visionX > 0){
-                jambe_droite.setVelocity(-vvision - p*erreur);
-                jambe_gauche.setVelocity(vvision + p*erreur);
+                jambe_droite.setVelocity(-vvision - (p*erreur));
+                jambe_gauche.setVelocity(vvision + (p*erreur));
             }else if(visionX < 0){
-                jambe_droite.setVelocity(vvision + p*erreur);
-                jambe_gauche.setVelocity(-vvision - p*erreur);
+                jambe_droite.setVelocity(vvision + (p*erreur));
+                jambe_gauche.setVelocity(-vvision - (p*erreur));
             }else if(visionX == 0){
                 jambe_droite.setPower(0);
                 jambe_gauche.setPower(0);

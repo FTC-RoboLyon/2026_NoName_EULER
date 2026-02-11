@@ -1,6 +1,9 @@
 package FRC_ALDNC.SubSystem;
 import static ALDNC_organe.Constant.LEFT_MOTOR;
 import static ALDNC_organe.Constant.RIGHT_MOTOR;
+import static FRC_ALDNC.Constant.rotation_D;
+import static FRC_ALDNC.Constant.rotation_I;
+import static FRC_ALDNC.Constant.rotation_P;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
@@ -8,12 +11,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import lib.PidRBL;
 @Config
 public class Drive_Train extends SubsystemBase {
     DcMotor left_drive, right_drive;
     private double left_motor_power, right_motor_power;
-    public static double rotation_P,rotation_I,rotation_D = 0 ;
     public static PidRBL rotattion_Pid = new PidRBL(rotation_P, rotation_I, rotation_D);
 
 
@@ -26,7 +30,7 @@ public class Drive_Train extends SubsystemBase {
         left_drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        right_drive.setDirection(DcMotorSimple.Direction.REVERSE);
+        right_drive.setDirection(DcMotorSimple.Direction.FORWARD);
         right_drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         rotattion_Pid.SetTolerance(0.01);
@@ -56,14 +60,19 @@ public class Drive_Train extends SubsystemBase {
         left_drive.setPower(0);
         right_drive.setPower(0);
     }
-    public void drive(double valueLeftMotor, double valueRightMotor) {
-
-        left_motor_power = valueLeftMotor;
-        right_motor_power = valueRightMotor;
+    public void drive(double forward, double turn) {
+        left_motor_power = turn + forward;
+        right_motor_power = turn - forward;
     }
-    public void align_rotation (double target_angle, double real_angle){
-        left_motor_power = rotattion_Pid.Calculate(target_angle*Math.PI/180, real_angle);
-        right_motor_power = -rotattion_Pid.Calculate(target_angle*Math.PI/180, real_angle);
+    public void align_rotation (double target_angle, double real_angle, Telemetry telemetry){
+        double turn = rotattion_Pid.Calculate(target_angle*Math.PI/180, real_angle);
+        telemetry.addData("left motor power", turn);
+        telemetry.addData("reight motor power", -turn);
+        telemetry.addLine(rotattion_Pid.GetState());
+    }
+    public void slow_down (double ralentisseur){
+        left_motor_power /= ralentisseur;
+        right_motor_power /= ralentisseur;
     }
     @Override
     public void periodic(){

@@ -1,55 +1,22 @@
 package FRC_ALDNC.programmes;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.arcrobotics.ftclib.command.CommandOpMode;
+
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-
-import FRC_ALDNC.SubSystem.Drive_Train;
-import FRC_ALDNC.SubSystem.Shooter_Subsystem;
-import Webcam_aldnc_yeux.Apriltag_reader;
-import packageClermont.organe.joySticks.joyStickY;
-import packageClermont.organe.joySticks.joystickX;
+import FRC_ALDNC.ALDNC_container;
 
 @TeleOp(name = "FRC_ALDNC_firtsprogramme", group = "FRC_style")
-public class FRC_ALDNC_firtsprogramme extends LinearOpMode {
-    double rightX;
-    double leftY;
-    double x1 = 0;
-    double y1 = 0;
-    double value_jambeDroite;
-    double value_jambeGauche;
-    AprilTagDetection red_target_april;
+public class FRC_ALDNC_firtsprogramme extends CommandOpMode {
+    ALDNC_container robot;
+    GamepadEx gamepad0 = new GamepadEx(gamepad1);
+    GamepadEx gamEpad2 = new GamepadEx(gamepad2);
+
     @Override
-    public void runOpMode() throws InterruptedException {
-        Drive_Train chassis = new Drive_Train(hardwareMap);
-        Shooter_Subsystem shooter = new Shooter_Subsystem(hardwareMap);
-        joyStickY joyStickY = new joyStickY(telemetry);
-        joystickX joystickX = new joystickX(telemetry);
-        Apriltag_reader apriljoke = new Apriltag_reader(hardwareMap);
-
-
-        waitForStart();
-        while (opModeIsActive()){
-            rightX = joystickX.joyStickXPara(gamepad1.right_stick_x, x1, gamepad1.left_stick_y, y1);
-            leftY = joyStickY.joyStickYPara(gamepad1.right_stick_x, x1, gamepad1.left_stick_y, y1);
-            x1 = rightX;
-            y1 = leftY;
-
-            value_jambeDroite = rightX - leftY;
-            value_jambeGauche = rightX + leftY;
-            chassis.drive(value_jambeGauche, value_jambeDroite);
-            chassis.periodic();
-
-            red_target_april = apriljoke.getAprilTagById(24);
-            apriljoke.updtade();
-            if (gamepad1.left_stick_button){
-                if (red_target_april != null){
-                    chassis.align_rotation(0, red_target_april.ftcPose.bearing);
-
-                }
-            }
-
-        }
+    public void initialize() {
+        robot = new ALDNC_container(hardwareMap, ALDNC_container.RobotMode.TELEOP_RED, gamepad1, telemetry);
     }
+
 }

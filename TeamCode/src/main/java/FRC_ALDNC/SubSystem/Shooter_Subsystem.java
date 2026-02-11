@@ -1,7 +1,16 @@
 package FRC_ALDNC.SubSystem;
 
 import static FRC_ALDNC.Constant.SHOOTER;
+import static FRC_ALDNC.Constant.VISEUR;
+import static FRC_ALDNC.Constant.posviseur_bank;
+import static FRC_ALDNC.Constant.posviseur_far;
+import static FRC_ALDNC.Constant.posviseur_mid;
+import static FRC_ALDNC.Constant.shooter_velo_tolerance;
+import static FRC_ALDNC.Constant.velo_shoot_bank;
+import static FRC_ALDNC.Constant.velo_shoot_far;
+import static FRC_ALDNC.Constant.velo_shoot_mid;
 
+import com.acmerobotics.dashboard.DashboardCore;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,29 +19,40 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import lib.Dashboard;
+import lib.Utils;
 import packageClermont.organe.Shooter;
 @Config
 public class Shooter_Subsystem extends SubsystemBase {
     public DcMotorEx shooter;
+    public Servo viseur;
     PIDFCoefficients pidf = new PIDFCoefficients(p, i, d, f);
-    public static double p = 20.0;
+    public static double p = 1400;
     public static double i = 0.0;
     public static double d = 0.0;
     public static double f = 0.0;
 
-    public static double powerShooterBank = 0.0;
-    public static double powerShooterMid = 0.0;
-    public static double powerShooterFar = 0.0;
-    public static double powerShooter = powerShooterBank;
+    public static double veloShooter = velo_shoot_mid, current_shoot_velo;
+    public static double posviseur = posviseur_mid, current_viseur_pos;
 
-    public static float veloShooterBank = 900;
-    public static float veloShooterFar = 1400;
-    public static float veloShooterMid = 1200;
-    public static float veloShooter = veloShooterBank;
+    public enum WantedState{
+        WAIT,
+        SHOOT_BANK,
+        SHOOT_MID,
+        SHOOT_FAR,
+        ASPIRER
+    }
 
-    double realVelo;
-    double erreur;
+    public enum SystemState{
+        WAITING,
+        PREPARING_TO_SHOOT,
+        READY_TO_SHOOT,
+        ASPIRER
+    }
+    private SystemState sysState = SystemState.WAITING;
+    private WantedState wantedState = WantedState.WAIT;
     public Shooter_Subsystem (HardwareMap hmap){
         shooter = hmap.get(DcMotorEx.class, SHOOTER);
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -40,7 +60,96 @@ public class Shooter_Subsystem extends SubsystemBase {
         shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         shooter.setVelocityPIDFCoefficients(p, i, d, f);
+
+        viseur = hmap.get(Servo.class, VISEUR);
     }
+    public void update_input(){
+        current_shoot_velo = shooter.getVelocity();
+        current_viseur_pos = viseur.getPosition();
+    }
+    public void setShooter_state (WantedState systemState){this.wantedState = systemState;}
+    public SystemState getShooterSysState(){return sysState;}
+    public void RunStateShooter(){
+        switch (wantedState)
+        {
+            case WAIT:
+                if (sysState != SystemState.WAITING)
+                {
+                    sysState = SystemState.WAITING;
+                }
+                break;
+            case SHOOT_BANK:
+                veloShooter = velo_shoot_bank;
+                posviseur = posviseur_bank;
+                if (sysState != SystemState.READY_TO_SHOOT)
+                {
+                    sysState = SystemState.PREPARING_TO_SHOOT;
+                }
+                break;
+            case  SHOOT_MID:
+                veloShooter = velo_shoot_mid;
+                posviseur = posviseur_mid;
+                if (sysState != SystemState.READY_TO_SHOOT)
+                {
+                    sysState = SystemState.PREPARING_TO_SHOOT;
+                }
+                break;
+            case SHOOT_FAR:
+                veloShooter = velo_shoot_far;
+                posviseur = posviseur_far;
+                if (sysState != SystemState.READY_TO_SHOOT)
+                {
+                    sysState = SystemState.PREPARING_TO_SHOOT;
+                }
+                break;
+            default:
+                //Dashboard.Telemetry_with_Text("Shooter", "can't run state machine with an unknown wanted state");
+                break;
+        }
+
+        switch (sysState)
+        {
+            case WAITING:
+                break;
+
+            case PREPARING_TO_SHOOT:
+                if (Utils.IsInRange(current_shoot_velo, veloShooter, shooter_velo_tolerance) && current_viseur_pos == posviseur
+                )
+                {
+                    sysState = SystemState.READY_TO_SHOOT;
+                }
+                break;
+
+            case READY_TO_SHOOT:
+                break;
+
+            default:
+                //Dashboard.Telemetry_with_Text("Shooter", "can't run state machine with an unknown system state");
+                break;
+        }
+    }
+    public void Shoot(){
+        switch (sysState)
+        {
+            case WAITING:
+                shooter.setVelocity(0);
+                break;
+
+
+            case PREPARING_TO_SHOOT:
+                shooter.setVelocity(veloShooter);
+                viseur.setPosition(posviseur);
+                break;
+            case READY_TO_SHOOT:
+                break;
+
+            default:
+                shooter.setVelocity(0);
+                Dashboard.Telemetry_with_Text("Shooter", "unknown system state used");
+                break;
+        }
+    }
+
     public void Tir_using_velo(boolean isShooting, Gamepad gamepad){
         if(isShooting) {
             shooter.setVelocity(veloShooter);
@@ -53,20 +162,13 @@ public class Shooter_Subsystem extends SubsystemBase {
     public void updatePID(){
         shooter.setVelocityPIDFCoefficients(p, i, d, f);
     }
-    public float veloShooter (Gamepad gamepad1){
-        if(gamepad1.bWasPressed()){
-            veloShooter = veloShooterBank;
-        }else if(gamepad1.yWasPressed()){
-            veloShooter = veloShooterMid;
-        }
-        else if(gamepad1.aWasPressed()){
-            veloShooter = veloShooterFar;
-        }
-        return veloShooter;
-    }
+
     @Override
     public void periodic(){
         updatePID();
+        update_input();
 
+        RunStateShooter();
+        Shoot();
     }
 }

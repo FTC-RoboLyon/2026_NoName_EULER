@@ -61,10 +61,10 @@ public class joystick_subsystem extends SubsystemBase {
     public void repositionneY(){
         nouveauY = X_brut;
     }
-    public void smoothX(double vieuxX, double NouveauX){
+    public void smoothX(double vieuxX){
         nouveauX = vieuxX + (nouveauX - vieuxX)*coeff_smooth;
     }
-    public void smoothY(double vieuxY, double NouveauY){
+    public void smoothY(double vieuxY){
         nouveauY = vieuxY + (nouveauY - vieuxY)*coeff_smooth;
     }
     public void calculateNormeVecteur() {
@@ -97,10 +97,11 @@ public class joystick_subsystem extends SubsystemBase {
         return y;
     }
     public void xPower(){
-        nouveauX = Math.pow(nouveauX, vpower);
+        nouveauX = nouveauX >= 0 ? Math.pow(nouveauX, vpower): -Math.pow(nouveauX, vpower);
     }
     public void yPower(){
-        nouveauY = Math.pow(nouveauY, vpower);
+        nouveauY = nouveauY >= 0 ? Math.pow(nouveauY, vpower): -Math.pow(nouveauY, vpower);
+
     }
 
     public double getY (){
@@ -111,14 +112,14 @@ public class joystick_subsystem extends SubsystemBase {
     }
 
     @Override
-    public  void periodic(){
+    public void periodic(){
         ancien_X = nouveauX;
         ancien_Y = nouveauY;
         actualise();
         calculateAngle();
         calculateNormeVecteur();
-        smoothX(ancien_X, nouveauX);
-        smoothY(ancien_Y, nouveauY);
+        smoothX(ancien_X);
+        smoothY(ancien_Y);
         xPower();
         yPower();
         finalX = nouveauX;

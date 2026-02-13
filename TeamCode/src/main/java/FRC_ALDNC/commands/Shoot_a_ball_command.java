@@ -18,10 +18,7 @@ public class Shoot_a_ball_command extends CommandBase {
 
     @Override
     public void initialize() {
-        if (shooter.getShooterSysState() == Shooter_Subsystem.SystemState.READY_TO_SHOOT)
-            feeder.setfeeder_wanted_state(Feeder_subsystem.Feeder_wanted_state.Haut);
-        else
-            feeder.setfeeder_wanted_state(Feeder_subsystem.Feeder_wanted_state.bas);
+        feeder.setfeeder_wanted_state(Feeder_subsystem.Feeder_wanted_state.Haut);
     }
 
     @Override

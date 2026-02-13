@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
-import FRC_ALDNC.SubSystem.Apriltag_reader;
+import Webcam_aldnc_yeux.Apriltag_reader;
 import Webcam_aldnc_yeux.Vrai_vision;
 
 @TeleOp(name = "ALDNC_brain", group = "Euler")

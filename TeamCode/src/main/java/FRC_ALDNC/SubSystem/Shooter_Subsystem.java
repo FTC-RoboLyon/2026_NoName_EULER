@@ -1,10 +1,14 @@
 package FRC_ALDNC.SubSystem;
 
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.SHOOTER;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKD;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKI;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKP;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.VISEUR;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posviseur_bank;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posviseur_far;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posviseur_mid;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.shooter_aspirage_puissance;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.shooter_velo_tolerance;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_bank;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_far;
@@ -28,9 +32,9 @@ public class Shooter_Subsystem extends SubsystemBase {
     public DcMotorEx shooter;
     public Servo viseur;
     PIDFCoefficients pidf = new PIDFCoefficients(p, i, d, f);
-    public static double p = 1400;
-    public static double i = 0.0;
-    public static double d = 0.0;
+    private static double p = 1400;
+    private static double i = 0.0;
+    private static double d = 0.0;
     public static double f = 0.0;
 
     public static double veloShooter = velo_shoot_mid, current_shoot_velo;
@@ -58,7 +62,7 @@ public class Shooter_Subsystem extends SubsystemBase {
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        shooter.setVelocityPIDFCoefficients(p, i, d, f);
+        shooter.setVelocityPIDFCoefficients(ShooterKP, ShooterKI, ShooterKD, f);
 
         viseur = hmap.get(Servo.class, VISEUR);
     }
@@ -66,6 +70,7 @@ public class Shooter_Subsystem extends SubsystemBase {
         current_shoot_velo = shooter.getVelocity();
         current_viseur_pos = viseur.getPosition();
     }
+    public double getVeloShooter (){return veloShooter;}
     public void setShooter_state (WantedState systemState){this.wantedState = systemState;}
     public SystemState getShooterSysState(){return sysState;}
     public void RunStateShooter(){
@@ -101,6 +106,11 @@ public class Shooter_Subsystem extends SubsystemBase {
                     sysState = SystemState.PREPARING_TO_SHOOT;
                 }
                 break;
+            case ASPIRER:
+                if (sysState != SystemState.ASPIRER)
+                {
+                    sysState = SystemState.ASPIRER;
+                }
             default:
                 //Dashboard.Telemetry_with_Text("Shooter", "can't run state machine with an unknown wanted state");
                 break;
@@ -121,6 +131,8 @@ public class Shooter_Subsystem extends SubsystemBase {
 
             case READY_TO_SHOOT:
                 break;
+            case ASPIRER:
+                break;
 
             default:
                 //Dashboard.Telemetry_with_Text("Shooter", "can't run state machine with an unknown system state");
@@ -134,7 +146,8 @@ public class Shooter_Subsystem extends SubsystemBase {
                 shooter.setVelocity(0);
                 break;
 
-
+            case ASPIRER:
+                shooter.setVelocity(shooter_aspirage_puissance);
             case PREPARING_TO_SHOOT:
                 shooter.setVelocity(veloShooter);
                 viseur.setPosition(posviseur);
@@ -162,9 +175,11 @@ public class Shooter_Subsystem extends SubsystemBase {
         shooter.setVelocityPIDFCoefficients(p, i, d, f);
     }
 
+    public void calculate_postir(double distance_to_goal){
+        //Definis moi ca
+    }
     @Override
     public void periodic(){
-        updatePID();
         update_input();
 
         RunStateShooter();

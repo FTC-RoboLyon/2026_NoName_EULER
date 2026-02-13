@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import lib.Dashboard;
+
 public class Intake_subsystem extends SubsystemBase {
     DcMotor intake;
     DistanceSensor compteurBalle;
@@ -23,12 +25,14 @@ public class Intake_subsystem extends SubsystemBase {
     {
         STAND_BY,
         COLLECT,
+        EJECT
     }
 
     public enum SystemState
     {
         IDLE,
-        INTAKING
+        INTAKING,
+        EJeCT
     }
     public enum capteur_state{
         There_is_nothing,
@@ -36,10 +40,10 @@ public class Intake_subsystem extends SubsystemBase {
         Has_just_detect_a_ball,
         Has_just_leave_a_ball
     }
-    private boolean compteur_flag = false;
-    private WantedState m_wantedState = WantedState.STAND_BY;
-    private SystemState m_systemState = SystemState.IDLE;
-    private static capteur_state capteur_state = Intake_subsystem.capteur_state.There_is_nothing;
+    public boolean compteur_flag = false;
+    public WantedState m_wantedState = WantedState.STAND_BY;
+    public SystemState m_systemState = SystemState.IDLE;
+    public static capteur_state capteur_state = Intake_subsystem.capteur_state.There_is_nothing;
 
     public Intake_subsystem (HardwareMap hmap){
         intake = hmap.get(DcMotor.class, INTAKE);
@@ -87,7 +91,9 @@ public class Intake_subsystem extends SubsystemBase {
             case STAND_BY:
                 if (m_systemState != SystemState.IDLE)
                     m_systemState = SystemState.IDLE;
-
+            case EJECT:
+                if (m_systemState != SystemState.EJeCT)
+                    m_systemState = SystemState.EJeCT;
             default:
                 //Dashboard.Telemetry_with_Text("Intake", "can't run state machine with an unknown wanted state");
                 break;
@@ -105,12 +111,14 @@ public class Intake_subsystem extends SubsystemBase {
             case INTAKING:
                 intake.setPower(1.0);
                 break;
+            case EJeCT:
+                intake.setPower(-1);
 
             default:
                 //Dashboard.Telemetry_with_Text("Intake", "unknown system state used");
                 break;
         }
-        //Dashboard.Telemetry_with_Text("has detected a ball?", String.valueOf(hasdetected_a_ball()));
+        Dashboard.Telemetry_with_Text("has detected a ball?", String.valueOf(hasdetected_a_ball()));
     }
 
 }

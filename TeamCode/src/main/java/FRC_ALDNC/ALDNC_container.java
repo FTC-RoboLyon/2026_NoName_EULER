@@ -2,6 +2,8 @@ package FRC_ALDNC;
 
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -59,6 +61,8 @@ public class ALDNC_container{
 
         chassis_subsystem.setDefaultCommand(new Drive_command(chassis_subsystem, left_joystick, right_joystick, telemetry));
         shooter_subsystem.setDefaultCommand(new Tuning_postir_command(shooter_subsystem, apriljoke));
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
     }
     public void Configure_Binding(
@@ -98,6 +102,7 @@ public class ALDNC_container{
         telemetry.addData("joystick_gauche", left_joystick.getX());
         telemetry.addData("joystick_droit", right_joystick.getY());
         apriljoke.telemetry(telemetry);
+        telemetry.update();
     }
     public void ActualiseVoltageSensorValue()
     {

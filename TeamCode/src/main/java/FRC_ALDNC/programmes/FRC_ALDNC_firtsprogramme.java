@@ -40,11 +40,14 @@ public class FRC_ALDNC_firtsprogramme extends CommandOpMode {
                 gamepad0, GamepadKeys.Button.B
         );
         shoot_mid_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.Y);
+                gamepad0, GamepadKeys.Button.Y
+        );
         shoot_far_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.A);
+                gamepad0, GamepadKeys.Button.A
+        );
         aspirer_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.RIGHT_BUMPER);
+                gamepad0, GamepadKeys.Button.RIGHT_BUMPER
+        );
         Intake_button = new GamepadButton(
                 gamepad0, GamepadKeys.Button.LEFT_BUMPER
         );

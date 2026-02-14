@@ -65,6 +65,11 @@ public class Camera_subsystem extends SubsystemBase {
         int imageWidth = 1920; // largeur de la caméra en pixels
         return actual_detection.center.x - (imageWidth / 2.0);
     }
+    public double getTagXNormalized() {
+        if (actual_detection == null) return 0; // Aucun tag trouvé
+        int imageWidth = 1920;
+        return (actual_detection.center.x - (imageWidth / 2.0)) / (imageWidth / 2.0);
+    }
     public void telemetry(Telemetry telemetry){
         telemetry.addData("# AprilTags Detected", detections.size());
 
@@ -84,11 +89,7 @@ public class Camera_subsystem extends SubsystemBase {
     public void define_wanted_id(int wantedId){wanted_id = wantedId;}
 
     // Récupère la position X normalisée entre -1 et 1, pratique pour PID
-    public double getTagXNormalized() {
-        if (actual_detection == null) return 0; // Aucun tag trouvé
-        int imageWidth = 1920;
-        return (actual_detection.center.x - (imageWidth / 2.0)) / (imageWidth / 2.0);
-    }
+
 
     public List<AprilTagDetection> getdetections() {
         return detections;

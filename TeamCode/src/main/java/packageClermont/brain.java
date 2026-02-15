@@ -32,12 +32,16 @@ import packageClermont.organe.joySticks.joystickX;
 //@Config
 @TeleOp(name = "Compet_brain", group = "Euler")
 public class brain extends LinearOpMode {
+    private double p = 2;
+    private double valueRotation;
     private double distancePanier;
     private double distancePanierSol;
     private double seuilDriveShooter = 0.05;
     public static double p_rotation = 700 ;
-    public static double rotation_tolérance;
-    private double erreur;
+    public static double rotation_tolerance;
+    private double erreurD;
+    private double erreurG;
+
     public double visionX;
     public double VeloFion;
     double rightX;
@@ -116,19 +120,13 @@ public class brain extends LinearOpMode {
             //distancePanierSol = (distancePanier*distancePanier)-42*42;
             value_jambeDroite = rightX - leftY;
             value_jambeGauche = rightX + leftY;
+            valueRotation = p_rotation*visionX;
+            erreurD = valueRotation - jambe_droite.getVelocity();
+            erreurG = -valueRotation - jambe_gauche.getVelocity();
             if(isShooting){
-                if (visionX < 0) {
-                    jambe_droite.setVelocity(-100-p_rotation*visionX);
-                    jambe_gauche.setVelocity(100+p_rotation*visionX);
-                }else if(visionX > 0){
-                    jambe_droite.setVelocity(100-p_rotation*visionX);
-                    jambe_gauche.setVelocity(-100+p_rotation*visionX);
-                }else if(visionX == 0){{
-                    jambe_droite.setVelocity(0);
-                    jambe_gauche.setVelocity(0);
-                }
+                jambe_droite.setPower(erreurD * p);
+                jambe_gauche.setPower(erreurG * p);
 
-                }
                 if(value_jambeDroite > seuilDriveShooter || value_jambeDroite < -seuilDriveShooter || value_jambeGauche > seuilDriveShooter || value_jambeGauche < -seuilDriveShooter){
                     jambes.jambage(value_jambeDroite/1.3, value_jambeGauche/1.3, gamepad1, telemetry);
                 }

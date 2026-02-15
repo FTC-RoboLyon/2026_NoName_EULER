@@ -38,7 +38,7 @@ public class Apriltag_reader {
 
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(hardware.get(WebcamName.class, "Webcam 1"));
-        builder.setCameraResolution(new Size(1920, 1080));
+        builder.setCameraResolution(new Size(1280, 720));
         builder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
         builder.setAutoStopLiveView(false);
         builder.addProcessor(aprilTag);
@@ -53,7 +53,7 @@ public class Apriltag_reader {
     public double getTagXInPixels(int tagId) {
         AprilTagDetection tag = getAprilTagById(tagId);
         if (tag == null) return 0; // Aucun tag trouvé
-        int imageWidth = 1920; // largeur de la caméra en pixels
+        int imageWidth = 1280; // largeur de la caméra en pixels
         return tag.center.x - (imageWidth / 2.0);
     }
 
@@ -61,8 +61,8 @@ public class Apriltag_reader {
     public double getTagXNormalized(int tagId) {
         AprilTagDetection tag = getAprilTagById(tagId);
         if (tag == null) return 0; // Aucun tag trouvé
-        int imageWidth = 1920;
-        return (tag.center.x /*- (imageWidth / 2.0)) / (imageWidth / 2.0*/);
+        int imageWidth = 1280;
+        return (tag.center.x - (imageWidth /2.0)) / (imageWidth / 2.0);
     }
 
     public List<AprilTagDetection> getdetections() {

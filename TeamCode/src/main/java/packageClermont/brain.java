@@ -37,7 +37,7 @@ public class brain extends LinearOpMode {
     private double distancePanier;
     private double distancePanierSol;
     private double seuilDriveShooter = 0.05;
-    public static double p_rotation = 700 ;
+    public static double p_rotation = 0.3 ;
     public static double rotation_tolerance;
     private double erreurD;
     private double erreurG;
@@ -47,7 +47,7 @@ public class brain extends LinearOpMode {
     double rightX;
     double leftY;
     double powerShooter = 0;
-    public PIDFCoefficients PidCoef;
+    public PIDFCoefficients PidCoef;    
     double value_jambeDroite;
     double value_jambeGauche;
     double veloProg;
@@ -129,8 +129,8 @@ public class brain extends LinearOpMode {
                     jambe_droite.setPower(0);
                     jambe_gauche.setPower(0);
                 }else {
-                    jambe_droite.setPower(valueRotation);
-                    jambe_gauche.setPower(-valueRotation);
+                    jambe_droite.setPower(-valueRotation);
+                    jambe_gauche.setPower(valueRotation);
                 }
 
 

@@ -91,9 +91,11 @@ public class Intake_subsystem extends SubsystemBase {
             case STAND_BY:
                 if (m_systemState != SystemState.IDLE)
                     m_systemState = SystemState.IDLE;
+                break;
             case EJECT:
                 if (m_systemState != SystemState.EJeCT)
                     m_systemState = SystemState.EJeCT;
+                break;
             default:
                 //Dashboard.Telemetry_with_Text("Intake", "can't run state machine with an unknown wanted state");
                 break;
@@ -113,12 +115,13 @@ public class Intake_subsystem extends SubsystemBase {
                 break;
             case EJeCT:
                 intake.setPower(-1);
-
+                break;
             default:
                 //Dashboard.Telemetry_with_Text("Intake", "unknown system state used");
+                intake.setPower(0);
                 break;
         }
-        Dashboard.Telemetry_with_Text("has detected a ball?", String.valueOf(hasdetected_a_ball()));
+        //Dashboard.Telemetry_with_Text("has detected a ball?", String.valueOf(hasdetected_a_ball()));
     }
 
 }

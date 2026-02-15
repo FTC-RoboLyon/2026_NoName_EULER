@@ -14,6 +14,7 @@ public class Drive_using_suplier_test extends CommandBase {
         chassis = chassiS;
         this.forward = forward;
         this.turn = turn;
+        addRequirements(chassis);
     }
 
     @Override

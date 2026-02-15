@@ -63,18 +63,18 @@ public class ALDNC_container{
 
         left_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.left, chassis_subsystem);
         right_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.right, chassis_subsystem);
-        //forward = () -> left_joystick.getX();
-        //turn = () -> right_joystick.getY();    Si le chassis ne bouge pas avec le programme actuel, ajouter les lignes 66, 67 et 77 et enlevez la ligne 75
+        forward = () -> left_joystick.getX();
+        turn = () -> right_joystick.getY();    //Si le chassis ne bouge pas avec le programme actuel, ajouter les lignes 66, 67 et 77 et enlevez la ligne 75
 
-        apriljoke = new Camera_subsystem(hmap, wich_programme == RobotMode.TELEOP_RED || wich_programme == RobotMode.AUTO_RED ? 24 : 20);
+        apriljoke = new Camera_subsystem(hmap, wich_programme == RobotMode.TELEOP_RED || wich_programme == RobotMode.AUTO_RED ? 24 : 20, telemetry);
 
         voltageSensor = hmap.get(VoltageSensor.class, "Control Hub");
 
         team_and_mode = wich_programme;
 
-        chassis_subsystem.setDefaultCommand(new Drive_command(chassis_subsystem, left_joystick, right_joystick, telemetry));
-        shooter_subsystem.setDefaultCommand(new Tuning_postir_command(shooter_subsystem, apriljoke));
-        //chassis_subsystem.setDefaultCommand(new Drive_using_suplier_test(chassis_subsystem, forward, turn));
+        //chassis_subsystem.setDefaultCommand(new Drive_command(chassis_subsystem, left_joystick, right_joystick, telemetry));
+        // shooter_subsystem.setDefaultCommand(new Tuning_postir_command(shooter_subsystem, apriljoke));
+        chassis_subsystem.setDefaultCommand(new Drive_using_suplier_test(chassis_subsystem, forward, turn));
 
         this.telemetry = telemetry;
         //FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -88,7 +88,7 @@ public class ALDNC_container{
             Button shoot_far_butto,
             Button aspirer_button,
             Button intake_button,
-            Trigger eject_button){
+            Button eject_button){
 
         feeder_button.whenPressed(new Shoot_a_ball_command(shooter_subsystem, feeder));
         feeder_button.whenReleased(new Let_a_ball_pass(feeder));
@@ -106,10 +106,10 @@ public class ALDNC_container{
         shoot_far_butto.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
         aspirer_button.whenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.ASPIRER));
-        aspirer_button.whenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
+        aspirer_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
-        eject_button.whenActive(new Collect_command(intake, Intake_subsystem.WantedState.EJECT));
-        eject_button.whenActive(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
+        eject_button.whenPressed(new Collect_command(intake, Intake_subsystem.WantedState.EJECT));
+        eject_button.whenReleased(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
     }
     public void telemetry (){
         telemetry.addData("Vrai vélocité shooter", shooter_subsystem.shooter.getVelocity());
@@ -117,7 +117,7 @@ public class ALDNC_container{
         telemetry.addData("angle viseur", shooter_subsystem.viseur.getPosition());
         telemetry.addData("joystick_gauche", left_joystick.getX());
         telemetry.addData("joystick_droit", right_joystick.getY());
-        apriljoke.telemetry(telemetry);
+        apriljoke.telemetry();
         telemetry.update();
     }
     public void ActualiseVoltageSensorValue()

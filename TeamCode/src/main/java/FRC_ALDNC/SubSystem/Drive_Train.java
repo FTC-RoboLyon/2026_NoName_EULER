@@ -60,8 +60,8 @@ public class Drive_Train extends SubsystemBase {
         right_drive.setPower(0);
     }
     public void drive(double forward, double turn) {
-        left_motor_power = turn + forward;
-        right_motor_power = turn - forward;
+        left_motor_power = forward + turn;
+        right_motor_power = forward - turn;
     }
     public void align_rotation (double target_angle, double real_angle, Telemetry telemetry){
         double turn = rotattion_Pid.Calculate(target_angle*Math.PI/180, real_angle);

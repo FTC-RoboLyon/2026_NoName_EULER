@@ -9,6 +9,7 @@ import FRC_ALDNC.SubSystem.Shooter_Subsystem;
 public class Tuning_postir_command extends CommandBase {
     Shooter_Subsystem shooter;
     Camera_subsystem apriljoke;
+    public boolean Cannot_tune_sans_april;
     public Tuning_postir_command (Shooter_Subsystem shooter_subsystem, Camera_subsystem cam){
         shooter = shooter_subsystem;
         apriljoke = cam;
@@ -22,11 +23,15 @@ public class Tuning_postir_command extends CommandBase {
 
     @Override
     public void execute() {
+        if (apriljoke.getActual_detection() == null)
+            Cannot_tune_sans_april = true;
+        else
+            Cannot_tune_sans_april = false;
         shooter.calculate_postir(apriljoke.getActual_detection().ftcPose.x);
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return Cannot_tune_sans_april;
     }
 }

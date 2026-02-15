@@ -40,13 +40,6 @@ public class Feeder_subsystem extends SubsystemBase {
             default:
                 //Dashboard.Telemetry_with_Text("Feeder", "unknown system state used");
                 break;
-        }switch (feed_state){
-            case bas:
-                break;
-            case Haut:
-                if (feeder.getPosition() == posFeed)
-                    feed_state = FeederState.bas;
-                break;
         }
     }
     @Override

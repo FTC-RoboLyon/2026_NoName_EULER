@@ -18,7 +18,6 @@ public class joystick_subsystem extends SubsystemBase {
     private double nVecteur;
     public double angle;
 
-    private double X_brut, Y_brut;
     private double ancien_X, ancien_Y;
     private double nouveauX, nouveauY;
     private double finalX, finalY;
@@ -48,18 +47,12 @@ public class joystick_subsystem extends SubsystemBase {
     }
     public void actualise(){
         if (stick == Witch_stick.left){
-            nouveauX = -gamepad.getLeftY();
+            nouveauX = gamepad.getLeftY();
             nouveauY = gamepad.getLeftX();
         } else if (stick == Witch_stick.right){
             nouveauX = -gamepad.getRightY();
             nouveauY = gamepad.getRightX();
         }
-    }
-    public void repositionneX(){
-        nouveauX = -Y_brut;
-    }
-    public void repositionneY(){
-        nouveauY = X_brut;
     }
     public void smoothX(double vieuxX){
         nouveauX = vieuxX + (nouveauX - vieuxX)*coeff_smooth;

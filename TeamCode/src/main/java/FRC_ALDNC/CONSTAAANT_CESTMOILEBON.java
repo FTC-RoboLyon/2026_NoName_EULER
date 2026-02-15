@@ -23,8 +23,8 @@ public class CONSTAAANT_CESTMOILEBON {
 
 
 
-    public static double coef_smooth_stickleft = 0.25, deadzone_sticktleft = 0.05, vpower_stickleft = 2; //TUNEME
-    public static double coef_smooth_stickright = 0.25, deadzone_stickright = 0.05, vpower_stickright = 2; //TUNEME
+    public static double coef_smooth_stickleft = 1, deadzone_sticktleft = 0, vpower_stickleft = 2; //TUNEME
+    public static double coef_smooth_stickright = 1, deadzone_stickright =0, vpower_stickright = 2; //TUNEME
 
 
     public  static  double distance_ou_le_capteur_detecte_balle = 30; //TUNEME

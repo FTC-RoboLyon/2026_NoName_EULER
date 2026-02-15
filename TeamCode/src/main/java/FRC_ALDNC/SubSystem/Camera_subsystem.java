@@ -29,11 +29,13 @@ public class Camera_subsystem extends SubsystemBase {
         Etre_indécis
     }
     public Camera_mode cameraMode = Camera_mode.Lock_in;
-    public Camera_subsystem(HardwareMap hardware, int wanted_id){
-        this(hardware, wanted_id, Camera_mode.Lock_in);
+    public Telemetry telemetry;
+    public Camera_subsystem(HardwareMap hardware, int wanted_id, Telemetry telemetry){
+        this(hardware, wanted_id, Camera_mode.Lock_in,telemetry);
     }
-    public Camera_subsystem(HardwareMap hardware, int wanted_id, Camera_mode cameraMode1) {
+    public Camera_subsystem(HardwareMap hardware, int wanted_id, Camera_mode cameraMode1, Telemetry telemetry) {
         this.wanted_id = wanted_id;
+        this.telemetry = telemetry;
         cameraMode = cameraMode1;
         aprilTag = new AprilTagProcessor.Builder()
                 .setDrawTagID(true)
@@ -70,7 +72,7 @@ public class Camera_subsystem extends SubsystemBase {
         int imageWidth = 1920;
         return (actual_detection.center.x - (imageWidth / 2.0)) / (imageWidth / 2.0);
     }
-    public void telemetry(Telemetry telemetry){
+    public void telemetry(){
         telemetry.addData("# AprilTags Detected", detections.size());
 
         // Step through the list of detections and display info for each one.
@@ -85,6 +87,7 @@ public class Camera_subsystem extends SubsystemBase {
                 telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
             }
         }
+        telemetry.update();
     }
     public void define_wanted_id(int wantedId){wanted_id = wantedId;}
 
@@ -100,11 +103,11 @@ public class Camera_subsystem extends SubsystemBase {
             return null;
         }
         AprilTagDetection tag = detections.get(0);
-        double minDistance = tag.ftcPose.z;
+        double minDistance = tag.ftcPose.x;
 
         for (AprilTagDetection i : detections){
             if (i.ftcPose.z < minDistance) {
-                minDistance = i.ftcPose.z;
+                minDistance = i.ftcPose.x;
                 tag = i;
             }
         }
@@ -119,7 +122,9 @@ public class Camera_subsystem extends SubsystemBase {
         }
         return null;
     }
-    public AprilTagDetection getActual_detection(){return actual_detection;}
+    public AprilTagDetection getActual_detection(){
+
+        return actual_detection;}
 
 
     public void stop (){
@@ -146,5 +151,6 @@ public class Camera_subsystem extends SubsystemBase {
             case Etre_indécis:
                 actual_detection = wanted_id_is_detected() ? getAprilTagById() : getClosestApril();
         }
+        telemetry();
     }
 }

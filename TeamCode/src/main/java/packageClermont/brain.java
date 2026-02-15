@@ -121,8 +121,8 @@ public class brain extends LinearOpMode {
                     jambe_droite.setVelocity(-100-p_rotation*visionX);
                     jambe_gauche.setVelocity(100+p_rotation*visionX);
                 }else if(visionX > 0){
-                    jambe_droite.setVelocity(100+p_rotation*visionX);
-                    jambe_gauche.setVelocity(-100-p_rotation*visionX);
+                    jambe_droite.setVelocity(100-p_rotation*visionX);
+                    jambe_gauche.setVelocity(-100+p_rotation*visionX);
                 }else if(visionX == 0){{
                     jambe_droite.setVelocity(0);
                     jambe_gauche.setVelocity(0);

@@ -55,7 +55,7 @@ public class ALDNC_container{
     public ALDNC_container (HardwareMap hmap, RobotMode wich_programme, GamepadEx gamepad, Telemetry telemetry){
         chassis_subsystem = new Drive_Train(hmap);
 
-        shooter_subsystem = new Shooter_Subsystem(hmap);
+        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry);
 
         intake = new Intake_subsystem(hmap);
 
@@ -88,7 +88,7 @@ public class ALDNC_container{
             Button shoot_far_butto,
             Button aspirer_button,
             Button intake_button,
-            Button eject_button){
+            Trigger eject_button){
 
         feeder_button.whenPressed(new Shoot_a_ball_command(shooter_subsystem, feeder));
         feeder_button.whenReleased(new Let_a_ball_pass(feeder));
@@ -108,8 +108,8 @@ public class ALDNC_container{
         aspirer_button.whenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.ASPIRER));
         aspirer_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
-        eject_button.whenPressed(new Collect_command(intake, Intake_subsystem.WantedState.EJECT));
-        eject_button.whenReleased(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
+        eject_button.whenActive(new Collect_command(intake, Intake_subsystem.WantedState.EJECT));
+        eject_button.whenInactive(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
     }
     public void telemetry (){
         telemetry.addData("Vrai vélocité shooter", shooter_subsystem.shooter.getVelocity());

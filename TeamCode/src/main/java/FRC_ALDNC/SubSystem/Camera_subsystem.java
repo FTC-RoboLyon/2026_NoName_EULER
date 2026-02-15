@@ -146,10 +146,13 @@ public class Camera_subsystem extends SubsystemBase {
         switch (cameraMode){
             case Lock_in:
                 actual_detection = getAprilTagById();
+                break;
             case Closest_is_the_best:
                 actual_detection = getClosestApril();
+                break;
             case Etre_indécis:
                 actual_detection = wanted_id_is_detected() ? getAprilTagById() : getClosestApril();
+                break;
         }
         telemetry();
     }

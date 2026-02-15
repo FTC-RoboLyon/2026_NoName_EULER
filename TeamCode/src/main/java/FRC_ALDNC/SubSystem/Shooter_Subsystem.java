@@ -14,7 +14,9 @@ import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_bank;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_far;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_mid;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -24,6 +26,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import lib.Dashboard;
 import lib.Utils;
 
@@ -31,6 +35,8 @@ import lib.Utils;
 public class Shooter_Subsystem extends SubsystemBase {
     public DcMotorEx shooter;
     public Servo viseur;
+    public Telemetry telemetry;
+    public FtcDashboard dashboard;
     PIDFCoefficients pidf = new PIDFCoefficients(p, i, d, f);
     private static double p = 1400;
     private static double i = 0.0;
@@ -56,7 +62,9 @@ public class Shooter_Subsystem extends SubsystemBase {
     }
     private SystemState sysState = SystemState.WAITING;
     private WantedState wantedState = WantedState.WAIT;
-    public Shooter_Subsystem (HardwareMap hmap){
+    public Shooter_Subsystem (HardwareMap hmap, Telemetry telemetry){
+        dashboard = FtcDashboard.getInstance();
+
         shooter = hmap.get(DcMotorEx.class, SHOOTER);
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -65,6 +73,8 @@ public class Shooter_Subsystem extends SubsystemBase {
         shooter.setVelocityPIDFCoefficients(ShooterKP, ShooterKI, ShooterKD, f);
 
         viseur = hmap.get(Servo.class, VISEUR);
+
+        this.telemetry = telemetry;
     }
     public void update_input(){
         current_shoot_velo = shooter.getVelocity();
@@ -184,5 +194,10 @@ public class Shooter_Subsystem extends SubsystemBase {
 
         RunStateShooter();
         Shoot();
+        TelemetryPacket mon_ptit_truc = new TelemetryPacket();
+        mon_ptit_truc.put("velocité du shooter", current_shoot_velo);
+        mon_ptit_truc.put("position viseur", current_viseur_pos);
+        dashboard.sendTelemetryPacket(mon_ptit_truc);
+
     }
 }

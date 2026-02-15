@@ -58,7 +58,7 @@ public class FRC_ALDNC_firtsprogramme extends CommandOpMode {
         Eject_button = new Trigger(lefT_triger);
 
         robot = new ALDNC_container(hardwareMap, ALDNC_container.RobotMode.TELEOP_RED, gamepad0, telemetry);
-        robot.Configure_Binding(feeder_button,shoot_bank_button, shoot_mid_button, shoot_far_button, Intake_button, aspirer_button, Eject_button_test);
+        robot.Configure_Binding(feeder_button,shoot_bank_button, shoot_mid_button, shoot_far_button, Intake_button, aspirer_button, Eject_button);
         robot.telemetry();
 
     }

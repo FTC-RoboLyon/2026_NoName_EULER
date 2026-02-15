@@ -32,7 +32,7 @@ import packageClermont.organe.joySticks.joystickX;
 //@Config
 @TeleOp(name = "Compet_brain", group = "Euler")
 public class brain extends LinearOpMode {
-    private double p = 2;
+    private double p = 0.1;
     private double valueRotation;
     private double distancePanier;
     private double distancePanierSol;
@@ -113,19 +113,26 @@ public class brain extends LinearOpMode {
 
 
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
+            value_jambeDroite = rightX - leftY;
+            value_jambeGauche = rightX + leftY;
 
             apriljoke.updtade();
             visionX = apriljoke.getTagXNormalized(24);
             distancePanier = apriljoke.getDistanceCm(24);
-            //distancePanierSol = (distancePanier*distancePanier)-42*42;
-            value_jambeDroite = rightX - leftY;
-            value_jambeGauche = rightX + leftY;
+
+
             valueRotation = p_rotation*visionX;
             erreurD = valueRotation - jambe_droite.getVelocity();
             erreurG = -valueRotation - jambe_gauche.getVelocity();
             if(isShooting){
-                jambe_droite.setPower(erreurD * p);
-                jambe_gauche.setPower(erreurG * p);
+                if(visionX == 0){
+                    jambe_droite.setPower(0);
+                    jambe_gauche.setPower(0);
+                }else {
+                    jambe_droite.setPower(valueRotation);
+                    jambe_gauche.setPower(-valueRotation);
+                }
+
 
                 if(value_jambeDroite > seuilDriveShooter || value_jambeDroite < -seuilDriveShooter || value_jambeGauche > seuilDriveShooter || value_jambeGauche < -seuilDriveShooter){
                     jambes.jambage(value_jambeDroite/1.3, value_jambeGauche/1.3, gamepad1, telemetry);

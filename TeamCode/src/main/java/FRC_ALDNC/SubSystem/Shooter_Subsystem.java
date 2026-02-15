@@ -158,6 +158,7 @@ public class Shooter_Subsystem extends SubsystemBase {
 
             case ASPIRER:
                 shooter.setVelocity(shooter_aspirage_puissance);
+                break;
             case PREPARING_TO_SHOOT:
                 shooter.setVelocity(veloShooter);
                 viseur.setPosition(posviseur);
@@ -191,6 +192,7 @@ public class Shooter_Subsystem extends SubsystemBase {
     @Override
     public void periodic(){
         update_input();
+        updatePID();
 
         RunStateShooter();
         Shoot();

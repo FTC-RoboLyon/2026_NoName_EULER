@@ -2,8 +2,8 @@ package FRC_ALDNC;
 
 
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+//import com.acmerobotics.dashboard.FtcDashboard;
+//import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -77,8 +77,8 @@ public class ALDNC_container{
         //chassis_subsystem.setDefaultCommand(new Drive_using_suplier_test(chassis_subsystem, forward, turn));
 
         this.telemetry = telemetry;
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+        //FtcDashboard dashboard = FtcDashboard.getInstance();
+        //telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
     }
     public void Configure_Binding(

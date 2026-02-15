@@ -2,7 +2,7 @@ package Webcam_aldnc_yeux;
 
 import android.util.Size;
 
-import com.acmerobotics.dashboard.FtcDashboard;
+//import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
@@ -44,7 +44,7 @@ public class Apriltag_reader {
         builder.addProcessor(aprilTag);
         visionPortal = builder.build();
         visionPortal.setProcessorEnabled(aprilTag, true);
-        FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
+        //FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
 
 
 
@@ -114,6 +114,11 @@ public class Apriltag_reader {
 
     public AprilTagDetection getBestAprilTag(int priorityId) {
         return priorityId > 0 ? getAprilTagById(priorityId) : getClosestApril();
+    }
+    public double getDistanceCm(int tagId){
+        AprilTagDetection tag = getAprilTagById(tagId);
+        if (tag == null) return 0;
+        return tag.ftcPose.y;
     }
 
     public void stop (){

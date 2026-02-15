@@ -2,7 +2,7 @@ package packageClermont.organe;
 
 import static java.lang.Math.pow;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -12,13 +12,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import lib.PidRBL;
 
-@Config
+//@Config
 public class jambes {
 
     public DcMotorEx jambe_droite;
     public DcMotorEx jambe_gauche;
     public static double variablePower = 2;
-    public static double kp_jambe = 200;
+    public static double kp_jambe;
     public static double ki_jambe;
     public static double kd_jambe;
     public static double kf_jambe;

@@ -62,7 +62,7 @@ public class Apriltag_reader {
         AprilTagDetection tag = getAprilTagById(tagId);
         if (tag == null) return 0; // Aucun tag trouvé
         int imageWidth = 1920;
-        return (tag.center.x - (imageWidth / 2.0)) / (imageWidth / 2.0);
+        return (tag.center.x /*- (imageWidth / 2.0)) / (imageWidth / 2.0*/);
     }
 
     public List<AprilTagDetection> getdetections() {

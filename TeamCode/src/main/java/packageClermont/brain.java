@@ -33,13 +33,14 @@ import packageClermont.organe.joySticks.joystickX;
 //@Config
 @TeleOp(name = "Compet_brain", group = "Euler")
 public class brain extends LinearOpMode {
-    private double ff;
+    private double powerTurn;
+    private double ff = 6.43;
     private double erreurPos;
     private double currentPositionD;
     private double currentPositionG;
     private double targetPosition;
     private double powerShooter1;
-    private double p = 1;
+    private double p = 0.1;
     private double valueRotation;
     private double distancePanier;
     private double distancePanierSol;
@@ -115,25 +116,30 @@ public class brain extends LinearOpMode {
             if(gamepad1.left_bumper){
                 leftY = leftY /1.5;
             }
-            /*if(gamepad1.rightBumperWasPressed()){
+            if(gamepad1.rightBumperWasPressed()){
                 isShooting = !isShooting;
-            }*/
+            }
+            if(gamepad1.rightBumperWasPressed()){
+                jambe_droite.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            }
 
 
 
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
             value_jambeDroite = rightX - leftY;
             value_jambeGauche = rightX + leftY;
+            if(isShooting){
+                apriljoke.updtade();
+                targetPosition = apriljoke.getBearing(24)*ff;
+                currentPositionD = jambe_droite.getCurrentPosition();
+                erreurPos = targetPosition-currentPositionD;
+                powerTurn = erreurPos*p;
+                powerTurn = Math.max(0.4, -0.4);
+                jambe_droite.setPower(-powerTurn);
+                jambe_gauche.setPower(powerTurn);
+            }
 
-            apriljoke.updtade();
-            visionX = apriljoke.getTagXNormalized(24);
-            distancePanier = apriljoke.getDistanceCm(24);
 
-            currentPositionD = jambe_droite.getCurrentPosition();
-            currentPositionG = jambe_gauche.getCurrentPosition();
-            erreurPos = targetPosition-currentPositionD;
-            erreurPos = erreurPos*p;
-            powerShooter = erreurPos*ff;
 
 
 
@@ -224,13 +230,13 @@ public class brain extends LinearOpMode {
 
             telemetry.addData("vitesse", shooter.getVelocity());
             telemetry.addData("currentPosD", currentPositionD);
-            telemetry.addData("currentPosG", currentPositionG);
+            //telemetry.addData("currentPosG", currentPositionG);
             //telemetry.addData("velo programmée", veloProg);
             //telemetry.addData("p", shooter1.getP());
             //telemetry.addData("bouton", gamepad2.dpad_down);
             //telemetry.addData("VisionX", visionX);
             //telemetry.addData("distance", distancePanier);
-            telemetry.addData("powerShooter", powerShooter1);
+            //telemetry.addData("powerShooter", powerShooter1);
 
             //telemetry.addData("velo", VeloFion);
             //telemetry.addData("posviseur", viseur1.viseur.getPosition());

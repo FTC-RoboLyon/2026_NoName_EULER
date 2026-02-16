@@ -121,6 +121,7 @@ public class brain extends LinearOpMode {
             }
             if(gamepad1.rightBumperWasPressed()){
                 jambe_droite.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                jambe_droite.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
 
@@ -134,9 +135,11 @@ public class brain extends LinearOpMode {
                 currentPositionD = jambe_droite.getCurrentPosition();
                 erreurPos = targetPosition-currentPositionD;
                 powerTurn = erreurPos*p;
-                powerTurn = Math.max(0.4, -0.4);
+                powerTurn = Math.max(-0.4, Math.min(0.4, powerTurn));
                 jambe_droite.setPower(-powerTurn);
                 jambe_gauche.setPower(powerTurn);
+            }else{
+                jambes.jambage(value_jambeDroite, value_jambeGauche, gamepad1, telemetry);
             }
 
 
@@ -163,7 +166,7 @@ public class brain extends LinearOpMode {
 
 
             }else{*/
-                jambes.jambage(value_jambeDroite, value_jambeGauche, gamepad1, telemetry);
+
             // }
             /*erreur = visionX;
             if (gamepad1.left_stick_button){

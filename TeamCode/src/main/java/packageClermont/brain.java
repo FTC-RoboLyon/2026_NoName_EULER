@@ -35,7 +35,8 @@ import packageClermont.organe.joySticks.joystickX;
 public class brain extends LinearOpMode {
     private double ff;
     private double erreurPos;
-    private double currentPosition;
+    private double currentPositionD;
+    private double currentPositionG;
     private double targetPosition;
     private double powerShooter1;
     private double p = 1;
@@ -128,8 +129,9 @@ public class brain extends LinearOpMode {
             visionX = apriljoke.getTagXNormalized(24);
             distancePanier = apriljoke.getDistanceCm(24);
 
-            currentPosition = shooter.getCurrentPosition();
-            erreurPos = targetPosition-currentPosition;
+            currentPositionD = jambe_droite.getCurrentPosition();
+            currentPositionG = jambe_gauche.getCurrentPosition();
+            erreurPos = targetPosition-currentPositionD;
             erreurPos = erreurPos*p;
             powerShooter = erreurPos*ff;
 
@@ -221,7 +223,8 @@ public class brain extends LinearOpMode {
             PidCoef = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 
             telemetry.addData("vitesse", shooter.getVelocity());
-            telemetry.addData("currentPos", currentPosition);
+            telemetry.addData("currentPosD", currentPositionD);
+            telemetry.addData("currentPosG", currentPositionG);
             //telemetry.addData("velo programmée", veloProg);
             //telemetry.addData("p", shooter1.getP());
             //telemetry.addData("bouton", gamepad2.dpad_down);

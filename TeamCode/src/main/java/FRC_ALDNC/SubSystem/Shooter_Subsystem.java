@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import lib.Dashboard;
+import lib.PID_shooter;
 import lib.Utils;
 
 @Config
@@ -71,14 +72,17 @@ public class Shooter_Subsystem extends SubsystemBase {
     private WantedState wantedState = WantedState.WAIT;
     double voltage;
     public static double Pow_shoot;
+    public static PID_shooter shooter_pidf;
     public Shooter_Subsystem (HardwareMap hmap, Telemetry telemetry){
+        shooter_pidf = new PID_shooter(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
+        shooter_pidf.SetTolerance(shooter_velo_tolerance);
+
         dashboard = FtcDashboard.getInstance();
         shooter = hmap.get(DcMotorEx.class, SHOOTER);
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        shooter.setVelocityPIDFCoefficients(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
 
         viseur = hmap.get(Servo.class, VISEUR);
 
@@ -172,9 +176,9 @@ public class Shooter_Subsystem extends SubsystemBase {
                 shooter.setVelocity(shooter_aspirage_puissance);
                 break;
             case PREPARING_TO_SHOOT:
-                shooter.setVelocity(veloShooter);
+                //shooter.setVelocity(veloShooter);
                 viseur.setPosition(posviseur);
-                //setPower_voltage(Pow_shoot);
+                setPower_voltage_PIDF();
                 break;
             case READY_TO_SHOOT:
                 break;
@@ -185,8 +189,10 @@ public class Shooter_Subsystem extends SubsystemBase {
                 break;
         }
     }
-    public void setPower_voltage (double power){
-        shooter.setPower(power * seuil_volt_shooter / voltage);
+    public void setPower_voltage_PIDF (){
+        Pow_shoot = shooter_pidf.Calculate_Power(veloShooter, shooter.getVelocity())*voltage/seuil_volt_shooter;
+        shooter.setPower(Pow_shoot);
+
     }
 
     public void Tir_using_velo(boolean isShooting, Gamepad gamepad){
@@ -199,7 +205,8 @@ public class Shooter_Subsystem extends SubsystemBase {
         }
     }
     public void updatePID(){
-        shooter.setVelocityPIDFCoefficients(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
+        shooter_pidf.SetGains(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
+        shooter_pidf.SetTolerance(shooter_velo_tolerance);
     }
 
     public void calculate_postir(double distance_to_goal){
@@ -218,8 +225,14 @@ public class Shooter_Subsystem extends SubsystemBase {
         dashboard.sendTelemetryPacket(mon_ptit_truc);
 
         telemetry.addData("velocité du shooter", current_shoot_velo);
+        telemetry.addData("valeur", Pow_shoot);
+        telemetry.addData("voltage du moteur", shooter.getPower());
+        telemetry.addData("erreur", shooter_pidf.GetError());
+        telemetry.addData("feedforward", shooter_pidf.GetFF());
+        telemetry.addData("feedforward * setPoint", shooter_pidf.GetFF()*shooter_pidf.GetSetpoint());
         telemetry.addData("voltage", voltage);
-        telemetry.addData("vrai_puissance_donnée", Pow_shoot * voltage / seuil_volt_shooter);
+        telemetry.addData("valeur retourné par le pidf", shooter_pidf.calculateInternal(shooter.getVelocity(), shooter_pidf.Getdt()));
+
         telemetry.update();
 
     }

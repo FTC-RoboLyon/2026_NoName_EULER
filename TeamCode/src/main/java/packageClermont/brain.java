@@ -5,6 +5,7 @@ package packageClermont;
 //import com.acmerobotics.dashboard.FtcDashboard;
 //import com.acmerobotics.dashboard.config.Config;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -30,7 +31,7 @@ import packageClermont.organe.jambes;
 import packageClermont.organe.Shooter;
 import packageClermont.organe.joySticks.joyStickY;
 import packageClermont.organe.joySticks.joystickX;
-//@Config
+@Config
 @TeleOp(name = "Compet_brain", group = "Euler")
 public class brain extends LinearOpMode {
     private double powerTurn;
@@ -40,7 +41,7 @@ public class brain extends LinearOpMode {
     private double currentPositionG;
     private double targetPosition;
     private double powerShooter1;
-    private double p = 0.1;
+    public static double p = 0.0009;
     private double valueRotation;
     private double distancePanier;
     private double distancePanierSol;
@@ -119,25 +120,25 @@ public class brain extends LinearOpMode {
             if(gamepad1.rightBumperWasPressed()){
                 isShooting = !isShooting;
             }
-            if(gamepad1.rightBumperWasPressed()){
-                jambe_droite.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                jambe_droite.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
 
 
 
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
             value_jambeDroite = rightX - leftY;
             value_jambeGauche = rightX + leftY;
+            apriljoke.updtade();
             currentPositionD = jambe_droite.getCurrentPosition();
+            targetPosition = apriljoke.getBearing(24)*ff;
+            targetPosition = targetPosition + currentPositionD;
+            erreurPos = targetPosition-currentPositionD;
+            powerTurn = erreurPos*p;
+            powerTurn = Math.max(-0.3, Math.min(0.3, powerTurn));
             if(isShooting){
-                apriljoke.updtade();
-                targetPosition = apriljoke.getBearing(24)*ff;
-                erreurPos = targetPosition-currentPositionD;
-                powerTurn = erreurPos*p;
-                powerTurn = Math.max(-0.4, Math.min(0.4, powerTurn));
-                jambe_droite.setPower(-powerTurn);
-                jambe_gauche.setPower(powerTurn);
+                jambe_droite.setPower(powerTurn);
+                jambe_gauche.setPower(-powerTurn);
+                if(value_jambeDroite > seuilDriveShooter || value_jambeDroite < -seuilDriveShooter || value_jambeGauche > seuilDriveShooter || value_jambeGauche < -seuilDriveShooter){
+                    jambes.jambage(value_jambeDroite/1.3, value_jambeGauche/1.3, gamepad1, telemetry);
+                }
             }else{
                 jambes.jambage(value_jambeDroite, value_jambeGauche, gamepad1, telemetry);
             }
@@ -159,9 +160,7 @@ public class brain extends LinearOpMode {
                 }
 
 
-                if(value_jambeDroite > seuilDriveShooter || value_jambeDroite < -seuilDriveShooter || value_jambeGauche > seuilDriveShooter || value_jambeGauche < -seuilDriveShooter){
-                    jambes.jambage(value_jambeDroite/1.3, value_jambeGauche/1.3, gamepad1, telemetry);
-                }
+
 
 
 
@@ -181,7 +180,7 @@ public class brain extends LinearOpMode {
             }*/
 
 
-            /*shooter1.Tir_using_velo(gamepad1.b,
+            shooter1.Tir_using_velo(gamepad1.b,
                     gamepad1.a,
                     gamepad1.y,
                     isShooting,
@@ -196,7 +195,7 @@ public class brain extends LinearOpMode {
                     gamepad1.dpadLeftWasPressed(),
                     gamepad1.dpadRightWasPressed(),
                     gamepad1.dpadUpWasPressed(),
-                    gamepad1.dpadDownWasPressed());*/
+                    gamepad1.dpadDownWasPressed());
 
 
             /*shooter1.p(gamepad2.dpadDownWasPressed(),
@@ -234,6 +233,8 @@ public class brain extends LinearOpMode {
             telemetry.addData("vitesse", shooter.getVelocity());
             telemetry.addData("currentPosD", currentPositionD);
             telemetry.addData("target", targetPosition);
+            telemetry.addData("erreur", erreurPos);
+            telemetry.addData("powerTurn", powerTurn);
             //telemetry.addData("currentPosG", currentPositionG);
             //telemetry.addData("velo programmée", veloProg);
             //telemetry.addData("p", shooter1.getP());

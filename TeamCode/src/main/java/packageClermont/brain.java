@@ -129,11 +129,10 @@ public class brain extends LinearOpMode {
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
             value_jambeDroite = rightX - leftY;
             value_jambeGauche = rightX + leftY;
-            apriljoke.updtade();
-            targetPosition = apriljoke.getBearing(24)*ff;
+            currentPositionD = jambe_droite.getCurrentPosition();
             if(isShooting){
-
-                currentPositionD = jambe_droite.getCurrentPosition();
+                apriljoke.updtade();
+                targetPosition = apriljoke.getBearing(24)*ff;
                 erreurPos = targetPosition-currentPositionD;
                 powerTurn = erreurPos*p;
                 powerTurn = Math.max(-0.4, Math.min(0.4, powerTurn));

@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+
 import static packageClermont.organe.Constant.FEEDER;
 import static packageClermont.organe.Constant.INTAKE;
 import static packageClermont.organe.Constant.LEFT_MOTOR;
@@ -220,6 +221,7 @@ public class brain extends LinearOpMode {
             PidCoef = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 
             telemetry.addData("vitesse", shooter.getVelocity());
+            telemetry.addData("currentPos", currentPosition);
             //telemetry.addData("velo programmée", veloProg);
             //telemetry.addData("p", shooter1.getP());
             //telemetry.addData("bouton", gamepad2.dpad_down);

@@ -32,7 +32,12 @@ import packageClermont.organe.joySticks.joystickX;
 //@Config
 @TeleOp(name = "Compet_brain", group = "Euler")
 public class brain extends LinearOpMode {
-    private double p = 0.1;
+    private double ff;
+    private double erreurPos;
+    private double currentPosition;
+    private double targetPosition;
+    private double powerShooter1;
+    private double p = 1;
     private double valueRotation;
     private double distancePanier;
     private double distancePanierSol;
@@ -47,7 +52,7 @@ public class brain extends LinearOpMode {
     double rightX;
     double leftY;
     double powerShooter = 0;
-    public PIDFCoefficients PidCoef;    
+    public PIDFCoefficients PidCoef;
     double value_jambeDroite;
     double value_jambeGauche;
     double veloProg;
@@ -98,6 +103,8 @@ public class brain extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
 
+
+
             rightX = joystickX.joyStickXPara(gamepad1.right_stick_x, x1, gamepad1.left_stick_y, y1);
             leftY = joyStickY.joyStickYPara(gamepad1.right_stick_x, x1, gamepad1.left_stick_y, y1);
             x1 = rightX;
@@ -106,9 +113,9 @@ public class brain extends LinearOpMode {
             if(gamepad1.left_bumper){
                 leftY = leftY /1.5;
             }
-            if(gamepad1.rightBumperWasPressed()){
+            /*if(gamepad1.rightBumperWasPressed()){
                 isShooting = !isShooting;
-            }
+            }*/
 
 
 
@@ -120,11 +127,17 @@ public class brain extends LinearOpMode {
             visionX = apriljoke.getTagXNormalized(24);
             distancePanier = apriljoke.getDistanceCm(24);
 
+            currentPosition = shooter.getCurrentPosition();
+            erreurPos = targetPosition-currentPosition;
+            erreurPos = erreurPos*p;
+            powerShooter = erreurPos*ff;
 
-            valueRotation = p_rotation*visionX;
+
+
+            /*valueRotation = p_rotation*visionX;
             erreurD = valueRotation - jambe_droite.getVelocity();
-            erreurG = -valueRotation - jambe_gauche.getVelocity();
-            if(isShooting){
+            erreurG = -valueRotation - jambe_gauche.getVelocity();*/
+            /*if(isShooting){
                 if(visionX == 0){
                     jambe_droite.setPower(0);
                     jambe_gauche.setPower(0);
@@ -140,9 +153,9 @@ public class brain extends LinearOpMode {
 
 
 
-            }else{
+            }else{*/
                 jambes.jambage(value_jambeDroite, value_jambeGauche, gamepad1, telemetry);
-            }
+            // }
             /*erreur = visionX;
             if (gamepad1.left_stick_button){
 
@@ -156,7 +169,7 @@ public class brain extends LinearOpMode {
             }*/
 
 
-            shooter1.Tir_using_velo(gamepad1.b,
+            /*shooter1.Tir_using_velo(gamepad1.b,
                     gamepad1.a,
                     gamepad1.y,
                     isShooting,
@@ -171,18 +184,21 @@ public class brain extends LinearOpMode {
                     gamepad1.dpadLeftWasPressed(),
                     gamepad1.dpadRightWasPressed(),
                     gamepad1.dpadUpWasPressed(),
-                    gamepad1.dpadDownWasPressed());
+                    gamepad1.dpadDownWasPressed());*/
 
 
-            shooter1.p(gamepad2.dpadDownWasPressed(),
+            /*shooter1.p(gamepad2.dpadDownWasPressed(),
                     gamepad2.dpadRightWasPressed(),
                     gamepad2.dpadUpWasPressed(),
                     gamepad2.dpadLeftWasPressed(), telemetry);
-            shooter1.d(gamepad2, telemetry);
+            shooter1.d(gamepad2, telemetry);*/
             /*powerShooter = shooter1.powerShooter(gamepad2.aWasPressed(),
                     gamepad2.bWasPressed(),
                     gamepad2.yWasPressed(),
-                    gamepad2.xWasPressed());*/
+                    gamepad2.xWasPressed());
+            voltage = controlHub_VoltageSensor.getVoltage();
+            powerShooter1 = powerShooter*seuil_shootter/voltage;
+            shooter.setPower(powerShooter1);*/
             /*if(gamepad1.dpadRightWasPressed()){
                 powerShooter = powerShooter + 0.05;
             }else if(gamepad1.dpadLeftWasPressed()){
@@ -204,18 +220,19 @@ public class brain extends LinearOpMode {
             PidCoef = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 
             telemetry.addData("vitesse", shooter.getVelocity());
-            telemetry.addData("velo programmée", veloProg);
+            //telemetry.addData("velo programmée", veloProg);
             //telemetry.addData("p", shooter1.getP());
-            telemetry.addData("bouton", gamepad2.dpad_down);
-            telemetry.addData("VisionX", visionX);
-            telemetry.addData("distance", distancePanier);
+            //telemetry.addData("bouton", gamepad2.dpad_down);
+            //telemetry.addData("VisionX", visionX);
+            //telemetry.addData("distance", distancePanier);
+            telemetry.addData("powerShooter", powerShooter1);
 
             //telemetry.addData("velo", VeloFion);
             //telemetry.addData("posviseur", viseur1.viseur.getPosition());
             //telemetry.addData("Tension", powerShooter);
             //telemetry.addData("value_jambe droite", value_jambeDroite);
             //telemetry.addData("value_jambe_gauche", value_jambeGauche);
-            apriljoke.telemetry(telemetry);
+            //apriljoke.telemetry(telemetry);
             telemetry.update();
 
         }

@@ -154,6 +154,6 @@ public class Camera_subsystem extends SubsystemBase {
                 actual_detection = wanted_id_is_detected() ? getAprilTagById() : getClosestApril();
                 break;
         }
-        telemetry();
+        //telemetry();
     }
 }

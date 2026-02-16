@@ -129,9 +129,10 @@ public class brain extends LinearOpMode {
             bouche.manger(gamepad1.left_bumper, gamepad1.left_trigger);
             value_jambeDroite = rightX - leftY;
             value_jambeGauche = rightX + leftY;
+            apriljoke.updtade();
+            targetPosition = apriljoke.getBearing(24)*ff;
             if(isShooting){
-                apriljoke.updtade();
-                targetPosition = apriljoke.getBearing(24)*ff;
+
                 currentPositionD = jambe_droite.getCurrentPosition();
                 erreurPos = targetPosition-currentPositionD;
                 powerTurn = erreurPos*p;
@@ -233,6 +234,7 @@ public class brain extends LinearOpMode {
 
             telemetry.addData("vitesse", shooter.getVelocity());
             telemetry.addData("currentPosD", currentPositionD);
+            telemetry.addData("target", targetPosition);
             //telemetry.addData("currentPosG", currentPositionG);
             //telemetry.addData("velo programmée", veloProg);
             //telemetry.addData("p", shooter1.getP());
@@ -246,7 +248,7 @@ public class brain extends LinearOpMode {
             //telemetry.addData("Tension", powerShooter);
             //telemetry.addData("value_jambe droite", value_jambeDroite);
             //telemetry.addData("value_jambe_gauche", value_jambeGauche);
-            //apriljoke.telemetry(telemetry);
+            apriljoke.telemetry(telemetry);
             telemetry.update();
 
         }

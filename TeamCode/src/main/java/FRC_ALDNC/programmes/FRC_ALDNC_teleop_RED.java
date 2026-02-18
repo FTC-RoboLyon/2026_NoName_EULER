@@ -14,7 +14,7 @@ import java.util.function.BooleanSupplier;
 import FRC_ALDNC.ALDNC_container;
 
 @TeleOp(name = "FRC_ALDNC_firtsprogramme", group = "FRC_style")
-public class FRC_ALDNC_firtsprogramme extends CommandOpMode {
+public class FRC_ALDNC_teleop_RED extends CommandOpMode {
     ALDNC_container robot;
     GamepadEx gamepad0;
     GamepadEx gamEpad2;
@@ -34,19 +34,19 @@ public class FRC_ALDNC_firtsprogramme extends CommandOpMode {
         gamEpad2 = new GamepadEx(gamepad2);
         lefT_triger = () -> gamepad1.left_trigger > 0.3;
         feeder_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.X
+                gamEpad2, GamepadKeys.Button.X
         );
         shoot_bank_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.B
+                gamEpad2, GamepadKeys.Button.B
         );
         shoot_mid_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.Y
+                gamEpad2, GamepadKeys.Button.Y
         );
         shoot_far_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.A
+                gamEpad2, GamepadKeys.Button.A
         );
         aspirer_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.RIGHT_BUMPER
+                gamEpad2, GamepadKeys.Button.RIGHT_BUMPER
         );
         Intake_button = new GamepadButton(
                 gamepad0, GamepadKeys.Button.LEFT_BUMPER

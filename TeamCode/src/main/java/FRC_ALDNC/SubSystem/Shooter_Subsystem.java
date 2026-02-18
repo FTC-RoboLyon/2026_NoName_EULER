@@ -84,6 +84,7 @@ public class Shooter_Subsystem extends SubsystemBase {
         shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
+
         viseur = hmap.get(Servo.class, VISEUR);
 
         this.telemetry = telemetry;

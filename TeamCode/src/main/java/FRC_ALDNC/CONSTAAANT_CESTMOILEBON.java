@@ -14,6 +14,11 @@ public class CONSTAAANT_CESTMOILEBON {
     public static double seuil_volt_shooter = 11; //TUNEME
     public static double shooter_aspirage_puissance = -200;
 
+    public static double ff_rotation = 6.43;
+    public static double p_rotation = 0.002;
+    public static double tolerence_rotation = 20;
+    public  static double seuilDriveShooter = 0.05;
+
 
     public static double rotation_P,rotation_I,rotation_D = 0 ; //tunme
     public static double rotation_tolerance = 0 ; //tunme

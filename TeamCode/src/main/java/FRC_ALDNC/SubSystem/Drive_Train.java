@@ -1,4 +1,5 @@
 package FRC_ALDNC.SubSystem;
+
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ENCODERD;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ENCODEURG;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.LEFT_MOTOR;
@@ -22,6 +23,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.Base64;
 
 import lib.PidRBL;
+
 public class Drive_Train extends SubsystemBase {
     DcMotorEx left_drive, right_drive, encoderD, encoderG;
     private double left_motor_power, right_motor_power, x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, angle = 0, rayon = 2.54, CPR = 8192, DG, DD, DL = 1.56;
@@ -31,7 +33,7 @@ public class Drive_Train extends SubsystemBase {
     public double Pos_theta_robot;
 
 
-    public Drive_Train (HardwareMap hmap){
+    public Drive_Train(HardwareMap hmap) {
         left_drive = hmap.get(DcMotorEx.class, LEFT_MOTOR);
         right_drive = hmap.get(DcMotorEx.class, RIGHT_MOTOR);
 
@@ -53,69 +55,82 @@ public class Drive_Train extends SubsystemBase {
         encoderG.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         rotattion_Pid.SetTolerance(0.01);
-        rotattion_Pid.SetInputLimits(0,Math.PI*2);
+        rotattion_Pid.SetInputLimits(0, Math.PI * 2);
         rotattion_Pid.SetContinuous(true);
 
 
     }
+
     public void turn_left() {
         left_motor_power = -1;
         right_motor_power = 1;
     }
+
     public void turn_right() {
         left_motor_power = 1;
         right_motor_power = -1;
     }
+
     public void forward() {
         left_motor_power = 1;
         right_motor_power = 1;
     }
-    public void backward () {
+
+    public void backward() {
         left_motor_power = -1;
         right_motor_power = -1;
     }
 
-    public void stop () {
+    public void stop() {
         left_drive.setPower(0);
         right_drive.setPower(0);
     }
+
     public void drive(double forward, double turn) {
         left_motor_power = forward + turn;
         right_motor_power = forward - turn;
     }
-    public void Calculate_position (){
+
+    public void Calculate_position() {
         double curent_dx = left_drive.getCurrentPosition();
     }
-    public void align_rotation (double target_angle, double real_angle, Telemetry telemetry){
-        double turn = rotattion_Pid.Calculate(target_angle*Math.PI/180, real_angle);
+
+    public void align_rotation(double target_angle, double real_angle, Telemetry telemetry) {
+        double turn = rotattion_Pid.Calculate(target_angle * Math.PI / 180, real_angle);
         telemetry.addData("left motor power", turn);
         telemetry.addData("reight motor power", -turn);
         telemetry.addLine(rotattion_Pid.GetState());
     }
-    public void slow_down (double ralentisseur){
+
+    public void slow_down(double ralentisseur) {
         left_motor_power /= ralentisseur;
         right_motor_power /= ralentisseur;
     }
-    private void calculateValuesEncoderDetG(){
+
+    private void calculateValuesEncoderDetG() {
         valueEncoderD = encoderD.getCurrentPosition() - vielleValueD;
         valueEncoderG = encoderG.getCurrentPosition() - vielleValueG;
         vielleValueD = encoderD.getCurrentPosition();
         vielleValueG = encoderG.getCurrentPosition();
     }
-    private void calculateDistanceGetD(){
-        DG = Math.PI*2*rayon / CPR;
-        DG = DG*valueEncoderG;
-        DD = Math.PI*2*rayon / CPR;
-        DD = DD*valueEncoderD;
+
+    private void calculateDistanceGetD() {
+        DG = Math.PI * 2 * rayon / CPR;
+        DG = DG * valueEncoderG;
+        DD = Math.PI * 2 * rayon / CPR;
+        DD = DD * valueEncoderD;
     }
-    private void calculateAngleRadiant(){
-        angle = (DD - DG)*DL;
+
+    private void calculateAngleRadiant() {
+        angle = (DD - DG) * DL;
     }
-    private void calculateX(){
-        x = x;
+
+    private void calculateX() {
+        x = 
     }
+
     @Override
-    public void periodic(){
+    public void periodic() {
         left_drive.setPower(left_motor_power);
         right_drive.setPower(right_motor_power);
     }

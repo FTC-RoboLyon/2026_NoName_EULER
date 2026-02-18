@@ -77,7 +77,7 @@ public class ALDNC_container{
 
         //chassis_subsystem.setDefaultCommand(new Drive_command(chassis_subsystem, left_joystick, right_joystick, telemetry));
         // shooter_subsystem.setDefaultCommand(new Tuning_postir_command(shooter_subsystem, apriljoke));
-        chassis_subsystem.setDefaultCommand(new Drive_using_suplier_test(chassis_subsystem, forward, turn, is_shooting));
+        chassis_subsystem.setDefaultCommand(new Drive_using_suplier_test(chassis_subsystem,apriljoke, forward, turn, is_shooting));
 
         this.telemetry = telemetry;
         //FtcDashboard dashboard = FtcDashboard.getInstance();

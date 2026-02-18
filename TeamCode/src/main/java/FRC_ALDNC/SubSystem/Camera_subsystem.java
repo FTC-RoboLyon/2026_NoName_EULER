@@ -61,6 +61,11 @@ public class Camera_subsystem extends SubsystemBase {
 
     }
     public void setCameraMode(Camera_mode camera_mode){cameraMode = camera_mode;}
+    public double getBearing() {
+        if (actual_detection == null) return 0; // Aucun tag trouvé
+        int imageWidth = 1920;
+        return (actual_detection.ftcPose.bearing);
+    }
     public Camera_mode getCameraMode(){return cameraMode;}
     public double getTagXInPixels() {
         if (actual_detection == null) return 0; // Aucun tag trouvé

@@ -6,6 +6,8 @@ package packageClermont;
 //import com.acmerobotics.dashboard.config.Config;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 //import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -66,12 +68,16 @@ public class brain extends LinearOpMode {
     float x;
     float y;
     public  static  double vvision = 0;
+    public FtcDashboard dashboard;
+
 
 
     boolean isShooting = false;
     @Override
     public void runOpMode() throws InterruptedException {
         VoltageSensor controlHub_VoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
+
+        dashboard = FtcDashboard.getInstance();
 
 
         double seuil_shootter = 12.3;
@@ -252,6 +258,9 @@ public class brain extends LinearOpMode {
             //telemetry.addData("Tension", powerShooter);
             //telemetry.addData("value_jambe droite", value_jambeDroite);
             //telemetry.addData("value_jambe_gauche", value_jambeGauche);
+            TelemetryPacket mon_ptit_truc = new TelemetryPacket();
+            mon_ptit_truc.put("velocité du shooter", shooter.getVelocity());
+            dashboard.sendTelemetryPacket(mon_ptit_truc);
             apriljoke.telemetry(telemetry);
             telemetry.update();
 

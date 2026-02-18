@@ -118,8 +118,8 @@ public class Drive_Train extends SubsystemBase {
         }
     }
     private void calculateXY(){
-        x = Math.sin(angle)*h;
-        y = Math.cos(angle)*h;
+        x = Math.sin(vieuxAngle)*h;
+        y = Math.cos(vieuxAngle)*h;
         vieuxX += x;
         vieuxY += y;
     }

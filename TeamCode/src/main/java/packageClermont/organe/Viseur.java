@@ -11,7 +11,7 @@ public class Viseur {
     }
     public double posViseurBank = 1;
     public double posViseurMid = 0.6;
-    public double posViseurFar = 0.5;
+    public double posViseurFar = 0.6;
     public double posViseur = posViseurBank;
 
     public void visage(boolean a, boolean b, boolean y, boolean leftFlecheGaucheWpr, boolean leftFlecheDroiteWpr){

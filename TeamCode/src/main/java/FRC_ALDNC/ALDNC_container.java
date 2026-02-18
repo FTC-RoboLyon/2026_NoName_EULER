@@ -55,7 +55,7 @@ public class ALDNC_container{
     BooleanSupplier is_shooting;
 
     public ALDNC_container (HardwareMap hmap, RobotMode wich_programme, GamepadEx gamepad, Telemetry telemetry){
-        chassis_subsystem = new Drive_Train(hmap);
+        chassis_subsystem = new Drive_Train(hmap, telemetry);
 
         shooter_subsystem = new Shooter_Subsystem(hmap, telemetry);
 

@@ -110,7 +110,7 @@ public class Drive_Train extends SubsystemBase {
     private void calculateAngleRadiant(){
         angle = (DD - DG)/DL;
         vieuxAngle += angle;
-        angleDegrees = Math.toDegrees(angle);
+        angleDegrees = Math.toDegrees(vieuxAngle);
         if(DD>DG){
             h = DG;
         }else if(DG>=DD){
@@ -134,6 +134,18 @@ public class Drive_Train extends SubsystemBase {
         calculateAngleRadiant();
         calculateXY();
         telemetrieOdometrie();
+    }
+    public double Get_right_current (){
+        return right_drive.getCurrentPosition();
+    }
+    public double Get_left_current (){
+        return left_drive.getCurrentPosition();
+    }
+    public double Get_right_power (){
+        return right_motor_power;
+    }
+    public double Get_left_power (){
+        return left_motor_power;
     }
 
     @Override

@@ -7,6 +7,7 @@ public class CONSTAAANT_CESTMOILEBON {
     public static String LEFT_MOTOR = "left motor", RIGHT_MOTOR = "right motor", INTAKE = "intake", SHOOTER = "shooter", FEEDER = "feeder", VISEUR = "viseur", COMPTEUR_BALLE = "compteur balles", ENCODERD = "encoderD", ENCODEURG = "encoderG";
 
     public static double ShooterKP= 0.005, ShooterKI = 0.0, ShooterKD = 0.005, ShooterKF = 0.003825; //TUNEME
+    public static double ShooterKP_velo= 0.005, ShooterKI_velo = 0.0, ShooterKD_velo = 0.005, ShooterKF_velo = 0.003825; //TUNEME
     public  static  double shooter_velo_tolerance = 10; //Tunme
     public  static  double shooter_timestamp = 20; //Tunme
     public static double posviseur_bank = 1, posviseur_mid = 0.6, posviseur_far = 0.5; //TUNEME

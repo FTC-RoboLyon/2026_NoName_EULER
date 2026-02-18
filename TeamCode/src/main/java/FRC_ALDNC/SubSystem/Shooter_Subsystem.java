@@ -2,9 +2,13 @@ package FRC_ALDNC.SubSystem;
 
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.SHOOTER;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKD;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKD_velo;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKF;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKF_velo;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKI;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKI_velo;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKP;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKP_velo;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.VISEUR;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posviseur_bank;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posviseur_far;
@@ -82,7 +86,7 @@ public class Shooter_Subsystem extends SubsystemBase {
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        shooter.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
 
         viseur = hmap.get(Servo.class, VISEUR);
@@ -178,7 +182,8 @@ public class Shooter_Subsystem extends SubsystemBase {
                 break;
             case PREPARING_TO_SHOOT:
                 viseur.setPosition(posviseur);
-                setPower_voltage_PIDF();
+                //setPower_voltage_PIDF();
+                shooter.setVelocity(veloShooter);
                 break;
             case READY_TO_SHOOT:
                 break;
@@ -207,6 +212,8 @@ public class Shooter_Subsystem extends SubsystemBase {
     public void updatePID(){
         shooter_pidf.SetGains(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
         shooter_pidf.SetTolerance(shooter_velo_tolerance);
+
+        shooter.setVelocityPIDFCoefficients(ShooterKP_velo, ShooterKI_velo, ShooterKD_velo, ShooterKF_velo);
     }
 
     public void calculate_postir(double distance_to_goal){

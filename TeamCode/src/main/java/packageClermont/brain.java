@@ -5,7 +5,7 @@ package packageClermont;
 //import com.acmerobotics.dashboard.FtcDashboard;
 //import com.acmerobotics.dashboard.config.Config;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -31,9 +31,10 @@ import packageClermont.organe.jambes;
 import packageClermont.organe.Shooter;
 import packageClermont.organe.joySticks.joyStickY;
 import packageClermont.organe.joySticks.joystickX;
-@Config
+//@Config
 @TeleOp(name = "Compet_brain", group = "Euler")
 public class brain extends LinearOpMode {
+    private double tolerence = 20;
     private double powerTurn;
     private double ff = 6.43;
     private double erreurPos;
@@ -41,7 +42,7 @@ public class brain extends LinearOpMode {
     private double currentPositionG;
     private double targetPosition;
     private double powerShooter1;
-    public static double p = 0.0009;
+    public static double p = 0.002;
     private double valueRotation;
     private double distancePanier;
     private double distancePanierSol;
@@ -131,6 +132,9 @@ public class brain extends LinearOpMode {
             targetPosition = apriljoke.getBearing(24)*ff;
             targetPosition = targetPosition + currentPositionD;
             erreurPos = targetPosition-currentPositionD;
+            if(erreurPos>-tolerence && erreurPos<tolerence){
+                erreurPos = 0;
+            }
             powerTurn = erreurPos*p;
             powerTurn = Math.max(-0.3, Math.min(0.3, powerTurn));
             if(isShooting){

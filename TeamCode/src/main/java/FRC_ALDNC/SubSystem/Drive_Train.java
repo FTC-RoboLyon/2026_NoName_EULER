@@ -112,11 +112,7 @@ public class Drive_Train extends SubsystemBase {
         angle = (DD - DG)*DL;
     }
     private void calculateX(){
-<<<<<<< Updated upstream
-        x =
-=======
         x = x;
->>>>>>> Stashed changes
     }
     @Override
     public void periodic(){

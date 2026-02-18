@@ -111,7 +111,7 @@ public class Intake_subsystem extends SubsystemBase {
                 break;
 
             case INTAKING:
-                intake.setPower(1.0);
+                intake.setPower(0.7);
                 break;
             case EJeCT:
                 intake.setPower(-1);

@@ -24,7 +24,7 @@ import java.util.Base64;
 import lib.PidRBL;
 public class Drive_Train extends SubsystemBase {
     DcMotorEx left_drive, right_drive/*, encoderD, encoderG*/;
-    private double left_motor_power, right_motor_power, x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG,vieuxX, vieuxY, vieuxAngle, angle,angleDegrees, rayon = 2.54, CPR = 8192, DG, DD, DL = 15.6, h;
+    private double left_motor_power, right_motor_power, x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG,vieuxX, vieuxY, vieuxAngle, angle,angleDegrees, rayon = 2.54, CPR = 8192, DG, DD, DL = 18, h;
     public static PidRBL rotattion_Pid = new PidRBL(rotation_P, rotation_I, rotation_D);
     private final Telemetry telemetry;
 
@@ -97,9 +97,9 @@ public class Drive_Train extends SubsystemBase {
     }
     private void calculateValuesEncoderDetG(){
         valueEncoderD = right_drive.getCurrentPosition() - vielleValueD;
-        valueEncoderG = left_drive.getCurrentPosition() - vielleValueG;
+        valueEncoderG = -left_drive.getCurrentPosition() - vielleValueG;
         vielleValueD = right_drive.getCurrentPosition();
-        vielleValueG = left_drive.getCurrentPosition();
+        vielleValueG = -left_drive.getCurrentPosition();
     }
     private void calculateDistanceGetD(){
         DG = Math.PI*2*rayon / CPR;

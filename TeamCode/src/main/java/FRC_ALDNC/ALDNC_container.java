@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.command.button.Button;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import FRC_ALDNC.SubSystem.Camera_subsystem;
@@ -51,6 +52,7 @@ public class ALDNC_container{
     RobotMode team_and_mode;
     public double m_voltageSensorValue;
     VoltageSensor voltageSensor;
+    BooleanSupplier is_shooting;
 
     public ALDNC_container (HardwareMap hmap, RobotMode wich_programme, GamepadEx gamepad, Telemetry telemetry){
         chassis_subsystem = new Drive_Train(hmap);
@@ -65,6 +67,7 @@ public class ALDNC_container{
         right_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.right, chassis_subsystem);
         forward = () -> left_joystick.getX();
         turn = () -> right_joystick.getY();    //Si le chassis ne bouge pas avec le programme actuel, ajouter les lignes 66, 67 et 77 et enlevez la ligne 75
+        is_shooting = () -> shooter_subsystem.getShooterSysState() == Shooter_Subsystem.SystemState.PREPARING_TO_SHOOT;
 
         apriljoke = new Camera_subsystem(hmap, wich_programme == RobotMode.TELEOP_RED || wich_programme == RobotMode.AUTO_RED ? 24 : 20, telemetry);
 
@@ -74,7 +77,7 @@ public class ALDNC_container{
 
         //chassis_subsystem.setDefaultCommand(new Drive_command(chassis_subsystem, left_joystick, right_joystick, telemetry));
         // shooter_subsystem.setDefaultCommand(new Tuning_postir_command(shooter_subsystem, apriljoke));
-        chassis_subsystem.setDefaultCommand(new Drive_using_suplier_test(chassis_subsystem, forward, turn));
+        chassis_subsystem.setDefaultCommand(new Drive_using_suplier_test(chassis_subsystem, forward, turn, is_shooting));
 
         this.telemetry = telemetry;
         //FtcDashboard dashboard = FtcDashboard.getInstance();

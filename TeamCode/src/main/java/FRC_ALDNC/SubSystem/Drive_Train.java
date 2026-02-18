@@ -26,6 +26,9 @@ public class Drive_Train extends SubsystemBase {
     DcMotorEx left_drive, right_drive, encoderD, encoderG;
     private double left_motor_power, right_motor_power, x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, angle = 0, rayon = 2.54, CPR = 8192, DG, DD, DL = 1.56;
     public static PidRBL rotattion_Pid = new PidRBL(rotation_P, rotation_I, rotation_D);
+    public double Pos_x_robot;
+    public double Pos_y_robot;
+    public double Pos_theta_robot;
 
 
     public Drive_Train (HardwareMap hmap){
@@ -80,6 +83,9 @@ public class Drive_Train extends SubsystemBase {
         left_motor_power = forward + turn;
         right_motor_power = forward - turn;
     }
+    public void Calculate_position (){
+        double curent_dx = left_drive.getCurrentPosition();
+    }
     public void align_rotation (double target_angle, double real_angle, Telemetry telemetry){
         double turn = rotattion_Pid.Calculate(target_angle*Math.PI/180, real_angle);
         telemetry.addData("left motor power", turn);
@@ -106,7 +112,11 @@ public class Drive_Train extends SubsystemBase {
         angle = (DD - DG)*DL;
     }
     private void calculateX(){
+<<<<<<< Updated upstream
         x =
+=======
+        x = x;
+>>>>>>> Stashed changes
     }
     @Override
     public void periodic(){

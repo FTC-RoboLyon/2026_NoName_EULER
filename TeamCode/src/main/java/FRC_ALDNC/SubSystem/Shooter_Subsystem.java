@@ -176,7 +176,6 @@ public class Shooter_Subsystem extends SubsystemBase {
                 shooter.setVelocity(shooter_aspirage_puissance);
                 break;
             case PREPARING_TO_SHOOT:
-                //shooter.setVelocity(veloShooter);
                 viseur.setPosition(posviseur);
                 setPower_voltage_PIDF();
                 break;

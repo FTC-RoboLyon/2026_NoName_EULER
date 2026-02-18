@@ -62,7 +62,7 @@ public class PID_shooter {
 
     public double calculateInternal(double measurement, double dt) {
         currentError = setpoint - measurement;
-        if((currentError * kp) < outputMax && (currentError * kp) > outputMin)
+        if((currentError * kp) < seuil_volt_shooter && (currentError * kp) > -seuil_volt_shooter)
         {
             integrative += currentError * dt;
         }

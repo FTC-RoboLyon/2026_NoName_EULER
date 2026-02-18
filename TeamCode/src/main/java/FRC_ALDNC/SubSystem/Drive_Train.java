@@ -23,7 +23,7 @@ import java.util.Base64;
 
 import lib.PidRBL;
 public class Drive_Train extends SubsystemBase {
-    DcMotorEx left_drive, right_drive, encoderD, encoderG;
+    DcMotorEx left_drive, right_drive/*, encoderD, encoderG*/;
     private double left_motor_power, right_motor_power, x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG,vieuxX, vieuxY, vieuxAngle, angle,angleDegrees, rayon = 2.54, CPR = 8192, DG, DD, DL = 15.6, h;
     public static PidRBL rotattion_Pid = new PidRBL(rotation_P, rotation_I, rotation_D);
     private final Telemetry telemetry;
@@ -35,22 +35,24 @@ public class Drive_Train extends SubsystemBase {
         left_drive = hmap.get(DcMotorEx.class, LEFT_MOTOR);
         right_drive = hmap.get(DcMotorEx.class, RIGHT_MOTOR);
 
-        encoderG = hmap.get(DcMotorEx.class, ENCODEURG);
-        encoderD = hmap.get(DcMotorEx.class, ENCODERD);
+        /*encoderG = hmap.get(DcMotorEx.class, ENCODEURG);
+        encoderD = hmap.get(DcMotorEx.class, ENCODERD);*/
 
         left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         left_drive.setDirection(DcMotorSimple.Direction.REVERSE);
-        left_drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        left_drive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        left_drive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         right_drive.setDirection(DcMotorSimple.Direction.FORWARD);
-        right_drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        right_drive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        right_drive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        encoderD.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        /*encoderD.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         encoderD.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         encoderG.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        encoderG.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        encoderG.setMode(DcMotor.RunMode.RUN_USING_ENCODER);*/
 
         rotattion_Pid.SetTolerance(0.01);
         rotattion_Pid.SetInputLimits(0,Math.PI*2);
@@ -94,10 +96,10 @@ public class Drive_Train extends SubsystemBase {
         right_motor_power /= ralentisseur;
     }
     private void calculateValuesEncoderDetG(){
-        valueEncoderD = encoderD.getCurrentPosition() - vielleValueD;
-        valueEncoderG = encoderG.getCurrentPosition() - vielleValueG;
-        vielleValueD = encoderD.getCurrentPosition();
-        vielleValueG = encoderG.getCurrentPosition();
+        valueEncoderD = right_drive.getCurrentPosition() - vielleValueD;
+        valueEncoderG = left_drive.getCurrentPosition() - vielleValueG;
+        vielleValueD = right_drive.getCurrentPosition();
+        vielleValueG = left_drive.getCurrentPosition();
     }
     private void calculateDistanceGetD(){
         DG = Math.PI*2*rayon / CPR;

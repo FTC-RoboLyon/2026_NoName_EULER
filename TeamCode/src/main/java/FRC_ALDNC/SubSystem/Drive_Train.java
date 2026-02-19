@@ -10,12 +10,19 @@ import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_P;
 
 import android.os.FileUriExposedException;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
+
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -24,12 +31,16 @@ import java.util.Base64;
 import lib.PidRBL;
 public class Drive_Train extends SubsystemBase {
     DcMotorEx left_drive, right_drive/*, encoderD, encoderG*/;
-    private double left_motor_power, right_motor_power, x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG,vieuxX, vieuxY, vieuxAngle, angle,angleDegrees, rayon = 2.54, CPR = 8192, DG, DD, DL = 18, h;
+    private double left_motor_power, right_motor_power, x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle, angle, angleDegrees, rayon = 5.7, CPR = 580, DG, DD, DL = 36, h;
+    // truc de pid pour l'odometrie
+    private double p = 0.05, target, erreur, targetDegrees, xOdo, yOdo;
     public static PidRBL rotattion_Pid = new PidRBL(rotation_P, rotation_I, rotation_D);
     private final Telemetry telemetry;
+    private IMU imu;
 
-
-    public Drive_Train (HardwareMap hmap, Telemetry tele){
+    public Drive_Train(HardwareMap hmap, Telemetry tele, double x, double y, GamepadEx gamepad1) {
+        xOdo = x;
+        yOdo = y;
         telemetry = tele;
 
         left_drive = hmap.get(DcMotorEx.class, LEFT_MOTOR);
@@ -55,105 +66,153 @@ public class Drive_Train extends SubsystemBase {
         encoderG.setMode(DcMotor.RunMode.RUN_USING_ENCODER);*/
 
         rotattion_Pid.SetTolerance(0.01);
-        rotattion_Pid.SetInputLimits(0,Math.PI*2);
+        rotattion_Pid.SetInputLimits(0, Math.PI * 2);
         rotattion_Pid.SetContinuous(true);
+        imu = hmap.get(IMU.class, "imu");
+
+        IMU.Parameters parameters = new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                )
+        );
+
+        imu.initialize(parameters);
+        imu.resetYaw();
 
 
     }
+
+    public double getHeadingRadians() {
+        if (imu == null) return 0; // sécurité
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+    }
+
     public void turn_left() {
         left_motor_power = -1;
         right_motor_power = 1;
     }
+
     public void turn_right() {
         left_motor_power = 1;
         right_motor_power = -1;
     }
+
     public void forward() {
         left_motor_power = 1;
         right_motor_power = 1;
     }
-    public void backward () {
+
+    public void backward() {
         left_motor_power = -1;
         right_motor_power = -1;
     }
 
-    public void stop () {
+    public void stop() {
         left_drive.setPower(0);
         right_drive.setPower(0);
     }
+
     public void drive(double forward, double turn) {
-        left_motor_power = forward + turn;
-        right_motor_power = forward - turn;
+        //left_motor_power = forward + turn;
+        //right_motor_power = forward - turn;
+
     }
-    public void align_rotation (double target_angle, double real_angle, Telemetry telemetry){
-        double turn = rotattion_Pid.Calculate(target_angle*Math.PI/180, real_angle);
+
+    public void align_rotation(double target_angle, double real_angle, Telemetry telemetry) {
+        double turn = rotattion_Pid.Calculate(target_angle * Math.PI / 180, real_angle);
         telemetry.addData("left motor power", turn);
         telemetry.addData("reight motor power", -turn);
         telemetry.addLine(rotattion_Pid.GetState());
     }
-    public void slow_down (double ralentisseur){
+
+    public void slow_down(double ralentisseur) {
         left_motor_power /= ralentisseur;
         right_motor_power /= ralentisseur;
     }
-    private void calculateValuesEncoderDetG(){
+
+    private void calculateValuesEncoderDetG() {
         valueEncoderD = right_drive.getCurrentPosition() - vielleValueD;
-        valueEncoderG = -left_drive.getCurrentPosition() - vielleValueG;
+        valueEncoderG = left_drive.getCurrentPosition() - vielleValueG;
         vielleValueD = right_drive.getCurrentPosition();
-        vielleValueG = -left_drive.getCurrentPosition();
+        vielleValueG = left_drive.getCurrentPosition();
     }
-    private void calculateDistanceGetD(){
-        DG = Math.PI*2*rayon / CPR;
-        DG = DG*valueEncoderG;
-        DD = Math.PI*2*rayon / CPR;
-        DD = DD*valueEncoderD;
+
+    private void calculateDistanceGetD() {
+        DG = Math.PI * 2 * rayon / CPR;
+        DG = DG * valueEncoderG;
+        DD = Math.PI * 2 * rayon / CPR;
+        DD = DD * valueEncoderD;
     }
-    private void calculateAngleRadiant(){
-        angle = (DD - DG)/DL;
-        vieuxAngle += angle;
+
+    private void calculateAngleRadiant() {
+        //angle = (DD - DG)/DL;
+        vieuxAngle = getHeadingRadians();
         angleDegrees = Math.toDegrees(vieuxAngle);
-        if(DD>DG){
-            h = DG;
-        }else if(DG>=DD){
-            h = DD;
-        }
+        h = (DG + DD) / 2;
     }
-    private void calculateXY(){
-        x = Math.sin(vieuxAngle)*h;
-        y = Math.cos(vieuxAngle)*h;
+
+    private void calculateXY() {
+        x = Math.sin(vieuxAngle) * h;
+        y = Math.cos(vieuxAngle) * h;
         vieuxX += x;
         vieuxY += y;
     }
-    private void telemetrieOdometrie(){
+
+    private void telemetrieOdometrie() {
         telemetry.addData("x", vieuxX);
         telemetry.addData("y", vieuxY);
         telemetry.addData("angle", angleDegrees);
+        telemetry.addData("jambe gauche", left_drive.getCurrentPosition());
+        telemetry.addData("jambe droite", right_drive.getCurrentPosition());
+        telemetry.addLine("truc de PID");
+        telemetry.addData("target", targetDegrees);
     }
-    public void odometrie(){
+
+    public void odometrie() {
         calculateValuesEncoderDetG();
         calculateDistanceGetD();
         calculateAngleRadiant();
         calculateXY();
         telemetrieOdometrie();
     }
-    public double Get_right_current (){
+
+    public double Get_right_current() {
         return right_drive.getCurrentPosition();
     }
-    public double Get_left_current (){
+
+    public double Get_left_current() {
         return left_drive.getCurrentPosition();
     }
-    public double Get_right_power (){
+
+    public double Get_right_power() {
         return right_motor_power;
     }
-    public double Get_left_power (){
+
+    public double Get_left_power() {
         return left_motor_power;
     }
 
+    public double getAngle() {
+        return vieuxAngle;
+    }
+
+    public void goPos() {
+        target = Math.atan(yOdo / xOdo);
+        targetDegrees = Math.toDegrees(target);
+        erreur = targetDegrees - vieuxAngle;
+        right_motor_power = erreur * p;
+        left_motor_power = -right_motor_power;
+    }
+
     @Override
-    public void periodic(){
+    public void periodic() {
+        odometrie();
+        goPos();
         left_drive.setPower(left_motor_power);
         right_drive.setPower(right_motor_power);
-        odometrie();
     }
 }
+
 
 

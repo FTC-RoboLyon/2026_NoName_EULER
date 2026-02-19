@@ -2,7 +2,7 @@ package FRC_ALDNC.SubSystem;
 
 import android.util.Size;
 
-import com.acmerobotics.dashboard.FtcDashboard;
+//import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -54,7 +54,7 @@ public class Camera_subsystem extends SubsystemBase {
         builder.addProcessor(aprilTag);
         visionPortal = builder.build();
         visionPortal.setProcessorEnabled(aprilTag, true);
-        FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
+        //FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
 
 
 

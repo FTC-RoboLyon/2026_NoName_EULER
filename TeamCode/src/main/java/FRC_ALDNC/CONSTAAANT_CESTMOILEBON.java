@@ -1,8 +1,8 @@
 package FRC_ALDNC;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 
-@Config
+//@Config
 public class CONSTAAANT_CESTMOILEBON {
     public static String LEFT_MOTOR = "left motor", RIGHT_MOTOR = "right motor", INTAKE = "intake", SHOOTER = "shooter", FEEDER = "feeder", VISEUR = "viseur", COMPTEUR_BALLE = "compteur balles", ENCODERD = "encoderD", ENCODEURG = "encoderG";
 

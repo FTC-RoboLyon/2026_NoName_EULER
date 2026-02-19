@@ -6,12 +6,14 @@ package packageClermont;
 //import com.acmerobotics.dashboard.config.Config;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 //import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+//import com.acmerobotics.dashboard.FtcDashboard;
+//import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -24,6 +26,8 @@ import static packageClermont.organe.Constant.RIGHT_MORTOR;
 import static packageClermont.organe.Constant.SHOOTER;
 import static packageClermont.organe.Constant.VISEUR;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import Webcam_aldnc_yeux.Apriltag_reader;
 import lib.Utils;
 import packageClermont.organe.Feeder;
@@ -33,6 +37,8 @@ import packageClermont.organe.jambes;
 import packageClermont.organe.Shooter;
 import packageClermont.organe.joySticks.joyStickY;
 import packageClermont.organe.joySticks.joystickX;
+import packageClermont.organe.odometrie;
+
 //@Config
 @TeleOp(name = "Compet_brain", group = "Euler")
 public class brain extends LinearOpMode {
@@ -68,7 +74,10 @@ public class brain extends LinearOpMode {
     float x;
     float y;
     public  static  double vvision = 0;
-    public FtcDashboard dashboard;
+    //public FtcDashboard dashboard;
+    private IMU imu;
+    // Récupère d’abord les moteurs et l’IMU
+
 
 
 
@@ -77,8 +86,8 @@ public class brain extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         VoltageSensor controlHub_VoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
-        dashboard = FtcDashboard.getInstance();
-
+        //dashboard = FtcDashboard.getInstance();
+        IMU imu = hardwareMap.get(IMU.class, "imu");
 
         double seuil_shootter = 12.3;
         double voltage = controlHub_VoltageSensor.getVoltage();
@@ -108,6 +117,7 @@ public class brain extends LinearOpMode {
         Viseur viseur1 = new Viseur(viseur);
         joyStickY joyStickY = new joyStickY(telemetry);
         joystickX joystickX = new joystickX(telemetry);
+        odometrie odom = new odometrie(x, y, telemetry, jambe_droite, jambe_gauche, imu);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -149,9 +159,11 @@ public class brain extends LinearOpMode {
                 if(value_jambeDroite > seuilDriveShooter || value_jambeDroite < -seuilDriveShooter || value_jambeGauche > seuilDriveShooter || value_jambeGauche < -seuilDriveShooter){
                     jambes.jambage(value_jambeDroite/1.3, value_jambeGauche/1.3, gamepad1, telemetry);
                 }
-            }else{
+            }
+            else{
                 jambes.jambage(value_jambeDroite, value_jambeGauche, gamepad1, telemetry);
             }
+            odom.odometrie(x, y);
 
 
 
@@ -207,7 +219,6 @@ public class brain extends LinearOpMode {
                     gamepad1.dpadUpWasPressed(),
                     gamepad1.dpadDownWasPressed());
 
-
             /*shooter1.p(gamepad2.dpadDownWasPressed(),
                     gamepad2.dpadRightWasPressed(),
                     gamepad2.dpadUpWasPressed(),
@@ -258,9 +269,9 @@ public class brain extends LinearOpMode {
             //telemetry.addData("Tension", powerShooter);
             //telemetry.addData("value_jambe droite", value_jambeDroite);
             //telemetry.addData("value_jambe_gauche", value_jambeGauche);
-            TelemetryPacket mon_ptit_truc = new TelemetryPacket();
-            mon_ptit_truc.put("velocité du shooter", shooter.getVelocity());
-            dashboard.sendTelemetryPacket(mon_ptit_truc);
+            //TelemetryPacket mon_ptit_truc = new TelemetryPacket();
+            //mon_ptit_truc.put("velocité du shooter", shooter.getVelocity());
+            //dashboard.sendTelemetryPacket(mon_ptit_truc);
             apriljoke.telemetry(telemetry);
             telemetry.update();
 

@@ -28,6 +28,7 @@ import FRC_ALDNC.commands.Shoot_a_ball_command;
 import FRC_ALDNC.commands.Collect_command;
 import FRC_ALDNC.commands.Configure_shooter;
 import FRC_ALDNC.commands.Tuning_postir_command;
+import FRC_ALDNC.commands.aligner_command;
 
 
 public class ALDNC_container{
@@ -54,8 +55,10 @@ public class ALDNC_container{
     VoltageSensor voltageSensor;
     BooleanSupplier is_shooting;
 
+    public double x,y;
+
     public ALDNC_container (HardwareMap hmap, RobotMode wich_programme, GamepadEx gamepad, Telemetry telemetry){
-        chassis_subsystem = new Drive_Train(hmap, telemetry);
+        chassis_subsystem = new Drive_Train(hmap, telemetry, x, y, gamepad);
 
         shooter_subsystem = new Shooter_Subsystem(hmap, telemetry);
 
@@ -91,7 +94,8 @@ public class ALDNC_container{
             Button shoot_far_butto,
             Button aspirer_button,
             Button intake_button,
-            Trigger eject_button){
+            Trigger eject_button,
+            Button alignageButton){
 
         feeder_button.whenPressed(new Shoot_a_ball_command(shooter_subsystem, feeder));
         feeder_button.whenReleased(new Let_a_ball_pass(feeder));
@@ -113,6 +117,8 @@ public class ALDNC_container{
 
         eject_button.whenActive(new Collect_command(intake, Intake_subsystem.WantedState.EJECT));
         eject_button.whenInactive(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
+
+        alignageButton.whenPressed(new aligner_command(chassis_subsystem, chassis_subsystem));
     }
     public void telemetry (){
         telemetry.addData("Vrai vélocité shooter", shooter_subsystem.shooter.getVelocity());

@@ -22,6 +22,7 @@ public class FRC_ALDNC_telopblue extends CommandOpMode {
     Button aspirer_button;
     Button Intake_button ;
     Trigger Eject_button ;
+    Button alignageButton;
     BooleanSupplier lefT_triger;
 
 
@@ -29,6 +30,9 @@ public class FRC_ALDNC_telopblue extends CommandOpMode {
     public void initialize() {
         gamepad0 = new GamepadEx(gamepad1);
         gamEpad2 = new GamepadEx(gamepad2);
+        alignageButton = new GamepadButton(
+                gamEpad2, GamepadKeys.Button.DPAD_UP
+        );
         lefT_triger = () -> gamepad1.left_trigger > 0.3;
         feeder_button = new GamepadButton(
                 gamepad0, GamepadKeys.Button.X
@@ -51,7 +55,7 @@ public class FRC_ALDNC_telopblue extends CommandOpMode {
         Eject_button = new Trigger(lefT_triger);
 
         robot = new ALDNC_container(hardwareMap, ALDNC_container.RobotMode.TELEOP_BLUE, gamepad0, telemetry);
-        robot.Configure_Binding(feeder_button,shoot_bank_button, shoot_mid_button, shoot_far_button, aspirer_button,Intake_button , Eject_button);
+        robot.Configure_Binding(feeder_button,shoot_bank_button, shoot_mid_button, shoot_far_button, aspirer_button,Intake_button , Eject_button, alignageButton);
         robot.telemetry();
 
     }

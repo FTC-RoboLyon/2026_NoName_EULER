@@ -14,7 +14,7 @@ import lib.Utils;
 
 public class odometrie {
     public IMU imu;
-    private double x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, DG, DD,rayon = 5.7, CPR = 580, vieuxX, vieuxY, vieuxAngle, h, angleDegrees, targetDegrees, target, right_motor_power, left_motor_power, p = 0.005, erreur, tolerance = 1, distance, targetD, currentD, erreurD, pD, v = 0, toleranceD;
+    private double x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, DG, DD,rayon = 5.7, CPR = 580, vieuxX, vieuxY, vieuxAngle, h, angleDegrees, targetDegrees, target, right_motor_power, left_motor_power, p = 0.005, erreur, tolerance = 1, distance, targetD, currentD, erreurD, pD, v = 0, toleranceD, right_motor_powerD;
     DcMotorEx jambe_droite;
     DcMotorEx jambe_gauche;
     Telemetry telemetry;
@@ -43,7 +43,7 @@ public class odometrie {
 
         imu.initialize(parameters);
     }
-    public double getHeadingRadians() {
+    private double getHeadingRadians() {
         if (imu == null) return 0;
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
@@ -87,7 +87,7 @@ public class odometrie {
         telemetry.addData("powerR", right_motor_power);
         telemetry.addData("powerL", left_motor_power);
     }
-    public void goAngle(double x, double y) {
+    private void calculAngle(double x, double y ){
         target = Math.atan(y / x);
         targetDegrees = Math.toDegrees(target);
         erreur = targetDegrees - angleDegrees;
@@ -95,10 +95,15 @@ public class odometrie {
         if(Utils.IsInRange(angleDegrees, targetDegrees, tolerance)){
             erreur = 0;
         }
-        if (erreur == 0)
+    }
+    private void goAngle(double x, double y) {
+        if(erreur == 0){
             return;
+        }
         right_motor_power = erreur * p;
         left_motor_power = -right_motor_power;
+        jambe_droite.setPower(right_motor_power);
+        jambe_gauche.setPower(right_motor_power   );
     }
     public void goPos(double x, double y){
         targetD = Math.sqrt(x*x + y*y);
@@ -114,9 +119,9 @@ public class odometrie {
         }
         if (erreurD == 0)
             return;
-        right_motor_power = erreurD*pD;
-        jambe_gauche.setPower(right_motor_power);
-        jambe_droite.setPower(right_motor_power);
+        right_motor_powerD = erreurD*pD;
+        jambe_gauche.setPower(right_motor_powerD);
+        jambe_droite.setPower(right_motor_powerD);
     }
 
     public void odometrie(double x, double y) {
@@ -124,9 +129,15 @@ public class odometrie {
         calculateDistanceGetD();
         calculateAngleRadiant();
         calculateXY();
-        goAngle(x, y);
-        goPos(x,y);
+        calculAngle(x, y);
+        /*if (erreur>tolerance || erreur <-tolerance){
+            goAngle(x, y);
+
+        }else if (erreur<tolerance && erreur>-tolerance){
+            goPos(x, y);
+        }*/
         telemetrieOdometrie();
+
     }
 
 }

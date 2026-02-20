@@ -37,6 +37,8 @@ public class Drive_Train extends SubsystemBase {
     private double left_motor_power, right_motor_power, x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle, angle, angleDegrees, rayon = 5.7, CPR = 580, DG, DD, DL = 36, h;
     // truc de pid pour l'odometrie
     private double p = 0.05, target, erreur, targetDegrees, xOdo, yOdo;
+    private double targetD, currentD, erreurD, toleranceD, pD;
+    private int v = 0;
     public static PidRBL rotattion_Pid = new PidRBL(rotation_P, rotation_I, rotation_D);
     private final Telemetry telemetry;
     private IMU imu;
@@ -212,15 +214,13 @@ public class Drive_Train extends SubsystemBase {
     }
 
     public void goPos(double x, double y){
-        double targetD = Math.sqrt(x * x + y * y);
-        int v == 0;
-        double currentD;
+        targetD = Math.sqrt(x*x + y*y);
         if(v == 0){
             currentD = 0;
             v = 1;
         }
-        double currentD += DD;
-        double erreurD = targetD-currentD;
+        currentD += DD;
+        erreurD = targetD-currentD;
         if(Utils.IsInRange(currentD, targetD, toleranceD)){
             erreurD = 0;
             v = 0;
@@ -228,8 +228,8 @@ public class Drive_Train extends SubsystemBase {
         if (erreurD == 0)
             return;
         right_motor_power = erreurD*pD;
-        jambe_gauche.setPower(right_motor_power);
-        jambe_droite.setPower(right_motor_power);
+        left_drive.setPower(right_motor_power);
+        right_drive.setPower(right_motor_power);
     }
 
     @Override

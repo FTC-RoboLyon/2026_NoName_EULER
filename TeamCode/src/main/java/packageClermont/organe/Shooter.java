@@ -34,7 +34,7 @@ public class Shooter {
     //private float veloShooterBank = 2300;
     private double veloShooterBank = 900;
     //private float veloShooterFar = 3600;
-    private double veloShooterFar = 1400;
+    private double veloShooterFar = 1500;
     //private float veloShooterMid = 2900;
     private double veloShooterMid = 1200;
     private double veloShooter = veloShooterBank;

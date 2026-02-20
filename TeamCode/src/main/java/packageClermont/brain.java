@@ -153,7 +153,7 @@ public class brain extends LinearOpMode {
             }
             powerTurn = erreurPos*p;
             powerTurn = Math.max(-0.3, Math.min(0.3, powerTurn));
-            if(isShooting){
+            /*if(isShooting){
                 jambe_droite.setPower(powerTurn);
                 jambe_gauche.setPower(-powerTurn);
                 if(value_jambeDroite > seuilDriveShooter || value_jambeDroite < -seuilDriveShooter || value_jambeGauche > seuilDriveShooter || value_jambeGauche < -seuilDriveShooter){
@@ -162,6 +162,13 @@ public class brain extends LinearOpMode {
             }
             else{
                 jambes.jambage(value_jambeDroite, value_jambeGauche, gamepad1, telemetry);
+            }*/
+            if(gamepad1.dpad_up){
+                x = 100;
+                y = 100;
+            }else{
+                x = 0;
+                y = 100;
             }
             odom.odometrie(x, y);
 

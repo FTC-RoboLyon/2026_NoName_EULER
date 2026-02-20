@@ -19,6 +19,7 @@ public class CONSTAAANT_CESTMOILEBON {
     public static double p_rotation = 0.002;
     public static double tolerence_rotation = 20;
     public  static double seuilDriveShooter = 0.05;
+    public  static double tolerance_go_angle = 1;
 
 
     public static double rotation_P,rotation_I,rotation_D = 0 ; //tunme

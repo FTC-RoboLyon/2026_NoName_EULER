@@ -7,6 +7,7 @@ import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.RIGHT_MOTOR;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_D;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_I;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_P;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.tolerance_go_angle;
 
 import android.os.FileUriExposedException;
 
@@ -29,6 +30,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.Base64;
 
 import lib.PidRBL;
+import lib.Utils;
+
 public class Drive_Train extends SubsystemBase {
     DcMotorEx left_drive, right_drive/*, encoderD, encoderG*/;
     private double left_motor_power, right_motor_power, x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle, angle, angleDegrees, rayon = 5.7, CPR = 580, DG, DD, DL = 36, h;
@@ -83,11 +86,6 @@ public class Drive_Train extends SubsystemBase {
 
     }
 
-    public double getHeadingRadians() {
-        if (imu == null) return 0; // sécurité
-        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-    }
-
     public void turn_left() {
         left_motor_power = -1;
         right_motor_power = 1;
@@ -137,6 +135,10 @@ public class Drive_Train extends SubsystemBase {
         vielleValueD = right_drive.getCurrentPosition();
         vielleValueG = left_drive.getCurrentPosition();
     }
+    public double getHeadingRadians() {
+        if (imu == null) return 0;
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+    }
 
     private void calculateDistanceGetD() {
         DG = Math.PI * 2 * rayon / CPR;
@@ -147,13 +149,14 @@ public class Drive_Train extends SubsystemBase {
 
     private void calculateAngleRadiant() {
         //angle = (DD - DG)/DL;
-        vieuxAngle = getHeadingRadians();
+        vieuxAngle = -getHeadingRadians();
         angleDegrees = Math.toDegrees(vieuxAngle);
         h = (DG + DD) / 2;
     }
 
     private void calculateXY() {
         x = Math.sin(vieuxAngle) * h;
+        x = -x;
         y = Math.cos(vieuxAngle) * h;
         vieuxX += x;
         vieuxY += y;
@@ -196,21 +199,45 @@ public class Drive_Train extends SubsystemBase {
     public double getAngle() {
         return vieuxAngle;
     }
-
-    public void goPos() {
-        target = Math.atan(yOdo / xOdo);
+    public void goAngle(double x, double y) {
+        target = Math.atan(y / x);
         targetDegrees = Math.toDegrees(target);
-        erreur = targetDegrees - vieuxAngle;
+        erreur = targetDegrees - angleDegrees;
+
+        if(Utils.IsInRange(angleDegrees, targetDegrees, tolerance_go_angle)){
+            erreur = 0;
+        }
         right_motor_power = erreur * p;
         left_motor_power = -right_motor_power;
+    }
+
+    public void goPos(double x, double y){
+        double targetD = Math.sqrt(x * x + y * y);
+        int v == 0;
+        double currentD;
+        if(v == 0){
+            currentD = 0;
+            v = 1;
+        }
+        double currentD += DD;
+        double erreurD = targetD-currentD;
+        if(Utils.IsInRange(currentD, targetD, toleranceD)){
+            erreurD = 0;
+            v = 0;
+        }
+        if (erreurD == 0)
+            return;
+        right_motor_power = erreurD*pD;
+        jambe_gauche.setPower(right_motor_power);
+        jambe_droite.setPower(right_motor_power);
     }
 
     @Override
     public void periodic() {
         odometrie();
-        goPos();
         left_drive.setPower(left_motor_power);
         right_drive.setPower(right_motor_power);
+
     }
 }
 

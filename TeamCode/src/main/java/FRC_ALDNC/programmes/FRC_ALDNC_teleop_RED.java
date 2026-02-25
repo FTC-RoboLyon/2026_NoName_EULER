@@ -13,7 +13,7 @@ import java.util.function.BooleanSupplier;
 
 import FRC_ALDNC.ALDNC_container;
 
-@TeleOp(name = "FRC_ALDNC_firtsprogramme", group = "FRC_style")
+@TeleOp(name = "FRC ALDNC teleop RED", group = "FRC_style")
 public class FRC_ALDNC_teleop_RED extends CommandOpMode {
     ALDNC_container robot;
     GamepadEx gamepad0;
@@ -26,6 +26,7 @@ public class FRC_ALDNC_teleop_RED extends CommandOpMode {
     Button Intake_button ;
     Trigger Eject_button ;
     Button alignageButton;
+    Button reglage_shooter;
     BooleanSupplier lefT_triger;
 
 
@@ -35,30 +36,34 @@ public class FRC_ALDNC_teleop_RED extends CommandOpMode {
         gamEpad2 = new GamepadEx(gamepad2);
         lefT_triger = () -> gamepad1.left_trigger > 0.3;
         alignageButton = new GamepadButton(
-                gamEpad2, GamepadKeys.Button.DPAD_UP
+                gamepad0, GamepadKeys.Button.DPAD_UP
                 );
         feeder_button = new GamepadButton(
-                gamEpad2, GamepadKeys.Button.X
+                gamepad0, GamepadKeys.Button.X
         );
         shoot_bank_button = new GamepadButton(
-                gamEpad2, GamepadKeys.Button.B
+                gamepad0, GamepadKeys.Button.B
         );
         shoot_mid_button = new GamepadButton(
-                gamEpad2, GamepadKeys.Button.Y
+                gamepad0, GamepadKeys.Button.Y
         );
         shoot_far_button = new GamepadButton(
-                gamEpad2, GamepadKeys.Button.A
+                gamepad0, GamepadKeys.Button.A
         );
         aspirer_button = new GamepadButton(
-                gamEpad2, GamepadKeys.Button.RIGHT_BUMPER
+                gamepad0, GamepadKeys.Button.RIGHT_BUMPER
         );
         Intake_button = new GamepadButton(
                 gamepad0, GamepadKeys.Button.LEFT_BUMPER
         );
+        reglage_shooter = new GamepadButton(
+                gamEpad2, GamepadKeys.Button.X
+        );
+
         Eject_button = new Trigger(lefT_triger);
 
         robot = new ALDNC_container(hardwareMap, ALDNC_container.RobotMode.TELEOP_RED, gamepad0, telemetry);
-        robot.Configure_Binding(feeder_button,shoot_bank_button, shoot_mid_button, shoot_far_button, aspirer_button,Intake_button , Eject_button, alignageButton);
+        robot.Configure_Binding(feeder_button,shoot_bank_button, shoot_mid_button, shoot_far_button, aspirer_button,Intake_button , Eject_button, alignageButton, reglage_shooter);
         robot.telemetry();
 
     }

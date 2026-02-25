@@ -13,7 +13,7 @@ public class Let_a_ball_pass extends CommandBase {
     ElapsedTime timer;
     boolean isfinished;
     public Let_a_ball_pass(Feeder_subsystem feeder){
-        timer = new ElapsedTime();
+
         this.feeder = feeder;
         addRequirements(feeder);
     }
@@ -21,7 +21,7 @@ public class Let_a_ball_pass extends CommandBase {
     @Override
     public void initialize() {
         feeder.setfeeder_wanted_state(Feeder_subsystem.Feeder_wanted_state.bas);
-        timer.reset();
+        timer = new ElapsedTime();
     }
 
     @Override

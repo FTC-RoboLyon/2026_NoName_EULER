@@ -27,10 +27,10 @@ public class joystick_subsystem extends SubsystemBase {
     }
     private Witch_stick stick;
     private GamepadEx gamepad;
-    public static Drive_Train driveTrain;
 
-    public joystick_subsystem(GamepadEx gamepad, Witch_stick witchStick, Drive_Train driveTrain1){
-        driveTrain = driveTrain1;
+
+    public joystick_subsystem(GamepadEx gamepad, Witch_stick witchStick){
+
         this.gamepad = gamepad;
         if (witchStick == Witch_stick.left){
             stick = Witch_stick.left;
@@ -113,8 +113,8 @@ public class joystick_subsystem extends SubsystemBase {
         calculateNormeVecteur();
         smoothX(ancien_X);
         smoothY(ancien_Y);
-        xPower();
-        yPower();
+        //xPower();
+        //yPower();
         finalX = nouveauX;
         finalY = nouveauY;
     }

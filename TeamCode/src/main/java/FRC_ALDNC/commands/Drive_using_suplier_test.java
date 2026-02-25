@@ -28,29 +28,32 @@ public class Drive_using_suplier_test extends CommandBase {
         this.forward = forward;
         this.turn = turn;
         this.is_shooting = is_shooting;
-        addRequirements(chassis);
+        addRequirements(chassis, cam);
     }
 
     @Override
     public void execute() {
-        cam.updtade();
+        //cam.updtade();
+//
+        //targetPosition = cam.getBearing()*ff_rotation;
+        //targetPosition = targetPosition + chassis.Get_right_current();
+        //erreurPos = targetPosition-chassis.Get_right_current();
+        //if(erreurPos>-tolerence_rotation && erreurPos<tolerence_rotation){
+        //    erreurPos = 0;
+        //}
+        //powerTurn = erreurPos*p_rotation;
+        //powerTurn = Math.max(-0.3, Math.min(0.3, powerTurn));
+        //if(is_shooting.getAsBoolean()){
+        //    chassis.drive(0, powerTurn);
+        //    if(chassis.Get_right_power() > seuilDriveShooter || chassis.Get_right_power() < -seuilDriveShooter || chassis.Get_left_power() > seuilDriveShooter || chassis.Get_left_power() < -seuilDriveShooter){
+        //        chassis.drive(forward.getAsDouble()/1.3, turn.getAsDouble()/1.3);
+        //    }
+//
+        //}else{
+        //    chassis.drive(forward.getAsDouble(), turn.getAsDouble());
+        //}
+        chassis.drive(forward.getAsDouble(), turn.getAsDouble());
 
-        targetPosition = cam.getBearing()*ff_rotation;
-        targetPosition = targetPosition + chassis.Get_right_current();
-        erreurPos = targetPosition-chassis.Get_right_current();
-        if(erreurPos>-tolerence_rotation && erreurPos<tolerence_rotation){
-            erreurPos = 0;
-        }
-        powerTurn = erreurPos*p_rotation;
-        powerTurn = Math.max(-0.3, Math.min(0.3, powerTurn));
-        if(is_shooting.getAsBoolean()){
-            chassis.drive(0, powerTurn);
-            if(chassis.Get_right_power() > seuilDriveShooter || chassis.Get_right_power() < -seuilDriveShooter || chassis.Get_left_power() > seuilDriveShooter || chassis.Get_left_power() < -seuilDriveShooter){
-                chassis.drive(forward.getAsDouble()/1.3, turn.getAsDouble()/1.3);
-            }
-        }else{
-            chassis.drive(forward.getAsDouble(), turn.getAsDouble());
-        }
     }
 
     @Override

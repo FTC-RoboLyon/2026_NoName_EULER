@@ -6,11 +6,12 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.util.function.BooleanSupplier;
 
 import FRC_ALDNC.ALDNC_container;
-
+@TeleOp(name = "FRC ALDNC teleop BLUE", group = "FRC_style")
 public class FRC_ALDNC_telopblue extends CommandOpMode {
     ALDNC_container robot;
     GamepadEx gamepad0;
@@ -23,6 +24,7 @@ public class FRC_ALDNC_telopblue extends CommandOpMode {
     Button Intake_button ;
     Trigger Eject_button ;
     Button alignageButton;
+    Button reglage_shooter;
     BooleanSupplier lefT_triger;
 
 
@@ -52,10 +54,13 @@ public class FRC_ALDNC_telopblue extends CommandOpMode {
         Intake_button = new GamepadButton(
                 gamepad0, GamepadKeys.Button.LEFT_BUMPER
         );
+        reglage_shooter = new GamepadButton(
+                gamEpad2, GamepadKeys.Button.X
+        );
         Eject_button = new Trigger(lefT_triger);
 
         robot = new ALDNC_container(hardwareMap, ALDNC_container.RobotMode.TELEOP_BLUE, gamepad0, telemetry);
-        robot.Configure_Binding(feeder_button,shoot_bank_button, shoot_mid_button, shoot_far_button, aspirer_button,Intake_button , Eject_button, alignageButton);
+        robot.Configure_Binding(feeder_button,shoot_bank_button, shoot_mid_button, shoot_far_button, aspirer_button,Intake_button , Eject_button, alignageButton, reglage_shooter);
         robot.telemetry();
 
     }

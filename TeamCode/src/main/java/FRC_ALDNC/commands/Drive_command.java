@@ -1,6 +1,7 @@
 package FRC_ALDNC.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -9,27 +10,41 @@ import FRC_ALDNC.SubSystem.joystick_subsystem;
 
 public class Drive_command extends CommandBase {
     Drive_Train chassi;
-    joystick_subsystem stick_left;
-    joystick_subsystem stick_right;
+    ElapsedTime timer;
+    double forward;
+    double turn;
+    double temps_drive;
 
-    Telemetry telemetry;
-    public Drive_command (Drive_Train chassi, joystick_subsystem stick_left, joystick_subsystem stick_right, Telemetry telemetry){
+    public Drive_command (Drive_Train chassi, double forward, double turn, double temps_drive){
         this.chassi = chassi;
-        this.stick_left = stick_left;
-        this.stick_right = stick_right;
-        this.telemetry = telemetry;
-        addRequirements(chassi, stick_left, stick_right);
+        this.forward = forward;
+        this.turn = turn;
+        this.temps_drive = temps_drive;
+
+        addRequirements(chassi);
     }
     @Override
-    public void initialize(){}
+    public void initialize(){
+        chassi.drive(0, 0);
+        timer = new ElapsedTime();
+
+    }
+
+
+
+
     @Override
-    public void execute(){
-        chassi.drive(stick_left.getX(), stick_right.getY());
-        telemetry.addLine("I am executing");
+    public void execute() {
+        chassi.drive(forward, turn);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        chassi.drive(0,0);
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return timer.milliseconds() >= temps_drive;
     }
 }

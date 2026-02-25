@@ -82,3 +82,4 @@ lint/tmp/
 TeamCode/src/main/java/Webcam_aldnc_yeux/Apriltag_reader.java
 TeamCode/src/main/java/ALDNC_organe/ALDNC_brain.java
 TeamCode/src/main/java/ALDNC_organe/ALDNC_brain.java
+*.java

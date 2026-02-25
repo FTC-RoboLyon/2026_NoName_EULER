@@ -1,19 +1,24 @@
 package FRC_ALDNC.commands;
 
 
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posFeed;
+
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.robocol.Command;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import FRC_ALDNC.SubSystem.Feeder_subsystem;
 import FRC_ALDNC.SubSystem.Shooter_Subsystem;
+import lib.Utils;
 
 public class Shoot_a_ball_command extends CommandBase {
-    Shooter_Subsystem shooter;
+
     Feeder_subsystem feeder;
-    public Shoot_a_ball_command (Shooter_Subsystem shooter, Feeder_subsystem feeder){
+    Shooter_Subsystem shooter;
+    public Shoot_a_ball_command ( Feeder_subsystem feeder, Shooter_Subsystem shooter){
         this.shooter = shooter;
         this.feeder = feeder;
-        addRequirements(shooter, feeder);
+        addRequirements( feeder);
     }
 
     @Override
@@ -23,6 +28,7 @@ public class Shoot_a_ball_command extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return true;
+        //return Utils.IsInRange(feeder.get_Pos(), posFeed, 0.005);
+        return shooter.has_shoot();
     }
 }

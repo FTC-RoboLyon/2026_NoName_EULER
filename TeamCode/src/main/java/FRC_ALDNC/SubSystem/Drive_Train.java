@@ -4,10 +4,14 @@ import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ENCODEURG;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.LEFT_MOTOR;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.RIGHT_MOTOR;
 
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ff_rotation;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.p_rotation;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_D;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_I;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_P;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.seuilDriveShooter;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.tolerance_go_angle;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.tolerence_rotation;
 
 import android.os.FileUriExposedException;
 
@@ -29,6 +33,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.Base64;
 
+import FRC_ALDNC.ALDNC_container;
 import lib.PidRBL;
 import lib.Utils;
 
@@ -42,8 +47,13 @@ public class Drive_Train extends SubsystemBase {
     public static PidRBL rotattion_Pid = new PidRBL(rotation_P, rotation_I, rotation_D);
     private final Telemetry telemetry;
     private IMU imu;
+    private ALDNC_container robot;
+    private double targetPosition;
+    private double erreurPos;
 
-    public Drive_Train(HardwareMap hmap, Telemetry tele, double x, double y, GamepadEx gamepad1) {
+    public Drive_Train(HardwareMap hmap, Telemetry tele, double x, double y, ALDNC_container roBot) {
+        robot = roBot;
+
         xOdo = x;
         yOdo = y;
         telemetry = tele;
@@ -114,8 +124,8 @@ public class Drive_Train extends SubsystemBase {
     }
 
     public void drive(double forward, double turn) {
-        //left_motor_power = forward + turn;
-        //right_motor_power = forward - turn;
+        left_motor_power = forward + turn;
+        right_motor_power = forward - turn;
 
     }
 
@@ -201,7 +211,14 @@ public class Drive_Train extends SubsystemBase {
     public double getAngle() {
         return vieuxAngle;
     }
-    public void goAngle(double x, double y) {
+    private void goAngle(double x, double y) {
+        if(erreur == 0){
+            return;
+        }
+        right_motor_power = erreur * p;
+        left_motor_power = -right_motor_power;
+    }
+    private void calculAngle(double x, double y ){
         target = Math.atan(y / x);
         targetDegrees = Math.toDegrees(target);
         erreur = targetDegrees - angleDegrees;
@@ -209,8 +226,6 @@ public class Drive_Train extends SubsystemBase {
         if(Utils.IsInRange(angleDegrees, targetDegrees, tolerance_go_angle)){
             erreur = 0;
         }
-        right_motor_power = erreur * p;
-        left_motor_power = -right_motor_power;
     }
 
     public void goPos(double x, double y){
@@ -228,13 +243,29 @@ public class Drive_Train extends SubsystemBase {
         if (erreurD == 0)
             return;
         right_motor_power = erreurD*pD;
-        left_drive.setPower(right_motor_power);
-        right_drive.setPower(right_motor_power);
+        left_motor_power = -right_motor_power;
     }
 
     @Override
     public void periodic() {
-        odometrie();
+        //odometrie();
+
+        //targetPosition = robot.Camera().getBearing()*ff_rotation;
+        //targetPosition = targetPosition + Get_right_current();
+        //erreurPos = targetPosition-Get_right_current();
+        //if(erreurPos>-tolerence_rotation && erreurPos<tolerence_rotation){
+        //    erreurPos = 0;
+        //}
+        //if(robot.Shooter().Is_Shooting()){
+        //    drive(0, Math.max(-0.3, Math.min(0.3, erreurPos*p_rotation)));
+        //    if(right_motor_power > seuilDriveShooter || right_motor_power < -seuilDriveShooter || left_motor_power > seuilDriveShooter || left_motor_power < -seuilDriveShooter){
+        //        drive(robot.Left_joystick().getX()/1.3, robot.Right_joystick().getY()/1.3);
+        //    }
+//
+        //}else if (robot.is_inTeleop){
+        //    drive(robot.Left_joystick().getX(), robot.Right_joystick().getY());
+        //}
+        //drive(robot.Left_joystick().getX(), robot.Right_joystick().getY()); //default
         left_drive.setPower(left_motor_power);
         right_drive.setPower(right_motor_power);
 

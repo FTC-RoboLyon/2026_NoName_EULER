@@ -134,7 +134,7 @@ public class brain extends LinearOpMode {
             if(gamepad1.left_bumper){
                 leftY = leftY /1.5;
             }
-            if(gamepad1.rightBumperWasPressed()){
+            if(gamepad2.rightBumperWasPressed()){
                 isShooting = !isShooting;
             }
 
@@ -145,7 +145,7 @@ public class brain extends LinearOpMode {
             value_jambeGauche = rightX + leftY;
             apriljoke.updtade();
             currentPositionD = jambe_droite.getCurrentPosition();
-            targetPosition = apriljoke.getBearing(24)*ff;
+            targetPosition = apriljoke.getBearing(20)*ff;
             targetPosition = targetPosition + currentPositionD;
             erreurPos = targetPosition-currentPositionD;
             if(erreurPos>-tolerence && erreurPos<tolerence){
@@ -209,18 +209,18 @@ public class brain extends LinearOpMode {
             }*/
 
 
-            shooter1.Tir_using_velo(gamepad1.b,
-                    gamepad1.a,
-                    gamepad1.y,
+            shooter1.Tir_using_velo(gamepad2.b,
+                    gamepad2.a,
+                    gamepad2.y,
                     isShooting,
-                    gamepad1.right_trigger,
+                    gamepad2.right_trigger,
                     gamepad1.dpadLeftWasPressed(),
                     gamepad1.dpadRightWasPressed(),
                     gamepad1.dpadUpWasPressed(),
                     gamepad1.dpadDownWasPressed());
-            veloProg = shooter1.veloShooter(gamepad1.b,
-                    gamepad1.a,
-                    gamepad1.y,
+            veloProg = shooter1.veloShooter(gamepad2.b,
+                    gamepad2.a,
+                    gamepad2.y,
                     gamepad1.dpadLeftWasPressed(),
                     gamepad1.dpadRightWasPressed(),
                     gamepad1.dpadUpWasPressed(),
@@ -253,8 +253,8 @@ public class brain extends LinearOpMode {
                 shooter.setPower(0);
             }*/
 
-            feeder1.grosseCommition(gamepad1.xWasPressed(), gamepad1.xWasReleased());
-            viseur1.visage(gamepad1.a, gamepad1.b, gamepad1.y, gamepad2.dpadUpWasPressed(), gamepad2.dpadDownWasPressed());
+            feeder1.grosseCommition(gamepad2.xWasPressed(), gamepad2.xWasReleased());
+            viseur1.visage(gamepad2.a, gamepad2.b, gamepad2.y, gamepad2.dpadUpWasPressed(), gamepad2.dpadDownWasPressed());
             VeloFion = shooter.getVelocity();
             PidCoef = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 

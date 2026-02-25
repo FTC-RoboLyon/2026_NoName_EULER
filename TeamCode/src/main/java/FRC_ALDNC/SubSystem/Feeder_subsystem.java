@@ -8,6 +8,8 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import FRC_ALDNC.ALDNC_container;
+
 public class Feeder_subsystem extends SubsystemBase {
     Servo feeder;
     public  enum FeederState{
@@ -18,8 +20,10 @@ public class Feeder_subsystem extends SubsystemBase {
     }
     private Feeder_wanted_state to_feed_or_not_to_feed = Feeder_wanted_state.bas;
     private FeederState feed_state = FeederState.bas;
+    private ALDNC_container robot;
 
-    public Feeder_subsystem(HardwareMap hmap){
+    public Feeder_subsystem(HardwareMap hmap, ALDNC_container RObot){
+        robot = robot;
         feeder = hmap.get(Servo.class, FEEDER);
         feeder.setPosition(posFeedrepos);
     }
@@ -42,6 +46,7 @@ public class Feeder_subsystem extends SubsystemBase {
                 break;
         }
     }
+    public double get_Pos (){return feeder.getPosition();}
     @Override
     public  void  periodic(){
         RunStateFeeder();

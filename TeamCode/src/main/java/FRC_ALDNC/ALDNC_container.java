@@ -4,6 +4,9 @@ package FRC_ALDNC;
 
 //import com.acmerobotics.dashboard.FtcDashboard;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -21,14 +24,12 @@ import FRC_ALDNC.SubSystem.Feeder_subsystem;
 import FRC_ALDNC.SubSystem.Intake_subsystem;
 import FRC_ALDNC.SubSystem.Shooter_Subsystem;
 import FRC_ALDNC.SubSystem.joystick_subsystem;
-import FRC_ALDNC.commands.Drive_command;
-import FRC_ALDNC.commands.Drive_using_suplier_test;
+import FRC_ALDNC.commands.AlignToTarget;
 import FRC_ALDNC.commands.Let_a_ball_pass;
 import FRC_ALDNC.commands.Shoot_a_ball_command;
 import FRC_ALDNC.commands.Collect_command;
 import FRC_ALDNC.commands.Configure_shooter;
-import FRC_ALDNC.commands.Tuning_postir_command;
-import FRC_ALDNC.commands.aligner_command;
+import FRC_ALDNC.commands.Stop_shooter;
 
 
 public class ALDNC_container{
@@ -49,30 +50,49 @@ public class ALDNC_container{
         TELEOP_RED,
         TELEOP_BLUE
     }
+    public enum Artefact_order
+    {
+        PPG,
+        PGP,
+        GPP
+    }
+
+    public boolean is_inTeleop;
 
     RobotMode team_and_mode;
+    Artefact_order actual_artefact_order = Artefact_order.PPG;
     public double m_voltageSensorValue;
     VoltageSensor voltageSensor;
-    BooleanSupplier is_shooting;
+    public BooleanSupplier is_shooting;
 
     public double x,y;
 
     public ALDNC_container (HardwareMap hmap, RobotMode wich_programme, GamepadEx gamepad, Telemetry telemetry){
-        chassis_subsystem = new Drive_Train(hmap, telemetry, x, y, gamepad);
+        team_and_mode = wich_programme;
 
-        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry);
+        chassis_subsystem = new Drive_Train(hmap, telemetry, x, y, this);
+
+
+        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this);
+
+
+        is_inTeleop = team_and_mode == RobotMode.TELEOP_RED || team_and_mode == RobotMode.TELEOP_BLUE;
 
         intake = new Intake_subsystem(hmap);
 
-        feeder = new Feeder_subsystem(hmap);
+        feeder = new Feeder_subsystem(hmap, this);
 
-        left_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.left, chassis_subsystem);
-        right_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.right, chassis_subsystem);
+
+
+        left_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.left);
+        right_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.right);
         forward = () -> left_joystick.getX();
-        turn = () -> right_joystick.getY();    //Si le chassis ne bouge pas avec le programme actuel, ajouter les lignes 66, 67 et 77 et enlevez la ligne 75
-        is_shooting = () -> shooter_subsystem.getShooterSysState() == Shooter_Subsystem.SystemState.PREPARING_TO_SHOOT;
+        turn = () -> right_joystick.getY();//Si le chassis ne bouge pas avec le programme actuel, ajouter les lignes 66, 67 et 77 et enlevez la ligne 75
+
 
         apriljoke = new Camera_subsystem(hmap, wich_programme == RobotMode.TELEOP_RED || wich_programme == RobotMode.AUTO_RED ? 24 : 20, telemetry);
+
+
 
         voltageSensor = hmap.get(VoltageSensor.class, "Control Hub");
 
@@ -80,12 +100,32 @@ public class ALDNC_container{
 
         //chassis_subsystem.setDefaultCommand(new Drive_command(chassis_subsystem, left_joystick, right_joystick, telemetry));
         // shooter_subsystem.setDefaultCommand(new Tuning_postir_command(shooter_subsystem, apriljoke));
-        chassis_subsystem.setDefaultCommand(new Drive_using_suplier_test(chassis_subsystem,apriljoke, forward, turn, is_shooting));
-
+        if (is_inTeleop) {
+            //chassis_subsystem.setDefaultCommand(new Drive_using_suplier_test(chassis_subsystem,apriljoke, forward, turn, is_shooting));
+            chassis_subsystem.setDefaultCommand(new RunCommand(
+                    () -> chassis_subsystem.drive(
+                            forward.getAsDouble(),
+                            turn.getAsDouble()
+                    ),
+                    chassis_subsystem));
+            new Trigger(() -> shooter_subsystem.Is_Shooting())
+                    .whileActiveContinuous(new AlignToTarget(chassis_subsystem, apriljoke, shooter_subsystem, is_inTeleop, forward));
+        } else {
+            //new Trigger(() -> shooter_subsystem.Is_Shooting())
+            //        .whileActiveContinuous(new AlignToTarget(chassis_subsystem, apriljoke, shooter_subsystem, true));
+        }
         this.telemetry = telemetry;
-        //FtcDashboard dashboard = FtcDashboard.getInstance();
-        //telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
+
+//
+    }
+    public final void Determinate_order(Artefact_order order){
+        actual_artefact_order = order;
+    }
+    public Artefact_order Get_actual_artefact_order(){
+        return actual_artefact_order;
     }
     public void Configure_Binding(
             Button feeder_button,
@@ -95,30 +135,35 @@ public class ALDNC_container{
             Button aspirer_button,
             Button intake_button,
             Trigger eject_button,
-            Button alignageButton){
+            Button alignageButton,
+            Button reglage_shooter){
 
-        feeder_button.whenPressed(new Shoot_a_ball_command(shooter_subsystem, feeder));
+        feeder_button.whenPressed(new Shoot_a_ball_command(feeder, shooter_subsystem));
         feeder_button.whenReleased(new Let_a_ball_pass(feeder));
 
         intake_button.whenPressed(new Collect_command(intake, Intake_subsystem.WantedState.COLLECT));
         intake_button.whenReleased(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
 
-        shoot_bank_button.whenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.SHOOT_BANK));
-        shoot_bank_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
+        shoot_bank_button.toggleWhenPressed(new Configure_shooter(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.SHOOT_BANK, true));
+        //shoot_bank_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
-        shoot_mid_button.whenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.SHOOT_MID));
-        shoot_mid_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
+        shoot_mid_button.toggleWhenPressed(new Configure_shooter(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.SHOOT_MID, true));
+        //shoot_mid_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
-        shoot_far_butto.whenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.SHOOT_FAR));
-        shoot_far_butto.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
+        shoot_far_butto.toggleWhenPressed(new Configure_shooter(shooter_subsystem, apriljoke, Shooter_Subsystem.WantedState.SHOOT_FAR, true));
+        //shoot_far_butto.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
-        aspirer_button.whenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.ASPIRER));
-        aspirer_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
+        aspirer_button.toggleWhenPressed(new Stop_shooter(shooter_subsystem));
+        //aspirer_button.whenReleased(new Configure_shooter_with_toggle(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.WAIT));
 
         eject_button.whenActive(new Collect_command(intake, Intake_subsystem.WantedState.EJECT));
         eject_button.whenInactive(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
 
-        alignageButton.whenPressed(new aligner_command(chassis_subsystem, chassis_subsystem));
+        reglage_shooter.toggleWhenPressed(new Configure_shooter(shooter_subsystem, apriljoke, Shooter_Subsystem.WantedState.AUTO, true));
+
+
+
+        //alignageButton.whenPressed(new aligner_command(chassis_subsystem, chassis_subsystem));
     }
     public void telemetry (){
         telemetry.addData("Vrai vélocité shooter", shooter_subsystem.shooter.getVelocity());
@@ -129,6 +174,35 @@ public class ALDNC_container{
         apriljoke.telemetry();
         telemetry.update();
     }
+    public boolean is_In_teleop(){return is_inTeleop;}
+    public void Send_telemetry (String key, Object vallue){
+        telemetry.addData(key, vallue);
+        telemetry.update();
+    }
+    public double Get_goal_distance (){
+        return apriljoke.getActual_detection().ftcPose.y;
+    }
+    public double get_forward (){
+        return left_joystick.getX();
+    }
+    public double get_forget_turn (){
+        return right_joystick.getY();
+    }
+
+    //Super utile pour que chaque subsystem ait accé a chaque autre subsystem
+    //Il suffit de passer l'instantce actuelle de cette classe en attribut dans le constructeur du subsystem
+    //Je suis un génie d'avoir pensé a ca aaaaaah c'est tlm pratique
+    public Shooter_Subsystem Shooter (){return shooter_subsystem;}
+    public Intake_subsystem Intake (){return intake;}
+    public Drive_Train Chassis (){return chassis_subsystem;}
+    public Camera_subsystem Camera (){return apriljoke;}
+    public Feeder_subsystem Feeder (){return feeder;}
+    public joystick_subsystem Left_joystick (){return left_joystick;}
+    public joystick_subsystem Right_joystick (){return right_joystick;}
+    public RobotMode which_programm (){return team_and_mode;}
+
+
+
     public void ActualiseVoltageSensorValue()
     {
         m_voltageSensorValue = voltageSensor.getVoltage();

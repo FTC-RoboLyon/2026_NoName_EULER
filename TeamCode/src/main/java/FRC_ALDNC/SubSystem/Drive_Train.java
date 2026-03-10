@@ -67,13 +67,11 @@ public class Drive_Train extends SubsystemBase {
 
         left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         left_drive.setDirection(DcMotorSimple.Direction.REVERSE);
-        left_drive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        left_drive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        left_drive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         right_drive.setDirection(DcMotorSimple.Direction.FORWARD);
-        right_drive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        right_drive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        right_drive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         /*encoderD.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         encoderD.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

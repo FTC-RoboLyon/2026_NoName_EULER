@@ -226,7 +226,9 @@ public class Shooter_Subsystem extends SubsystemBase {
         }
     }
     public void setPower_voltage_PIDF (){
-        Pow_shoot = shooter_pidf.Calculate_Power(veloShooter, shooter.getVelocity())*seuil_volt_shooter/voltage;
+        if (voltage == 0)
+            return;
+        Pow_shoot = shooter_pidf.Calculate_Power(veloShooter, shooter.getVelocity())/voltage;
         shooter.setPower(Pow_shoot);
 
     }
@@ -245,7 +247,7 @@ public class Shooter_Subsystem extends SubsystemBase {
         shooter_pidf.SetTolerance(shooter_velo_tolerance);
 
         pidf = new PIDFCoefficients(ShooterKP_velo, ShooterKI_velo, ShooterKD_velo, voltage != 0 ? ShooterKF_velo * (12/voltage) : ShooterKF_velo);
-        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+        //shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
     }
 
     public void calculate_postir(double distance_to_goal){

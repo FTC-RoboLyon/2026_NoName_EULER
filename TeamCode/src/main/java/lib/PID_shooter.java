@@ -57,7 +57,7 @@ public class PID_shooter {
     }
     public double Calculate_Power(double setpoint, double measurement) {
         this.setpoint = setpoint;
-        return calculateInternal(measurement, shooter_timestamp)/seuil_volt_shooter;
+        return calculateInternal(measurement, shooter_timestamp);
     }
 
     public double calculateInternal(double measurement, double dt) {

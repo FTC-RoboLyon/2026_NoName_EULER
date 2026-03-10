@@ -176,12 +176,16 @@ public class ALDNC_container{
 
         plus_velo.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(10)));
         splus_velo.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(50)));
+
         minus_velo.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(-10)));
         sminus_velo.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(-50)));
-        plus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(10)));
-        splus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(10)));
-        minus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(10)));
-        sminus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(10)));
+
+
+        plus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_visage(0.01)));
+        splus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_visage(0.05)));
+
+        minus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_visage(-0.01)));
+        sminus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_visage(-0.05)));
 
 
         reglage_shooter.toggleWhenPressed(new Configure_shooter(shooter_subsystem, apriljoke, Shooter_Subsystem.WantedState.AUTO, true, telemetry));

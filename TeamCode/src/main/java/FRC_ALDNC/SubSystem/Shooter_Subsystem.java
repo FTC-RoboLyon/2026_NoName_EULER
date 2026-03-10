@@ -24,8 +24,10 @@ import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_mid;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;*/
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -44,7 +46,7 @@ import lib.Dashboard;
 import lib.PID_shooter;
 import lib.Utils;
 
-//@Config
+@Config
 public class Shooter_Subsystem extends SubsystemBase {
     public DcMotorEx shooter;
     public Servo viseur;
@@ -82,6 +84,7 @@ public class Shooter_Subsystem extends SubsystemBase {
     public static double Pow_shoot;
     public static PID_shooter shooter_pidf;
     public boolean inauto;
+    InterpLUT test;
     private ALDNC_container robot;
     public Shooter_Subsystem (HardwareMap hmap, Telemetry telemetry, ALDNC_container RoBot, boolean auto){
         inauto = auto;
@@ -89,12 +92,13 @@ public class Shooter_Subsystem extends SubsystemBase {
         shooter_pidf = new PID_shooter(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
         shooter_pidf.SetTolerance(shooter_velo_tolerance);
 
+        test = new InterpLUT();
         dashboard = FtcDashboard.getInstance();
         shooter = hmap.get(DcMotorEx.class, SHOOTER);
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
-        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        shooter.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
 
 
         viseur = hmap.get(Servo.class, VISEUR);
@@ -209,8 +213,8 @@ public class Shooter_Subsystem extends SubsystemBase {
                 break;
             case PREPARING_TO_SHOOT:
                 viseur.setPosition(posviseur);
-                //setPower_voltage_PIDF();
-                shooter.setVelocity(veloShooter);
+                setPower_voltage_PIDF();
+                //shooter.setVelocity(veloShooter);
                 break;
             case READY_TO_SHOOT:
                 break;
@@ -264,16 +268,16 @@ public class Shooter_Subsystem extends SubsystemBase {
         mon_ptit_truc.put("position viseur", current_viseur_pos);
         dashboard.sendTelemetryPacket(mon_ptit_truc);
 
-        //telemetry.addData("velocité du shooter", current_shoot_velo);
-        //telemetry.addData("valeur", Pow_shoot);
-        //telemetry.addData("voltage du moteur", shooter.getPower());
-        //telemetry.addData("erreur", shooter_pidf.GetError());
-        //telemetry.addData("feedforward", shooter_pidf.GetFF());
-        //telemetry.addData("feedforward * setPoint", shooter_pidf.GetFF()*shooter_pidf.GetSetpoint());
-        //telemetry.addData("voltage", voltage);
-        //telemetry.addData("valeur retourné par le pidf", shooter_pidf.calculateInternal(shooter.getVelocity(), shooter_pidf.Getdt()));
+        telemetry.addData("velocité du shooter", current_shoot_velo);
+        telemetry.addData("valeur", Pow_shoot);
+        telemetry.addData("voltage du moteur", shooter.getPower());
+        telemetry.addData("erreur", shooter_pidf.GetError());
+        telemetry.addData("feedforward", shooter_pidf.GetFF());
+        telemetry.addData("feedforward * setPoint", shooter_pidf.GetFF()*shooter_pidf.GetSetpoint());
+        telemetry.addData("voltage", voltage);
+        telemetry.addData("valeur retourné par le pidf", shooter_pidf.calculateInternal(shooter.getVelocity(), shooter_pidf.Getdt()));
 //
-        //telemetry.update();
+        telemetry.update();
 
     }
 }

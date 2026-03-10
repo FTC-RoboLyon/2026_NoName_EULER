@@ -2,6 +2,8 @@ package FRC_ALDNC.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import FRC_ALDNC.SubSystem.Camera_subsystem;
 import FRC_ALDNC.SubSystem.Shooter_Subsystem;
 
@@ -12,9 +14,11 @@ public class Configure_shooter extends CommandBase {
     Camera_subsystem came;
     boolean toggle;
     boolean isConfigured;
-    public Configure_shooter(Shooter_Subsystem shooter, Camera_subsystem cam, Shooter_Subsystem.WantedState postir, boolean toggle){
+    Telemetry telemetrY;
+    public Configure_shooter(Shooter_Subsystem shooter, Camera_subsystem cam, Shooter_Subsystem.WantedState postir, boolean toggle, Telemetry telemetry){
         this.toggle = toggle;
         came = cam;
+        telemetrY = telemetry;
         this.shooter = shooter;
         this.postir = postir;
         addRequirements(shooter);
@@ -32,6 +36,8 @@ public class Configure_shooter extends CommandBase {
             isConfigured = true;
             shooter.setShooter_state(postir);
         }
+        telemetrY.addLine("Configure shooter is initialize");
+        telemetrY.update();
     }
 
     @Override
@@ -45,6 +51,8 @@ public class Configure_shooter extends CommandBase {
                 shooter.setShooter_state(postir);
             }
         }
+        telemetrY.addLine("Configure shooter is execute");
+        telemetrY.update();
 
     }
 
@@ -52,6 +60,8 @@ public class Configure_shooter extends CommandBase {
     public void end(boolean interrupted) {
         if (toggle)
             shooter.setShooter_state(Shooter_Subsystem.WantedState.WAIT);
+        telemetrY.addLine("Configure shooter has end");
+        telemetrY.update();
     }
 
     @Override

@@ -81,8 +81,10 @@ public class Shooter_Subsystem extends SubsystemBase {
     double voltage = 12.0;
     public static double Pow_shoot;
     public static PID_shooter shooter_pidf;
+    public boolean inauto;
     private ALDNC_container robot;
-    public Shooter_Subsystem (HardwareMap hmap, Telemetry telemetry, ALDNC_container RoBot){
+    public Shooter_Subsystem (HardwareMap hmap, Telemetry telemetry, ALDNC_container RoBot, boolean auto){
+        inauto = auto;
         robot = RoBot;
         shooter_pidf = new PID_shooter(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
         shooter_pidf.SetTolerance(shooter_velo_tolerance);
@@ -129,7 +131,10 @@ public class Shooter_Subsystem extends SubsystemBase {
                 }
                 break;
             case  SHOOT_MID:
-                veloShooter = velo_shoot_mid;
+                if (inauto){
+                    veloShooter = velo_shoot_mid;
+                }else {
+                veloShooter = velo_shoot_mid;}
                 posviseur = posviseur_mid;
                 if (sysState != SystemState.READY_TO_SHOOT)
                 {
@@ -152,7 +157,6 @@ public class Shooter_Subsystem extends SubsystemBase {
 
             case AUTO:
                 veloShooter = veloShooter_auto;
-                posviseur = posviseur_auto;
                 if (sysState != SystemState.READY_TO_SHOOT)
                 {
                     sysState = SystemState.PREPARING_TO_SHOOT;
@@ -185,6 +189,12 @@ public class Shooter_Subsystem extends SubsystemBase {
                 //Dashboard.Telemetry_with_Text("Shooter", "can't run state machine with an unknown system state");
                 break;
         }
+    }
+    public void change_velo(double index){
+        veloShooter += index;
+    }
+    public void change_visage(double index){
+        posviseur += index;
     }
     public void Shoot(){
         switch (sysState)
@@ -230,14 +240,14 @@ public class Shooter_Subsystem extends SubsystemBase {
         shooter_pidf.SetGains(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
         shooter_pidf.SetTolerance(shooter_velo_tolerance);
 
-        pidf = new PIDFCoefficients(ShooterKP_velo, ShooterKI_velo, ShooterKD_velo, ShooterKF_velo * (12/voltage));
+        pidf = new PIDFCoefficients(ShooterKP_velo, ShooterKI_velo, ShooterKD_velo, voltage != 0 ? ShooterKF_velo * (12/voltage) : ShooterKF_velo);
         shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
     }
 
     public void calculate_postir(double distance_to_goal){
         veloShooter_auto = (5.79573 * Math.pow(10, -7)) * Math.pow(distance_to_goal, 4) -0.000496167 * Math.pow(distance_to_goal, 3) +0.147211 * Math.pow(distance_to_goal, 2) -15.11259*distance_to_goal +1449.64095;//Definis moi ca
         //posviseur_auto = -0.00168518*distance_to_goal +1.01528;
-        posviseur_auto = -(1.64249*Math.pow(10, -9)) * Math.pow(distance_to_goal, 4)+0.00000128437 * Math.pow(distance_to_goal, 3) -0.000335487 * Math.pow(distance_to_goal, 2) +0.0312942 * distance_to_goal +0.0758803;
+        //posviseur_auto = -(1.64249*Math.pow(10, -9)) * Math.pow(distance_to_goal, 4)+0.00000128437 * Math.pow(distance_to_goal, 3) -0.000335487 * Math.pow(distance_to_goal, 2) +0.0312942 * distance_to_goal +0.0758803;
     }
     public boolean has_shoot () {
         return sysState == SystemState.READY_TO_SHOOT && !Utils.IsInRange(current_shoot_velo, veloShooter, shooter_velo_tolerance);
@@ -254,16 +264,16 @@ public class Shooter_Subsystem extends SubsystemBase {
         mon_ptit_truc.put("position viseur", current_viseur_pos);
         dashboard.sendTelemetryPacket(mon_ptit_truc);
 
-        telemetry.addData("velocité du shooter", current_shoot_velo);
-        telemetry.addData("valeur", Pow_shoot);
-        telemetry.addData("voltage du moteur", shooter.getPower());
-        telemetry.addData("erreur", shooter_pidf.GetError());
-        telemetry.addData("feedforward", shooter_pidf.GetFF());
-        telemetry.addData("feedforward * setPoint", shooter_pidf.GetFF()*shooter_pidf.GetSetpoint());
-        telemetry.addData("voltage", voltage);
-        telemetry.addData("valeur retourné par le pidf", shooter_pidf.calculateInternal(shooter.getVelocity(), shooter_pidf.Getdt()));
-
-        telemetry.update();
+        //telemetry.addData("velocité du shooter", current_shoot_velo);
+        //telemetry.addData("valeur", Pow_shoot);
+        //telemetry.addData("voltage du moteur", shooter.getPower());
+        //telemetry.addData("erreur", shooter_pidf.GetError());
+        //telemetry.addData("feedforward", shooter_pidf.GetFF());
+        //telemetry.addData("feedforward * setPoint", shooter_pidf.GetFF()*shooter_pidf.GetSetpoint());
+        //telemetry.addData("voltage", voltage);
+        //telemetry.addData("valeur retourné par le pidf", shooter_pidf.calculateInternal(shooter.getVelocity(), shooter_pidf.Getdt()));
+//
+        //telemetry.update();
 
     }
 }

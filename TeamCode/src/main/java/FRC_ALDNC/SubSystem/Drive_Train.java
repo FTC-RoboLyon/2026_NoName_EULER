@@ -26,7 +26,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -50,6 +50,7 @@ public class Drive_Train extends SubsystemBase {
     private ALDNC_container robot;
     private double targetPosition;
     private double erreurPos;
+    private VoltageSensor voltageSensor;
 
     public Drive_Train(HardwareMap hmap, Telemetry tele, double x, double y, ALDNC_container roBot) {
         robot = roBot;
@@ -79,6 +80,7 @@ public class Drive_Train extends SubsystemBase {
 
         encoderG.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         encoderG.setMode(DcMotor.RunMode.RUN_USING_ENCODER);*/
+        voltageSensor = hmap.get(VoltageSensor.class, "Control Hub");
 
         rotattion_Pid.SetTolerance(0.01);
         rotattion_Pid.SetInputLimits(0, Math.PI * 2);
@@ -248,6 +250,7 @@ public class Drive_Train extends SubsystemBase {
 
     @Override
     public void periodic() {
+        double voltage = voltageSensor.getVoltage();
         //odometrie();
 
         //targetPosition = robot.Camera().getBearing()*ff_rotation;
@@ -266,8 +269,8 @@ public class Drive_Train extends SubsystemBase {
         //    drive(robot.Left_joystick().getX(), robot.Right_joystick().getY());
         //}
         //drive(robot.Left_joystick().getX(), robot.Right_joystick().getY()); //default
-        left_drive.setPower(left_motor_power);
-        right_drive.setPower(right_motor_power);
+        left_drive.setPower(left_motor_power * (13.3 /voltage));
+        right_drive.setPower(right_motor_power*(13.3 /voltage));
 
     }
 }

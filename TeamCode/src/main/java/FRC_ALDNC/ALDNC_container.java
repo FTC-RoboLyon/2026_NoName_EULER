@@ -6,6 +6,7 @@ package FRC_ALDNC;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -69,14 +70,16 @@ public class ALDNC_container{
 
     public ALDNC_container (HardwareMap hmap, RobotMode wich_programme, GamepadEx gamepad, Telemetry telemetry){
         team_and_mode = wich_programme;
+        is_inTeleop = team_and_mode == RobotMode.TELEOP_RED || team_and_mode == RobotMode.TELEOP_BLUE;
+
 
         chassis_subsystem = new Drive_Train(hmap, telemetry, x, y, this);
 
 
-        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this);
+        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this, !is_inTeleop);
 
 
-        is_inTeleop = team_and_mode == RobotMode.TELEOP_RED || team_and_mode == RobotMode.TELEOP_BLUE;
+
 
         intake = new Intake_subsystem(hmap);
 
@@ -87,7 +90,7 @@ public class ALDNC_container{
         left_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.left);
         right_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.right);
         forward = () -> left_joystick.getX();
-        turn = () -> right_joystick.getY();//Si le chassis ne bouge pas avec le programme actuel, ajouter les lignes 66, 67 et 77 et enlevez la ligne 75
+        turn = () -> right_joystick.getY();
 
 
         apriljoke = new Camera_subsystem(hmap, wich_programme == RobotMode.TELEOP_RED || wich_programme == RobotMode.AUTO_RED ? 24 : 20, telemetry);
@@ -109,7 +112,7 @@ public class ALDNC_container{
                     ),
                     chassis_subsystem));
             new Trigger(() -> shooter_subsystem.Is_Shooting())
-                    .whileActiveContinuous(new AlignToTarget(chassis_subsystem, apriljoke, shooter_subsystem, is_inTeleop, forward));
+                    .whileActiveContinuous(new AlignToTarget(chassis_subsystem, apriljoke, shooter_subsystem, is_inTeleop, forward, turn));
         } else {
             //new Trigger(() -> shooter_subsystem.Is_Shooting())
             //        .whileActiveContinuous(new AlignToTarget(chassis_subsystem, apriljoke, shooter_subsystem, true));
@@ -136,30 +139,52 @@ public class ALDNC_container{
             Button intake_button,
             Trigger eject_button,
             Button alignageButton,
-            Button reglage_shooter){
+            Button reglage_shooter,
+            Trigger eject,
+            Button plus_viseur,
+            Trigger splus_viseur,
+            Button minus_viseur,
+            Trigger sminus_viseur,
+            Button plus_velo,
+            Button minus_velo,
+            Button splus_velo,
+            Button sminus_velo){
 
-        feeder_button.whenPressed(new Shoot_a_ball_command(feeder, shooter_subsystem));
-        feeder_button.whenReleased(new Let_a_ball_pass(feeder));
+        feeder_button.whenPressed(new Shoot_a_ball_command(feeder, shooter_subsystem, telemetry));
+        feeder_button.whenReleased(new Let_a_ball_pass(feeder, telemetry));
 
-        intake_button.whenPressed(new Collect_command(intake, Intake_subsystem.WantedState.COLLECT));
-        intake_button.whenReleased(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
+        intake_button.whenPressed(new Collect_command(intake, Intake_subsystem.WantedState.COLLECT, telemetry));
+        intake_button.whenReleased(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY, telemetry));
 
-        shoot_bank_button.toggleWhenPressed(new Configure_shooter(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.SHOOT_BANK, true));
+        shoot_bank_button.toggleWhenPressed(new Configure_shooter(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.SHOOT_BANK, true, telemetry));
         //shoot_bank_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
-        shoot_mid_button.toggleWhenPressed(new Configure_shooter(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.SHOOT_MID, true));
+        shoot_mid_button.toggleWhenPressed(new Configure_shooter(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.SHOOT_MID, true, telemetry));
         //shoot_mid_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
-        shoot_far_butto.toggleWhenPressed(new Configure_shooter(shooter_subsystem, apriljoke, Shooter_Subsystem.WantedState.SHOOT_FAR, true));
+        shoot_far_butto.toggleWhenPressed(new Configure_shooter(shooter_subsystem, apriljoke, Shooter_Subsystem.WantedState.SHOOT_FAR, true, telemetry));
         //shoot_far_butto.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
-        aspirer_button.toggleWhenPressed(new Stop_shooter(shooter_subsystem));
+        aspirer_button.toggleWhenPressed(new Stop_shooter(shooter_subsystem, telemetry));
         //aspirer_button.whenReleased(new Configure_shooter_with_toggle(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.WAIT));
 
-        eject_button.whenActive(new Collect_command(intake, Intake_subsystem.WantedState.EJECT));
-        eject_button.whenInactive(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
+        eject_button.whenActive(new Collect_command(intake, Intake_subsystem.WantedState.EJECT, telemetry));
+        eject_button.whenInactive(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY, telemetry));
 
-        reglage_shooter.toggleWhenPressed(new Configure_shooter(shooter_subsystem, apriljoke, Shooter_Subsystem.WantedState.AUTO, true));
+        aspirer_button.whenActive(new Configure_shooter(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.SHOOT_BANK, false, telemetry));
+        aspirer_button.whenInactive(new Stop_shooter(shooter_subsystem, telemetry));
+
+        plus_velo.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(10)));
+        splus_velo.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(50)));
+        minus_velo.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(-10)));
+        sminus_velo.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(-50)));
+        plus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(10)));
+        splus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(10)));
+        minus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(10)));
+        sminus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(10)));
+
+
+        reglage_shooter.toggleWhenPressed(new Configure_shooter(shooter_subsystem, apriljoke, Shooter_Subsystem.WantedState.AUTO, true, telemetry));
 
 
 

@@ -13,7 +13,7 @@ public class CONSTAAANT_CESTMOILEBON {
     public  static  double shooter_timestamp = 20; //Tunme
 
     public static double posviseur_bank = 1, posviseur_mid = 0.58, posviseur_far = 0.45; //TUNEME
-    public static double velo_shoot_bank = 900, velo_shoot_mid = 1250, velo_shoot_far = 1500; //TUNEME
+    public static double velo_shoot_bank = 975, velo_shoot_mid = 1250, velo_shoot_far = 1500; //TUNEME
 
     public static double seuil_volt_shooter = 11; //TUNEME
 
@@ -25,8 +25,8 @@ public class CONSTAAANT_CESTMOILEBON {
 
 
     public static double ff_rotation = 6.43;
-    public static double p_rotation = 0.0005;
-    public static double tolerence_rotation = 0.0005;
+    public static double p_rotation = 0.0025;
+    public static double tolerence_rotation = 0.25;
     public  static double seuilDriveShooter = 0.05;
     public  static double tolerance_go_angle = 1;
 
@@ -38,8 +38,8 @@ public class CONSTAAANT_CESTMOILEBON {
     public  static double time_auto = 1000;
 
 
-    public static double posFeed = 0.3, posFeedrepos = 0.125 ; //tunme
-    public  static  double time_to_let_a_ball_pass = 2000; //TUNEME IN MILLISECOND
+    public static double posFeed = 0.33, posFeedrepos = 0.125 ; //tunme
+    public  static  double time_to_let_a_ball_pass = 2250; //TUNEME IN MILLISECOND
 
 
 

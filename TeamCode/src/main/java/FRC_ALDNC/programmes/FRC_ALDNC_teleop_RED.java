@@ -28,6 +28,21 @@ public class FRC_ALDNC_teleop_RED extends CommandOpMode {
     Button alignageButton;
     Button reglage_shooter;
     BooleanSupplier lefT_triger;
+    BooleanSupplier right_trigger;
+
+    BooleanSupplier slefT_triger;
+    BooleanSupplier sright_trigger;
+
+    Trigger aspirer;
+    Button plus_velo;
+    Button minus_velo;
+    Button splus_velo;
+    Button sminus_velo;
+
+    Button plus_viseur;
+    Button minus_viseur;
+    Trigger splus_viseur;
+    Trigger sminus_viseur;
 
 
     @Override
@@ -35,6 +50,11 @@ public class FRC_ALDNC_teleop_RED extends CommandOpMode {
         gamepad0 = new GamepadEx(gamepad1);
         gamEpad2 = new GamepadEx(gamepad2);
         lefT_triger = () -> gamepad1.left_trigger > 0.3;
+        right_trigger = () -> gamepad1.right_trigger > 0.3;
+
+        slefT_triger = () -> gamepad2.left_trigger > 0.3;
+        sright_trigger = () -> gamepad2.right_trigger > 0.3;
+
         alignageButton = new GamepadButton(
                 gamepad0, GamepadKeys.Button.DPAD_UP
                 );
@@ -59,11 +79,47 @@ public class FRC_ALDNC_teleop_RED extends CommandOpMode {
         reglage_shooter = new GamepadButton(
                 gamEpad2, GamepadKeys.Button.X
         );
+        plus_velo = new GamepadButton(
+                gamEpad2, GamepadKeys.Button.DPAD_UP
+        );
+        splus_velo = new GamepadButton(
+                gamEpad2, GamepadKeys.Button.DPAD_RIGHT
+        );
+        minus_velo = new GamepadButton(
+                gamEpad2, GamepadKeys.Button.DPAD_DOWN
+        );
+        sminus_velo = new GamepadButton(
+                gamEpad2, GamepadKeys.Button.DPAD_LEFT
+        );
+        minus_viseur = new GamepadButton(
+                gamEpad2, GamepadKeys.Button.RIGHT_BUMPER
+        );
+        plus_viseur = new GamepadButton(
+                gamEpad2, GamepadKeys.Button.LEFT_BUMPER
+        );
 
         Eject_button = new Trigger(lefT_triger);
+        aspirer = new Trigger(right_trigger);
+
+        splus_viseur = new Trigger(slefT_triger);
+        sminus_viseur = new Trigger(sright_trigger);
 
         robot = new ALDNC_container(hardwareMap, ALDNC_container.RobotMode.TELEOP_RED, gamepad0, telemetry);
-        robot.Configure_Binding(feeder_button,shoot_bank_button, shoot_mid_button, shoot_far_button, aspirer_button,Intake_button , Eject_button, alignageButton, reglage_shooter);
+        robot.Configure_Binding(feeder_button,
+                shoot_bank_button,
+                shoot_mid_button, shoot_far_button,
+                aspirer_button,Intake_button ,
+                Eject_button, alignageButton,
+                reglage_shooter,
+                aspirer,
+                plus_viseur,
+                splus_viseur,
+                minus_viseur,
+                sminus_viseur,
+                plus_velo,
+                splus_velo,
+                minus_velo,
+                sminus_velo);
         robot.telemetry();
 
     }

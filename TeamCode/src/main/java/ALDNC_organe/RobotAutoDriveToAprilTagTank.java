@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package ALDNC_organe;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -41,6 +41,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainCon
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import static ALDNC_organe.Constant.LEFT_MOTOR;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -121,7 +122,7 @@ public class RobotAutoDriveToAprilTagTank extends LinearOpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must match the names assigned during the robot configuration.
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
+        leftDrive  = hardwareMap.get(DcMotor.class, LEFT_MOTOR);
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
 
         // To drive forward, most robots need the motor on one side to be reversed because the axles point in opposite directions.

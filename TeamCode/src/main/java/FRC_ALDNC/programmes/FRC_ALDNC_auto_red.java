@@ -1,28 +1,20 @@
 package FRC_ALDNC.programmes;
 
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.forward_auto;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.time_auto;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.turn_auto;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 import FRC_ALDNC.ALDNC_container;
 import FRC_ALDNC.SubSystem.Intake_subsystem;
 import FRC_ALDNC.SubSystem.Shooter_Subsystem;
-import FRC_ALDNC.commands.AlignToTarget;
 import FRC_ALDNC.commands.Collect_command;
 import FRC_ALDNC.commands.Drive_command;
 import FRC_ALDNC.commands.Command_groups.Shoot_auto;
-import FRC_ALDNC.commands.Finf_order_artefact;
 import FRC_ALDNC.commands.Wait_for_start;
 
 @Config

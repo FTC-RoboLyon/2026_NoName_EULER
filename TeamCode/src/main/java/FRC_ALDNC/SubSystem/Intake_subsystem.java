@@ -1,8 +1,8 @@
 package FRC_ALDNC.SubSystem;
 
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.COMPTEUR_BALLE;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.INTAKE;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.distance_ou_le_capteur_detecte_balle;
+import static FRC_ALDNC.CONSTANT.Constante_intake.COMPTEUR_BALLE;
+import static FRC_ALDNC.CONSTANT.Constante_intake.INTAKE;
+import static FRC_ALDNC.CONSTANT.Constante_intake.distance_ou_le_capteur_detecte_balle;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -111,10 +111,10 @@ public class Intake_subsystem extends SubsystemBase {
                 break;
 
             case INTAKING:
-                intake.setPower(0.7);
+                intake.setPower(0.5);
                 break;
             case EJeCT:
-                intake.setPower(-1);
+                intake.setPower(-0.5);
                 break;
             default:
                 //Dashboard.Telemetry_with_Text("Intake", "unknown system state used");

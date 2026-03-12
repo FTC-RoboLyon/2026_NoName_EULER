@@ -1,11 +1,11 @@
 package FRC_ALDNC.SubSystem;
 
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.coef_smooth_stickleft;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.coef_smooth_stickright;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.deadzone_stickright;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.deadzone_sticktleft;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.vpower_stickleft;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.vpower_stickright;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.coef_smooth_stickleft;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.coef_smooth_stickright;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.deadzone_stickright;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.deadzone_sticktleft;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.vpower_stickleft;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.vpower_stickright;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;

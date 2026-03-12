@@ -1,8 +1,8 @@
 package FRC_ALDNC.SubSystem;
 
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.FEEDER;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posFeed;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posFeedrepos;
+import static FRC_ALDNC.CONSTANT.constante_feeder.FEEDER;
+import static FRC_ALDNC.CONSTANT.constante_feeder.posFeed;
+import static FRC_ALDNC.CONSTANT.constante_feeder.posFeedrepos;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;

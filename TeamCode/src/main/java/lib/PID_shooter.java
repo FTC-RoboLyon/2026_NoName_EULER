@@ -1,7 +1,6 @@
 package lib;
 
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.seuil_volt_shooter;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.shooter_timestamp;
 
 public class PID_shooter {
     private double kp;

@@ -1,17 +1,16 @@
 package FRC_ALDNC.SubSystem;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ENCODERD;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ENCODEURG;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.LEFT_MOTOR;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.RIGHT_MOTOR;
 
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ff_rotation;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.p_rotation;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_D;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_I;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.rotation_P;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.seuilDriveShooter;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.tolerance_go_angle;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.tolerence_rotation;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.LEFT_MOTOR;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.RIGHT_MOTOR;
+
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.ff_rotation;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.p_rotation;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.rotation_D;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.rotation_I;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.rotation_P;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.seuilDriveShooter;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.tolerance_go_angle;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.tolerence_rotation;
 
 import android.os.FileUriExposedException;
 

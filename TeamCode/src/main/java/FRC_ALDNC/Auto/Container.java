@@ -1,6 +1,5 @@
 package FRC_ALDNC.Auto;
 
-import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -20,7 +19,7 @@ public class Container{
         this.hmap = hamp;
         manette = gamepad1;
         driveSubsystem = new DriveSubsystem(hmap, telemetry);
-        driveSubsystem.setDefaultCommand(new DriveCommand(driveSubsystem, this, manette));
+        driveSubsystem.setDefaultCommand(new DriveCommand(driveSubsystem, manette));
     }
     public double getX(){
         return x;

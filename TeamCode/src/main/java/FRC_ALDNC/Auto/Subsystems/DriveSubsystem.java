@@ -11,8 +11,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import FRC_ALDNC.Auto.Constant;
 public class DriveSubsystem extends SubsystemBase {
-    private double left_motor_power, right_motor_power, x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle, angle, angleDegrees, rayon = 5.7, CPR = 8196, DG, DD, DL = 36, h, forward, turn;
-
+    private double left_motor_power, right_motor_power, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,  angleDegrees, DG, DD, h;
+    public double  x, y, angle, forward, turn;
+    private final
     DcMotorEx motorRight, motorLeft;
     HardwareMap hmap;
     Telemetry telemetry;
@@ -38,12 +39,15 @@ public class DriveSubsystem extends SubsystemBase {
         vielleValueG = motorLeft.getCurrentPosition();
     }
     private void calculateDistanceGetD() {
+        double CPR = 8196;
+        double rayon = 5.7;
         DG = Math.PI * 2 * rayon / CPR;
         DG = DG * valueEncoderG;
         DD = Math.PI * 2 * rayon / CPR;
         DD = DD * valueEncoderD;
     }
     private void calculateAngleRadiant() {
+        double DL = 36;
         angle = (DD - DG)/DL;
         vieuxAngle += angle;
         angleDegrees = Math.toDegrees(vieuxAngle);

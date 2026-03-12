@@ -1,10 +1,10 @@
 package FRC_ALDNC.programmes.Test_and_configure;
 
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.FEEDER;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.INTAKE;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.SHOOTER;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posFeed;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posFeedrepos;
+import static FRC_ALDNC.CONSTANT.constante_feeder.FEEDER;
+import static FRC_ALDNC.CONSTANT.Constante_intake.INTAKE;
+import static FRC_ALDNC.CONSTANT.Constante_shooter.SHOOTER;
+import static FRC_ALDNC.CONSTANT.constante_feeder.posFeed;
+import static FRC_ALDNC.CONSTANT.constante_feeder.posFeedrepos;
 
 import com.acmerobotics.dashboard.config.Config;
 

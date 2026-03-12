@@ -1,8 +1,8 @@
 package FRC_ALDNC.programmes;
 
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.forward_auto;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.time_auto;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.turn_auto;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.forward_auto;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.time_auto;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.turn_auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandOpMode;

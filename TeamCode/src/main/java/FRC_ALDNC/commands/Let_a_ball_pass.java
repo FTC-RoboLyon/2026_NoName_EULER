@@ -1,6 +1,6 @@
 package FRC_ALDNC.commands;
 
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.time_to_let_a_ball_pass;
+import static FRC_ALDNC.CONSTANT.constante_feeder.time_to_let_a_ball_pass;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.util.ElapsedTime;

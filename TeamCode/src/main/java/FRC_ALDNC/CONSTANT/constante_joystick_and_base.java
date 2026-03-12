@@ -10,6 +10,10 @@ public class constante_joystick_and_base {
     public static double rotation_P,rotation_I,rotation_D = 0 ; //tunme
     public static double rotation_tolerance = 0 ; //tunme
 
+    public  static double forward_auto = -1;
+    public  static double turn_auto = 0;
+    public  static double time_auto = 1000;
+
     public static double ff_rotation = 6.43;
     public static double p_rotation = 0.0025;
     public static double tolerence_rotation = 0.25;

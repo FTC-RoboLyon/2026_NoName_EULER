@@ -1,7 +1,7 @@
 package FRC_ALDNC.commands;
 
 
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posFeed;
+import static FRC_ALDNC.CONSTANT.constante_feeder.posFeed;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.robocol.Command;

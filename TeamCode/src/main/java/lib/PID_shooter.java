@@ -1,6 +1,6 @@
 package lib;
 
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.seuil_volt_shooter;
+import static FRC_ALDNC.CONSTANT.Constante_shooter.seuil_volt_shooter;
 
 public class PID_shooter {
     private double kp;

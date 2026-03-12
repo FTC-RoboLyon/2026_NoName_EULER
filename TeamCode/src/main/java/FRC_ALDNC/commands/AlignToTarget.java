@@ -1,8 +1,8 @@
 package FRC_ALDNC.commands;
 
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ff_rotation;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.p_rotation;
-import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.tolerence_rotation;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.ff_rotation;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.p_rotation;
+import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.tolerence_rotation;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -14,7 +14,7 @@ import FRC_ALDNC.ALDNC_container;
 import FRC_ALDNC.SubSystem.Camera_subsystem;
 import FRC_ALDNC.SubSystem.Drive_Train;
 import FRC_ALDNC.SubSystem.Shooter_Subsystem;
-import FRC_ALDNC.CONSTAAANT_CESTMOILEBON;
+import FRC_ALDNC.CONSTANT.constante_joystick_and_base;
 import FRC_ALDNC.SubSystem.joystick_subsystem;
 
 public class AlignToTarget extends CommandBase {

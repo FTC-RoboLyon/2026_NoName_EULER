@@ -62,6 +62,7 @@ public class DriveSubsystem extends SubsystemBase {
         telemetry.addData("angle", angleDegrees);
         telemetry.addData("jambe gauche", motorLeft.getCurrentPosition());
         telemetry.addData("jambe droite", motorRight.getCurrentPosition());
+        telemetry.update();
     }
     public void odometrie(){
         calculateValuesEncoderDetG();

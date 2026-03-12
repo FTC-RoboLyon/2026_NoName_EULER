@@ -44,6 +44,7 @@ public class PID_shooter {
         currentError = 0.0;
         output = 0.0;
     }
+    public void set_dt(double timestamp){this.dt=timestamp;}
     public double GetKP() { return kp; }
     public double GetKI() { return ki; }
     public double GetKD() { return kd; }
@@ -57,10 +58,16 @@ public class PID_shooter {
     }
     public double Calculate_Power(double setpoint, double measurement) {
         this.setpoint = setpoint;
-        return calculateInternal(measurement, shooter_timestamp);
+        return calculateInternal(measurement);
+    }
+    public double Calculate_simple (double setpoint, double measurement){
+        currentError = setpoint-measurement;
+        integrative += currentError * dt;
+        double derivative = (currentError - previousError) / dt;
+        return 0;
     }
 
-    public double calculateInternal(double measurement, double dt) {
+    public double calculateInternal(double measurement) {
         currentError = setpoint - measurement;
         if((currentError * kp) < seuil_volt_shooter && (currentError * kp) > -seuil_volt_shooter)
         {

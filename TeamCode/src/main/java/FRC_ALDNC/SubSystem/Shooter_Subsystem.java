@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -57,6 +58,7 @@ public class Shooter_Subsystem extends SubsystemBase {
     private static double i = 0.0;
     private static double d = 0.0;
     public static double f = 0.00509493117974126;
+    private static ElapsedTime pid_timer;
 
     public static double veloShooter = velo_shoot_mid, current_shoot_velo, veloShooter_auto;
     public static double posviseur = posviseur_mid, current_viseur_pos, posviseur_auto;
@@ -91,6 +93,7 @@ public class Shooter_Subsystem extends SubsystemBase {
         robot = RoBot;
         shooter_pidf = new PID_shooter(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
         shooter_pidf.SetTolerance(shooter_velo_tolerance);
+        pid_timer = new ElapsedTime();
 
         test = new InterpLUT();
         dashboard = FtcDashboard.getInstance();
@@ -245,8 +248,10 @@ public class Shooter_Subsystem extends SubsystemBase {
     public void updatePID(){
         shooter_pidf.SetGains(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
         shooter_pidf.SetTolerance(shooter_velo_tolerance);
+        shooter_pidf.set_dt(pid_timer.milliseconds());
+        pid_timer.reset();
 
-        pidf = new PIDFCoefficients(ShooterKP_velo, ShooterKI_velo, ShooterKD_velo, voltage != 0 ? ShooterKF_velo * (12/voltage) : ShooterKF_velo);
+        //pidf = new PIDFCoefficients(ShooterKP_velo, ShooterKI_velo, ShooterKD_velo, voltage != 0 ? ShooterKF_velo * (12/voltage) : ShooterKF_velo);
         //shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
     }
 
@@ -277,9 +282,10 @@ public class Shooter_Subsystem extends SubsystemBase {
         telemetry.addData("feedforward", shooter_pidf.GetFF());
         telemetry.addData("feedforward * setPoint", shooter_pidf.GetFF()*shooter_pidf.GetSetpoint());
         telemetry.addData("voltage", voltage);
-        telemetry.addData("valeur retourné par le pidf", shooter_pidf.calculateInternal(shooter.getVelocity(), shooter_pidf.Getdt()));
+        telemetry.addData("valeur retourné par le pidf", shooter_pidf.calculateInternal(shooter.getVelocity()));
 //
         telemetry.update();
+
 
     }
 }

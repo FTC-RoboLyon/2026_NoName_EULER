@@ -8,11 +8,14 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.opencv.core.Mat;
 
 import FRC_ALDNC.Auto.Constant;
 public class DriveSubsystem extends SubsystemBase {
     private double left_motor_power, right_motor_power, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,  angleDegrees, DG, DD, h;
     public double  x, y, angle, forward, turn;
+    private double erreurAngle, pAngle = 0.0001, targetAngle;
+    private double targetVelo, erreurVelo, pVelo = 0.000000005;
     private final
     DcMotorEx motorRight, motorLeft;
     HardwareMap hmap;
@@ -47,7 +50,7 @@ public class DriveSubsystem extends SubsystemBase {
         DD = DD * valueEncoderD;
     }
     private void calculateAngleRadiant() {
-        double DL = 36;
+        double DL = 16.21;
         angle = (DD - DG)/DL;
         vieuxAngle += angle;
         if (vieuxAngle > Math.PI){
@@ -60,9 +63,8 @@ public class DriveSubsystem extends SubsystemBase {
         h = (DG + DD) / 2;
     }
     private void calculateXY() {
-        x = Math.sin(vieuxAngle) * h;
-        x = -x;
-        y = Math.cos(vieuxAngle) * h;
+        x = Math.cos(vieuxAngle) * h;
+        y = Math.sin(vieuxAngle) * h;
         vieuxX += x;
         vieuxY += y;
     }
@@ -87,8 +89,19 @@ public class DriveSubsystem extends SubsystemBase {
         right_motor_power = forward-turn;
         left_motor_power = forward+turn;
     }
-    public void goAngle(){
-
+    public void goAngle(double x, double y){
+        if(y >= 0 && x >= 0){
+            targetAngle = Math.atan(y/x);
+        }else if(){}
+        erreurAngle = targetAngle - vieuxAngle;
+        right_motor_power = erreurAngle*pAngle;
+        left_motor_power = -right_motor_power;
+        targetVelo = right_motor_power*22000;
+        erreurVelo = motorRight.getVelocity()-targetVelo;
+        right_motor_power = -targetVelo+erreurVelo*pVelo;
+        left_motor_power = -right_motor_power;
+    }
+    public void goPos(){
     }
     @Override
     public void periodic(){

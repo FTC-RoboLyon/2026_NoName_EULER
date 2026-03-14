@@ -47,7 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
         DD = DD * valueEncoderD;
     }
     private void calculateAngleRadiant() {
-        double DL = 36;
+        double DL = 17;
         angle = (DD - DG)/DL;
         vieuxAngle += angle;
         if (vieuxAngle > Math.PI){

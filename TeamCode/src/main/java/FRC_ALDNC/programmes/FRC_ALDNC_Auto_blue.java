@@ -13,7 +13,7 @@ import FRC_ALDNC.SubSystem.Intake_subsystem;
 import FRC_ALDNC.SubSystem.Shooter_Subsystem;
 import FRC_ALDNC.commands.Collect_command;
 import FRC_ALDNC.commands.Drive_command;
-import FRC_ALDNC.commands.Command_groups.Shoot_auto;
+//import FRC_ALDNC.commands.Command_groups.Shoot_auto;
 import FRC_ALDNC.commands.Wait_for_start;
 
 @Autonomous(name = "FRC ALDNC auto BLUE", group = "FRC_style")
@@ -27,7 +27,7 @@ public class FRC_ALDNC_Auto_blue extends CommandOpMode {
                         new Wait_for_start(Wait_for_start),
                         new Drive_command(robot.Chassis(), -1, 0, 1050, telemetry), //Aller a la pos tir mid
                         //new WaitCommand(100),
-                        new Shoot_auto(robot.Shooter(), robot.Feeder(), Shooter_Subsystem.WantedState.SHOOT_MID, robot.Intake(), robot.Chassis(), robot.Camera(), telemetry),//tirer les trois première
+                        //new Shoot_auto(robot.Shooter(), robot.Feeder(), Shooter_Subsystem.WantedState.SHOOT_MID, robot.Intake(), robot.Chassis(), robot.Camera(), telemetry),//tirer les trois première
                         // new Drive_command(robot.Chassis(), 0, -0.4, 550, telemetry),//se tourner vers le menisque
                         new WaitCommand(100),
                         new Drive_command(robot.Chassis(), 0, -0.4, 500, telemetry), //a peu près 400, a revoir

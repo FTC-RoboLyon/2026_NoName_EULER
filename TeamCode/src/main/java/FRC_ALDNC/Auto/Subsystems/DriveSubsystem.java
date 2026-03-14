@@ -39,17 +39,22 @@ public class DriveSubsystem extends SubsystemBase {
         vielleValueG = motorLeft.getCurrentPosition();
     }
     private void calculateDistanceGetD() {
-        double CPR = 8196;
-        double rayon = 5.7;
-        DG = Math.PI * 2 * rayon / CPR;
+        double CPR = 8192;
+        double diametre = 7.27;
+        DG = Math.PI * diametre / CPR;
         DG = DG * valueEncoderG;
-        DD = Math.PI * 2 * rayon / CPR;
+        DD = Math.PI * diametre / CPR;
         DD = DD * valueEncoderD;
     }
     private void calculateAngleRadiant() {
         double DL = 36;
         angle = (DD - DG)/DL;
         vieuxAngle += angle;
+        if (vieuxAngle > Math.PI){
+            vieuxAngle = -(vieuxAngle-(vieuxAngle - Math.PI));
+        } else if (vieuxAngle < -Math.PI) {
+            vieuxAngle = -(vieuxAngle-(Math.PI - vieuxAngle));
+        }
         angleDegrees = Math.toDegrees(vieuxAngle);
         h = (DG + DD) / 2;
     }
@@ -78,8 +83,8 @@ public class DriveSubsystem extends SubsystemBase {
     public void drive(Gamepad gamepad1){
         forward = -gamepad1.left_stick_y;
         turn = gamepad1.right_stick_x;
-        right_motor_power = forward+turn;
-        left_motor_power = forward-turn;
+        right_motor_power = forward-turn;
+        left_motor_power = forward+turn;
     }
     @Override
     public void periodic(){

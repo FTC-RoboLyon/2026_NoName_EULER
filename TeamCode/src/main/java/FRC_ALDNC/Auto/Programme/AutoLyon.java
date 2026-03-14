@@ -7,7 +7,7 @@ import FRC_ALDNC.Auto.Container;
 
 
 @TeleOp(name = "AutoLyon", group = "FRC_ALDNC")
-public class Programme_Auto extends CommandOpMode {
+public class AutoLyon extends CommandOpMode {
 
     Container container;
 

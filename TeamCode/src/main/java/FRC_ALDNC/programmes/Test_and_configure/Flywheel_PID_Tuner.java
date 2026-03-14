@@ -83,21 +83,17 @@ public class Flywheel_PID_Tuner extends OpMode {
             if (motorsRunning) {
                 runtime.reset();
                 resetMetrics();
-            } else {
-                flywheelMotor.setVelocity(0);
             }
-            sleep(200);
         }
 
         if (gamepad1.y) {
             curTargetVelocity = (curTargetVelocity == highVelocity) ? lowVelocity : highVelocity;
             resetMetrics();
-            sleep(200);
         }
 
         updatePIDFCoefficients();
 
-        if (gamepad1.right_trigger > 0.7) {
+        if (gamepad1.right_trigger > 0.3) {
             leftdoor.setPosition(posFeed);
 
         }
@@ -106,12 +102,14 @@ public class Flywheel_PID_Tuner extends OpMode {
             leftdoor.setPosition(posFeedrepos);
         }
          if (gamepad1.right_bumper){
-             intake.setPower(0.5);
+             intake.setPower(0.7);
          } else
              intake.setPower(0);
 
         if (motorsRunning) {
             flywheelMotor.setVelocity(curTargetVelocity);
+        }else {
+            flywheelMotor.setVelocity(0);
         }
 
         displayTelemetry();

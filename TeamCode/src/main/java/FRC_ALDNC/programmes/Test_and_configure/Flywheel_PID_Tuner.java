@@ -24,10 +24,12 @@ public class Flywheel_PID_Tuner extends OpMode {
     public DcMotorEx flywheelMotor;
     private Servo leftdoor;
 
+    private Servo viseur;
+
     private DcMotor intake;
 
     public static double highVelocity = 1500;
-    public static double lowVelocity = 1250;
+    public static double lowVelocity = 900;
     public static double P = 140.0;
     public static double I = 0;
     public static double D = 0;
@@ -43,12 +45,14 @@ public class Flywheel_PID_Tuner extends OpMode {
     private double avgError = 0;
     private int sampleCount = 0;
     private double errorSum = 0;
+    public static double viseur_pos;
 
     @Override
     public void init() {
         flywheelMotor = hardwareMap.get(DcMotorEx.class, SHOOTER);
         leftdoor = hardwareMap.get(Servo.class, FEEDER);
         intake = hardwareMap.get(DcMotor.class, INTAKE);
+        viseur = hardwareMap.get(Servo.class, "viseur");
 
 
         flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -72,6 +76,7 @@ public class Flywheel_PID_Tuner extends OpMode {
 
     @Override
     public void loop() {
+        viseur.setPosition(viseur_pos);
 
         if (gamepad1.x) {
             motorsRunning = !motorsRunning;
@@ -94,21 +99,16 @@ public class Flywheel_PID_Tuner extends OpMode {
 
         if (gamepad1.right_trigger > 0.7) {
             leftdoor.setPosition(posFeed);
-            intake.setPower(1);
-        } else if (gamepad1.left_trigger > 0.7) {
-            leftdoor.setPosition(0);
-            intake.setPower(1);
+
         }
-        else if (gamepad1.a){
-            intake.setPower(0.75);
-        }
-        else if (gamepad1.b){
-            if (gamepad1.b){
-            }
-        } else {
-            intake.setPower(0);
+         else {
+
             leftdoor.setPosition(posFeedrepos);
         }
+         if (gamepad1.right_bumper){
+             intake.setPower(0.5);
+         } else
+             intake.setPower(0);
 
         if (motorsRunning) {
             flywheelMotor.setVelocity(curTargetVelocity);
@@ -158,6 +158,7 @@ public class Flywheel_PID_Tuner extends OpMode {
         telemetry.addData("Motors Running", motorsRunning);
         telemetry.addData("Runtime", runtime.seconds());
         telemetry.addData("Loop Hz", getHz());
+        telemetry.addData("viseur pos", viseur_pos);
 
         String stability = errorPercent < 1 ? "EXCELLENT" :
                 errorPercent < 2 ? "GOOD" :

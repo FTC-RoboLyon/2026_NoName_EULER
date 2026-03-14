@@ -51,9 +51,10 @@ public class DriveSubsystem extends SubsystemBase {
         angle = (DD - DG)/DL;
         vieuxAngle += angle;
         if (vieuxAngle > Math.PI){
-            vieuxAngle = -(vieuxAngle-(vieuxAngle - Math.PI));
-        } else if (vieuxAngle < -Math.PI) {
-            vieuxAngle = -(vieuxAngle-(Math.PI - vieuxAngle));
+            vieuxAngle -= 2*Math.PI;
+        }
+        else if (vieuxAngle < -Math.PI){
+            vieuxAngle += 2*Math.PI;
         }
         angleDegrees = Math.toDegrees(vieuxAngle);
         h = (DG + DD) / 2;
@@ -85,6 +86,9 @@ public class DriveSubsystem extends SubsystemBase {
         turn = gamepad1.right_stick_x;
         right_motor_power = forward-turn;
         left_motor_power = forward+turn;
+    }
+    public void goAngle(){
+
     }
     @Override
     public void periodic(){

@@ -100,7 +100,7 @@ public class Shooter_Subsystem extends SubsystemBase {
         shooter = hmap.get(DcMotorEx.class, SHOOTER);
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        shooter.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
 
 
@@ -216,7 +216,7 @@ public class Shooter_Subsystem extends SubsystemBase {
                 break;
             case PREPARING_TO_SHOOT:
                 viseur.setPosition(posviseur);
-                setPower_voltage_PIDF();
+                shooter.setVelocity(veloShooter);
                 //shooter.setVelocity(veloShooter);
                 break;
             case READY_TO_SHOOT:
@@ -246,13 +246,13 @@ public class Shooter_Subsystem extends SubsystemBase {
         }
     }
     public void updatePID(){
-        shooter_pidf.SetGains(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
-        shooter_pidf.SetTolerance(shooter_velo_tolerance);
-        shooter_pidf.set_dt(pid_timer.milliseconds());
-        pid_timer.reset();
+        //shooter_pidf.SetGains(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
+        //shooter_pidf.SetTolerance(shooter_velo_tolerance);
+        //shooter_pidf.set_dt(pid_timer.milliseconds());
+        //pid_timer.reset();
 
-        //pidf = new PIDFCoefficients(ShooterKP_velo, ShooterKI_velo, ShooterKD_velo, voltage != 0 ? ShooterKF_velo * (12/voltage) : ShooterKF_velo);
-        //shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+        pidf = new PIDFCoefficients(ShooterKP_velo, ShooterKI_velo, ShooterKD_velo, voltage != 0 ? ShooterKF_velo * (12/voltage) : ShooterKF_velo);
+        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
     }
 
     public void calculate_postir(double distance_to_goal){

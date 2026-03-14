@@ -1,5 +1,6 @@
 package FRC_ALDNC.Auto.Subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -10,9 +11,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import FRC_ALDNC.Auto.Constant;
+@Config
 public class DriveSubsystem extends SubsystemBase {
     private double left_motor_power, right_motor_power, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,  angleDegrees, DG, DD, h;
     public double  x, y, angle, forward, turn;
+    public static double DL = 16.5;
+
     private final
     DcMotorEx motorRight, motorLeft;
     HardwareMap hmap;
@@ -47,7 +51,6 @@ public class DriveSubsystem extends SubsystemBase {
         DD = DD * valueEncoderD;
     }
     private void calculateAngleRadiant() {
-        double DL = 17;
         angle = (DD - DG)/DL;
         vieuxAngle += angle;
         if (vieuxAngle > Math.PI){

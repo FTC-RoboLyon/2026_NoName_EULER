@@ -8,7 +8,7 @@ public class Constante_shooter {
     public static String SHOOTER = "shooter", VISEUR = "viseur";
 
     public static double ShooterKP= 0.005, ShooterKI = 0.0, ShooterKD = 0.005, ShooterKF = 0.003825; //TUNEME
-    public static double ShooterKP_velo= 100, ShooterKI_velo = 0.5, ShooterKD_velo = 0, ShooterKF_velo = 16; //TUNEME
+    public static double ShooterKP_velo= 900, ShooterKI_velo = 0, ShooterKD_velo = 0, ShooterKF_velo = 16; //TUNEME
 
     public  static  double shooter_velo_tolerance = 100; //Tunme
     public  static  double shooter_timestamp = 20; //Tunme

@@ -78,7 +78,7 @@ public class Flywheel_PID_Tuner extends OpMode {
     public void loop() {
         viseur.setPosition(viseur_pos);
 
-        if (gamepad1.x) {
+        if (gamepad1.xWasPressed()) {
             motorsRunning = !motorsRunning;
             if (motorsRunning) {
                 runtime.reset();
@@ -86,7 +86,7 @@ public class Flywheel_PID_Tuner extends OpMode {
             }
         }
 
-        if (gamepad1.y) {
+        if (gamepad1.yWasPressed()) {
             curTargetVelocity = (curTargetVelocity == highVelocity) ? lowVelocity : highVelocity;
             resetMetrics();
         }

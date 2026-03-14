@@ -14,8 +14,9 @@ import FRC_ALDNC.Auto.Constant;
 public class DriveSubsystem extends SubsystemBase {
     private double left_motor_power, right_motor_power, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,  angleDegrees, DG, DD, h;
     public double  x, y, angle, forward, turn;
-    private double erreurAngle, pAngle = 0.0001, targetAngle;
-    private double targetVelo, erreurVelo, pVelo = 0.000000005;
+    private double erreurAngle, pAngle = 0.7, targetAngle, pDistance = 0.01, erreurDistance, valeurQuOnVaRajouterAuxValeursDuTurnPourQuIlAvanceVersLaTarget;
+    double CPR = 8192,diametre = 7.27,DL = 16.21;
+
     private final
     DcMotorEx motorRight, motorLeft;
     HardwareMap hmap;
@@ -42,15 +43,12 @@ public class DriveSubsystem extends SubsystemBase {
         vielleValueG = motorLeft.getCurrentPosition();
     }
     private void calculateDistanceGetD() {
-        double CPR = 8192;
-        double diametre = 7.27;
         DG = Math.PI * diametre / CPR;
         DG = DG * valueEncoderG;
         DD = Math.PI * diametre / CPR;
         DD = DD * valueEncoderD;
     }
     private void calculateAngleRadiant() {
-        double DL = 16.21;
         angle = (DD - DG)/DL;
         vieuxAngle += angle;
         if (vieuxAngle > Math.PI){
@@ -72,8 +70,7 @@ public class DriveSubsystem extends SubsystemBase {
         telemetry.addData("x", vieuxX);
         telemetry.addData("y", vieuxY);
         telemetry.addData("angle", angleDegrees);
-        telemetry.addData("jambe gauche", motorLeft.getCurrentPosition());
-        telemetry.addData("jambe droite", motorRight.getCurrentPosition());
+        telemetry.addData("targetAngle", targetAngle);
         telemetry.update();
     }
     public void odometrie(){
@@ -90,18 +87,29 @@ public class DriveSubsystem extends SubsystemBase {
         left_motor_power = forward+turn;
     }
     public void goAngle(double x, double y){
-        if(y >= 0 && x >= 0){
-            targetAngle = Math.atan(y/x);
-        }else if(){}
+        y -= vieuxY;
+        x -= vieuxX;
+        targetAngle = Math.atan2(y ,x);
         erreurAngle = targetAngle - vieuxAngle;
+        if(erreurAngle > Math.PI)
+            erreurAngle -= 2*Math.PI;
+
+        if(erreurAngle < -Math.PI)
+            erreurAngle += 2*Math.PI;
         right_motor_power = erreurAngle*pAngle;
         left_motor_power = -right_motor_power;
-        targetVelo = right_motor_power*22000;
-        erreurVelo = motorRight.getVelocity()-targetVelo;
-        right_motor_power = -targetVelo+erreurVelo*pVelo;
-        left_motor_power = -right_motor_power;
     }
-    public void goPos(){
+    public void goPos(double x, double y){
+        x -= vieuxX;
+        y -= vieuxY;
+        erreurDistance = Math.sqrt(x*x+y*y);
+        valeurQuOnVaRajouterAuxValeursDuTurnPourQuIlAvanceVersLaTarget = erreurDistance*pDistance;
+        if(valeurQuOnVaRajouterAuxValeursDuTurnPourQuIlAvanceVersLaTarget > 0.8){
+            valeurQuOnVaRajouterAuxValeursDuTurnPourQuIlAvanceVersLaTarget = 0.8;
+        }// je la bloque à 0.8 parce que si elle est tout le temps à 1, ca va écraser les valeurs du turn et il tournera juste pas
+        // en plus avec notre roue de gauche qui va à 2 à l'heure c'est grave important
+        right_motor_power += valeurQuOnVaRajouterAuxValeursDuTurnPourQuIlAvanceVersLaTarget;
+        left_motor_power += right_motor_power;
     }
     @Override
     public void periodic(){

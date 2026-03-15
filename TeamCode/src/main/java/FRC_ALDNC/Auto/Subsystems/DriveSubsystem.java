@@ -12,9 +12,9 @@ import org.opencv.core.Mat;
 
 import FRC_ALDNC.Auto.Constant;
 public class DriveSubsystem extends SubsystemBase {
-    private double left_motor_power, right_motor_power, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,  angleDegrees, DG, DD, h;
-    public double  x, y, angle, forward, turn;
-    private double erreurAngle, pAngle = 0.7, targetAngle, pDistance = 0.01, erreurDistance, valeurQuOnVaRajouterAuxValeursDuTurnPourQuIlAvanceVersLaTarget;
+    private double  valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,  angleDegrees, DG, DD, h;
+    public double  x, y, angle, forward, turn, left_motor_power, right_motor_power;
+    private double erreurAngle, pAngle = 0.7, targetAngle, pDistance = 0.01;
     double CPR = 8192,diametre = 7.27,DL = 16.21;
 
     private final
@@ -99,17 +99,39 @@ public class DriveSubsystem extends SubsystemBase {
         right_motor_power = erreurAngle*pAngle;
         left_motor_power = -right_motor_power;
     }
-    public void goPos(double x, double y){
-        x -= vieuxX;
-        y -= vieuxY;
-        erreurDistance = Math.sqrt(x*x+y*y);
-        valeurQuOnVaRajouterAuxValeursDuTurnPourQuIlAvanceVersLaTarget = erreurDistance*pDistance;
-        if(valeurQuOnVaRajouterAuxValeursDuTurnPourQuIlAvanceVersLaTarget > 0.8){
-            valeurQuOnVaRajouterAuxValeursDuTurnPourQuIlAvanceVersLaTarget = 0.8;
-        }// je la bloque à 0.8 parce que si elle est tout le temps à 1, ca va écraser les valeurs du turn et il tournera juste pas
-        // en plus avec notre roue de gauche qui va à 2 à l'heure c'est grave important
-        right_motor_power += valeurQuOnVaRajouterAuxValeursDuTurnPourQuIlAvanceVersLaTarget;
-        left_motor_power += right_motor_power;
+    public void goPos(double targetX, double targetY){
+        double dx = targetX - vieuxX;
+        double dy = targetY - vieuxY;
+
+        double distance = Math.sqrt(dx*dx + dy*dy);
+
+        double targetAngleToPos = Math.atan2(dy, dx);
+
+        double angleDiff = targetAngleToPos - vieuxAngle;
+        while(angleDiff > Math.PI) angleDiff -= 2*Math.PI;
+        while(angleDiff < -Math.PI) angleDiff += 2*Math.PI;
+
+        double directionMultiplier = 1.0;
+        if(Math.abs(angleDiff) > Math.PI/2){
+            directionMultiplier = -1.0;
+            angleDiff = angleDiff > 0 ? angleDiff - Math.PI : angleDiff + Math.PI;
+        }
+
+        double vitesseDistance = distance * pDistance;
+        if(vitesseDistance > 0.8) vitesseDistance = 0.8;
+
+        double turn = angleDiff * pAngle;
+
+        right_motor_power = directionMultiplier * vitesseDistance - turn;
+        left_motor_power  = directionMultiplier * vitesseDistance + turn;
+    }
+    public double getDistanceTo(double targetX, double targetY){
+        double dx = targetX - vieuxX;
+        double dy = targetY - vieuxY;
+        return Math.sqrt(dx*dx + dy*dy);
+    }
+    public double getAngleTo(){
+        return erreurAngle;
     }
     @Override
     public void periodic(){

@@ -8,9 +8,10 @@ import FRC_ALDNC.Auto.Subsystems.intakeSubsystem;
 public class intakeCommand extends CommandBase {
     intakeSubsystem intakeSubsystem;
     Gamepad gamepad1;
-    enum intakage{OUI, NON, WAIT}
+    public enum intakage{OUI, NON, WAIT}
     intakage mode;
-    public intakeCommand(intakeSubsystem intakeSubsystem, Gamepad gamepad1){
+    public intakeCommand(intakeSubsystem intakeSubsystem, Gamepad gamepad1, intakage mode){
+        this.mode = mode;
         this.intakeSubsystem = intakeSubsystem;
         this.gamepad1 = gamepad1;
         addRequirements(intakeSubsystem);

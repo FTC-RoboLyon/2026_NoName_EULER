@@ -37,11 +37,8 @@ public class DriveCommand extends CommandBase {
         }
         switch(mode){
             case GoPos:
-                driveSubsystem.goAngle(x,y);
                 driveSubsystem.goPos(x,y);
                 break;
-                // ya pas de break exprès
-                //Parce que d'apres victor maintenant il faut que le code soit lisible et compréhensible
             case GoAngle:
                 driveSubsystem.goAngle(x,y);
                 break;
@@ -49,5 +46,19 @@ public class DriveCommand extends CommandBase {
         telemetry.addData("targetX", x);
         telemetry.addData("targetY", y);
 
+    }
+    @Override
+    public boolean isFinished(){
+      if(mode == driveMode.GoAngle){
+          return driveSubsystem.getAngleTo() < 0.01;
+      }else {
+          return driveSubsystem.getDistanceTo(x,y) < 1;
+      }
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        driveSubsystem.right_motor_power = 0;
+        driveSubsystem.left_motor_power = 0;
     }
 }

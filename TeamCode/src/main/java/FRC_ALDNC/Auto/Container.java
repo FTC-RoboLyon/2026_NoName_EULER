@@ -1,12 +1,15 @@
 package FRC_ALDNC.Auto;
 
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import FRC_ALDNC.Auto.Command.DriveCommand;
+import FRC_ALDNC.Auto.Command.ShooterCommand;
 import FRC_ALDNC.Auto.Subsystems.DriveSubsystem;
+import FRC_ALDNC.Auto.Subsystems.ShooterSubsystem;
 import FRC_ALDNC.Auto.Subsystems.intakeSubsystem;
 import FRC_ALDNC.Auto.Command.intakeCommand;
 
@@ -17,6 +20,7 @@ public class Container{
     Telemetry telemetry;
     DriveSubsystem driveSubsystem;
     intakeSubsystem intakeSubsystem;
+    ShooterSubsystem shooterSubsystem;
     public Container(HardwareMap hamp, Telemetry telemetry, Gamepad gamepad1){
         this.telemetry = telemetry;
         this.hmap = hamp;
@@ -24,5 +28,8 @@ public class Container{
         driveSubsystem = new DriveSubsystem(hmap, telemetry);
         driveSubsystem.setDefaultCommand(new DriveCommand(driveSubsystem, manette, telemetry, DriveCommand.driveMode.GoAngle, 0.0,0.0));
         intakeSubsystem = new intakeSubsystem(hamp, manette);
+        driveSubsystem.setDefaultCommand(new intakeCommand(intakeSubsystem, manette, intakeCommand.intakage.NON));
+        shooterSubsystem = new ShooterSubsystem(hmap);
+        shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem, ShooterCommand.shooterState.Mid));
     }
 }

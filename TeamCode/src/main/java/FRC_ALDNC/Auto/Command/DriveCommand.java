@@ -9,7 +9,6 @@ import FRC_ALDNC.Auto.Subsystems.DriveSubsystem;
 
 public class DriveCommand extends CommandBase {
     private double x, y;
-    String variableSwitch;
     Gamepad gamepad1;
     Telemetry telemetry;
     DriveSubsystem driveSubsystem;
@@ -26,15 +25,6 @@ public class DriveCommand extends CommandBase {
     }
     @Override
     public void execute(){
-        if (gamepad1.xWasPressed()){
-            x -= 1;
-        }else if(gamepad1.bWasPressed()){
-            x += 1;
-        }else if(gamepad1.yWasPressed()){
-            y += 1;
-        }else if(gamepad1.aWasPressed()){
-            y -= 1;
-        }
         switch(mode){
             case GoPos:
                 driveSubsystem.goPos(x,y);

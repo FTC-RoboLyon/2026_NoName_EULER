@@ -14,14 +14,16 @@ import FRC_ALDNC.Auto.Constant;
 public class DriveSubsystem extends SubsystemBase {
     private double  valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,  angleDegrees, DG, DD, h;
     public double  x, y, angle, forward, turn, left_motor_power, right_motor_power;
-    private double erreurAngle, pAngle = 0.7, targetAngle, pDistance = 0.01;
+    private double erreurAngle, pAngle = 2.0, targetAngle, pDistance = 0.07;
     double CPR = 8192,diametre = 7.27,DL = 16.21;
 
     private final
     DcMotorEx motorRight, motorLeft;
     HardwareMap hmap;
     Telemetry telemetry;
-    public DriveSubsystem(HardwareMap hmap, Telemetry telemetry){
+    public DriveSubsystem(HardwareMap hmap, Telemetry telemetry, double xDepart, double yDepart){
+        vieuxX = xDepart;
+        vieuxY = yDepart;
         this.telemetry = telemetry;
         this.hmap = hmap;
         motorRight = hmap.get(DcMotorEx.class, Constant.RIGHT_MOTOR);
@@ -70,7 +72,7 @@ public class DriveSubsystem extends SubsystemBase {
         telemetry.addData("x", vieuxX);
         telemetry.addData("y", vieuxY);
         telemetry.addData("angle", angleDegrees);
-        telemetry.addData("targetAngle", targetAngle);
+        telemetry.addData("targetAngle", Math.toDegrees(targetAngle));
         telemetry.update();
     }
     public void odometrie(){
@@ -80,12 +82,6 @@ public class DriveSubsystem extends SubsystemBase {
         calculateXY();
         telemetrieOdometrie();
     }
-    public void drive(Gamepad gamepad1){
-        forward = -gamepad1.left_stick_y;
-        turn = gamepad1.right_stick_x;
-        right_motor_power = forward-turn;
-        left_motor_power = forward+turn;
-    }
     public void goAngle(double x, double y){
         y -= vieuxY;
         x -= vieuxX;
@@ -93,10 +89,11 @@ public class DriveSubsystem extends SubsystemBase {
         erreurAngle = targetAngle - vieuxAngle;
         if(erreurAngle > Math.PI)
             erreurAngle -= 2*Math.PI;
-
-        if(erreurAngle < -Math.PI)
+        else if(erreurAngle < -Math.PI)
             erreurAngle += 2*Math.PI;
-        right_motor_power = erreurAngle*pAngle;
+        double turn = -erreurAngle*pAngle;
+        if(turn > 0.3)turn = 0.3;
+        right_motor_power = turn;
         left_motor_power = -right_motor_power;
     }
     public void goPos(double targetX, double targetY){
@@ -118,9 +115,10 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         double vitesseDistance = distance * pDistance;
-        if(vitesseDistance > 0.8) vitesseDistance = 0.8;
+        if(vitesseDistance > 0.5) vitesseDistance = 0.5;
 
         double turn = angleDiff * pAngle;
+        if(turn > 0.3) turn = 0.3;
 
         right_motor_power = directionMultiplier * vitesseDistance - turn;
         left_motor_power  = directionMultiplier * vitesseDistance + turn;

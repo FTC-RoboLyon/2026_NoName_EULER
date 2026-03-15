@@ -10,11 +10,12 @@ import FRC_ALDNC.Auto.Container;
 public class Programme_Auto extends CommandOpMode {
 
     Container container;
+    private double xDepart = 28, yDepart = 39;
 
     @Override
     public void initialize() {
 
-        container = new Container(hardwareMap, telemetry, gamepad1);
+        container = new Container(hardwareMap, telemetry, gamepad1, xDepart, yDepart);
 
     }
 }

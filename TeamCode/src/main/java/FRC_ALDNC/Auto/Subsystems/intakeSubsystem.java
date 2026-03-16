@@ -9,14 +9,16 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class intakeSubsystem extends SubsystemBase {
     HardwareMap hmap;
-    Gamepad gamepad1;
     private double powerIntake;
     DcMotorEx motorIntake;
-    public intakeSubsystem(HardwareMap hmap, Gamepad gamepad1){
+    Telemetry telemetry;
+    public intakeSubsystem(HardwareMap hmap, Telemetry telemetry){
+        this.telemetry = telemetry;
         this.hmap = hmap;
-        this.gamepad1 = gamepad1;
         motorIntake = hmap.get(DcMotorEx.class, Constant.INTAKE);
         motorIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorIntake.setDirection(DcMotorSimple.Direction.FORWARD);

@@ -3,8 +3,8 @@ package FRC_ALDNC.SubSystem;
 import android.util.Size;
 
 //import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+//import com.acmerobotics.dashboard.FtcDashboard;
+//import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -32,12 +32,12 @@ public class Camera_subsystem extends SubsystemBase {
     }
     public Camera_mode cameraMode = Camera_mode.Lock_in;
     public Telemetry telemetry;
-    public FtcDashboard dashboard;
+    //public FtcDashboard dashboard;
     public Camera_subsystem(HardwareMap hardware, int wanted_id, Telemetry telemetry){
         this(hardware, wanted_id, Camera_mode.Lock_in,telemetry);
     }
     public Camera_subsystem(HardwareMap hardware, int wanted_id, Camera_mode cameraMode1, Telemetry telemetry) {
-        dashboard = FtcDashboard.getInstance();
+        //dashboard = FtcDashboard.getInstance();
 
         this.wanted_id = wanted_id;
         this.telemetry = telemetry;
@@ -59,7 +59,7 @@ public class Camera_subsystem extends SubsystemBase {
         builder.addProcessor(aprilTag);
         visionPortal = builder.build();
         visionPortal.setProcessorEnabled(aprilTag, true);
-        FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
+        //FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
 
 
 
@@ -67,7 +67,7 @@ public class Camera_subsystem extends SubsystemBase {
     }
     public void setCameraMode(Camera_mode camera_mode){cameraMode = camera_mode;}
     public double getBearing() {
-        if (actual_detection == null) return 0; // Aucun tag trouvé
+        if (actual_detection == null) return 100000; // Aucun tag trouvé
         int imageWidth = 1920;
         return (actual_detection.ftcPose.bearing);
     }
@@ -84,8 +84,8 @@ public class Camera_subsystem extends SubsystemBase {
     }
     public void telemetry(){
         telemetry.addData("# AprilTags Detected", detections.size());
-        TelemetryPacket mon_ptit_truc = new TelemetryPacket();
-        mon_ptit_truc.put("# AprilTags Detected", detections.size());
+        //TelemetryPacket mon_ptit_truc = new TelemetryPacket();
+        //mon_ptit_truc.put("# AprilTags Detected", detections.size());
 
 
         // Step through the list of detections and display info for each one.
@@ -96,10 +96,10 @@ public class Camera_subsystem extends SubsystemBase {
                 telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
                 telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
 
-                mon_ptit_truc.put("distance to goal ", detection.ftcPose.y);
+                //mon_ptit_truc.put("distance to goal ", detection.ftcPose.y);
 
                 ;
-                dashboard.sendTelemetryPacket(mon_ptit_truc);
+                //dashboard.sendTelemetryPacket(mon_ptit_truc);
             } else {
                 telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
                 telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));

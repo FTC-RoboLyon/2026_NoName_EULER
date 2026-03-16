@@ -21,7 +21,8 @@ public class DriveSubsystem extends SubsystemBase {
     DcMotorEx motorRight, motorLeft;
     HardwareMap hmap;
     Telemetry telemetry;
-    public DriveSubsystem(HardwareMap hmap, Telemetry telemetry, double xDepart, double yDepart){
+    public DriveSubsystem(HardwareMap hmap, Telemetry telemetry, double xDepart, double yDepart, double angleDepart){
+        vieuxAngle = angleDepart;
         vieuxX = xDepart;
         vieuxY = yDepart;
         this.telemetry = telemetry;
@@ -92,7 +93,7 @@ public class DriveSubsystem extends SubsystemBase {
         else if(erreurAngle < -Math.PI)
             erreurAngle += 2*Math.PI;
         double turn = -erreurAngle*pAngle;
-        if(turn > 0.3)turn = 0.3;
+        if(turn > 0.2)turn = 0.2;
         right_motor_power = turn;
         left_motor_power = -right_motor_power;
     }
@@ -130,6 +131,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
     public double getAngleTo(){
         return erreurAngle;
+    }
+    public void drive(double forward, double turn){
+        right_motor_power = -forward-turn;
+        left_motor_power = -forward+turn;
     }
     @Override
     public void periodic(){

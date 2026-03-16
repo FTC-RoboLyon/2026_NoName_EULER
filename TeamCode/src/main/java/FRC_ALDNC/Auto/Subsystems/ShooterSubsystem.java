@@ -51,6 +51,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
         lastVelocity = currentVelocity;
     }
+    public boolean bonneVitesseOuPas(){
+        return shooter.getVelocity() - veloShooter <= 20 && shooter.getVelocity()-veloShooter >= 0;
+    }
     public int getBallCount(){
         return ballCount;
     }

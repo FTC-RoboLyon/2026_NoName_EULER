@@ -4,8 +4,8 @@ import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ff_rotation;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.p_rotation;
 import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.tolerence_rotation;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+//import com.acmerobotics.dashboard.FtcDashboard;
+//import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import java.util.function.DoubleSupplier;
@@ -26,7 +26,7 @@ public class AlignToTarget extends CommandBase {
     double erreurPos = 2;
     private DoubleSupplier forward;
     private DoubleSupplier turn;
-    FtcDashboard dash = FtcDashboard.getInstance();
+    //FtcDashboard dash = FtcDashboard.getInstance();
 
 
     public AlignToTarget(Drive_Train drive,
@@ -53,7 +53,7 @@ public class AlignToTarget extends CommandBase {
     @Override
     public void execute() {
 
-        erreurPos = camera.getBearing() * ff_rotation;
+        erreurPos = camera.getBearing() == 100000? erreurPos : camera.getBearing() * ff_rotation;
 
         if (Math.abs(erreurPos) < tolerence_rotation) {
             erreurPos = 2;
@@ -62,9 +62,9 @@ public class AlignToTarget extends CommandBase {
         double turn = -Math.max(-0.3, Math.min(0.3, erreurPos * p_rotation));
 
         drive.drive(forward.getAsDouble()/1.3, turn + this.turn.getAsDouble()/1.3);
-        TelemetryPacket pack = new TelemetryPacket();
-        pack.put("erreur alignement : ", erreurPos);
-        dash.sendTelemetryPacket(pack);
+        //TelemetryPacket pack = new TelemetryPacket();
+        //pack.put("erreur alignement : ", erreurPos);
+        //dash.sendTelemetryPacket(pack);
         //caa
     }
 
@@ -77,8 +77,8 @@ public class AlignToTarget extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        TelemetryPacket pack = new TelemetryPacket();
-        pack.addLine("I'm done");
-        dash.sendTelemetryPacket(pack);
+        //TelemetryPacket pack = new TelemetryPacket();
+        //pack.addLine("I'm done");
+        //dash.sendTelemetryPacket(pack);
     }
 }

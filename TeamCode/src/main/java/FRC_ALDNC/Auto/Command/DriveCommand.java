@@ -6,20 +6,27 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import FRC_ALDNC.Auto.Subsystems.DriveSubsystem;
+import FRC_ALDNC.Auto.Subsystems.NavXSubsystem;
 
 public class DriveCommand extends CommandBase {
     private double x, y;
     Telemetry telemetry;
     DriveSubsystem driveSubsystem;
+    NavXSubsystem navx;
     public enum driveMode{ GoPos, GoAngle }
     driveMode mode;
-    public DriveCommand(DriveSubsystem driveSubsystem, Telemetry telemetry, driveMode mode, double x, double y) {
+    public DriveCommand(NavXSubsystem navx, DriveSubsystem driveSubsystem, Telemetry telemetry, driveMode mode, double x, double y) {
+        this.navx = navx;
         this.x = x;
         this.y = y;
         this.mode = mode;
         this.telemetry = telemetry;
         this.driveSubsystem = driveSubsystem;
         addRequirements(driveSubsystem);
+    }
+    @Override
+    public void initialize(){
+        navx.reset_A_MettreDans_L_Init();
     }
     @Override
     public void execute(){

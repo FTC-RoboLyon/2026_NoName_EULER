@@ -21,7 +21,9 @@ public class DriveSubsystem extends SubsystemBase {
     DcMotorEx motorRight, motorLeft;
     HardwareMap hmap;
     Telemetry telemetry;
-    public DriveSubsystem(HardwareMap hmap, Telemetry telemetry, double xDepart, double yDepart, double angleDepart){
+    NavXSubsystem navx;
+    public DriveSubsystem(NavXSubsystem navx,HardwareMap hmap, Telemetry telemetry, double xDepart, double yDepart, double angleDepart){
+        this.navx = navx;
         vieuxAngle = angleDepart;
         vieuxX = xDepart;
         vieuxY = yDepart;
@@ -52,8 +54,7 @@ public class DriveSubsystem extends SubsystemBase {
         DD = DD * valueEncoderD;
     }
     private void calculateAngleRadiant() {
-        angle = (DD - DG)/DL;
-        vieuxAngle += angle;
+        vieuxAngle = navx.getAngle();
         if (vieuxAngle > Math.PI){
             vieuxAngle -= 2*Math.PI;
         }
@@ -93,7 +94,7 @@ public class DriveSubsystem extends SubsystemBase {
         else if(erreurAngle < -Math.PI)
             erreurAngle += 2*Math.PI;
         double turn = -erreurAngle*pAngle;
-        if(turn > 0.2)turn = 0.2;
+        if(turn > 0.8)turn = 0.8;
         right_motor_power = turn;
         left_motor_power = -right_motor_power;
     }
@@ -116,10 +117,9 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         double vitesseDistance = distance * pDistance;
-        if(vitesseDistance > 0.5) vitesseDistance = 0.5;
+        if(vitesseDistance > 0.8) vitesseDistance = 0.8;
 
         double turn = angleDiff * pAngle;
-        if(turn > 0.3) turn = 0.3;
 
         right_motor_power = directionMultiplier * vitesseDistance - turn;
         left_motor_power  = directionMultiplier * vitesseDistance + turn;

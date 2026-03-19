@@ -68,15 +68,27 @@ public class ALDNC_container{
 
     public double x,y;
 
+    public DoubleSupplier diStance_to_goal;
+
     public ALDNC_container (HardwareMap hmap, RobotMode wich_programme, GamepadEx gamepad, Telemetry telemetry){
         team_and_mode = wich_programme;
         is_inTeleop = team_and_mode == RobotMode.TELEOP_RED || team_and_mode == RobotMode.TELEOP_BLUE;
+        apriljoke = new Camera_subsystem(hmap, wich_programme == RobotMode.TELEOP_RED || wich_programme == RobotMode.AUTO_RED ? 24 : 20, telemetry);
+        diStance_to_goal = new DoubleSupplier() {
+            @Override
+            public double getAsDouble() {
+                if (apriljoke.getActual_detection() != null)
+                    return apriljoke.getActual_detection().ftcPose.y;
+                return 0;
+            }
+        };
+
 
 
         chassis_subsystem = new Drive_Train(hmap, telemetry, x, y, this);
 
 
-        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this, !is_inTeleop);
+        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this, !is_inTeleop, diStance_to_goal);
 
 
 
@@ -93,7 +105,6 @@ public class ALDNC_container{
         turn = () -> right_joystick.getY();
 
 
-        apriljoke = new Camera_subsystem(hmap, wich_programme == RobotMode.TELEOP_RED || wich_programme == RobotMode.AUTO_RED ? 24 : 20, telemetry);
 
 
 
@@ -124,6 +135,8 @@ public class ALDNC_container{
 
 //
     }
+
+
     public final void Determinate_order(Artefact_order order){
         actual_artefact_order = order;
     }
@@ -150,29 +163,29 @@ public class ALDNC_container{
             Button splus_velo,
             Button sminus_velo){
 
-        feeder_button.whenPressed(new Shoot_a_ball_command(feeder, shooter_subsystem, telemetry));
-        feeder_button.whenReleased(new Let_a_ball_pass(feeder, telemetry));
+        feeder_button.whenPressed(new Shoot_a_ball_command(feeder, shooter_subsystem));
+        feeder_button.whenReleased(new Let_a_ball_pass(feeder));
 
-        intake_button.whenPressed(new Collect_command(intake, Intake_subsystem.WantedState.COLLECT, telemetry));
-        intake_button.whenReleased(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY, telemetry));
+        intake_button.whenPressed(new Collect_command(intake, Intake_subsystem.WantedState.COLLECT));
+        intake_button.whenReleased(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
 
-        shoot_bank_button.toggleWhenPressed(new Configure_shooter(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.SHOOT_BANK, true, telemetry));
+        shoot_bank_button.toggleWhenPressed(new Configure_shooter(shooter_subsystem,Shooter_Subsystem.WantedState.SHOOT_BANK, true));
         //shoot_bank_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
-        shoot_mid_button.toggleWhenPressed(new Configure_shooter(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.SHOOT_MID, true, telemetry));
+        shoot_mid_button.toggleWhenPressed(new Configure_shooter(shooter_subsystem,Shooter_Subsystem.WantedState.SHOOT_MID, true));
         //shoot_mid_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
-        shoot_far_butto.toggleWhenPressed(new Configure_shooter(shooter_subsystem, apriljoke, Shooter_Subsystem.WantedState.SHOOT_FAR, true, telemetry));
+        shoot_far_butto.toggleWhenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.SHOOT_FAR, true));
         //shoot_far_butto.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
 
-        aspirer_button.toggleWhenPressed(new Stop_shooter(shooter_subsystem, telemetry));
+        aspirer_button.toggleWhenPressed(new Stop_shooter(shooter_subsystem));
         //aspirer_button.whenReleased(new Configure_shooter_with_toggle(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.WAIT));
 
-        eject_button.whenActive(new Collect_command(intake, Intake_subsystem.WantedState.EJECT, telemetry));
-        eject_button.whenInactive(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY, telemetry));
+        eject_button.whenActive(new Collect_command(intake, Intake_subsystem.WantedState.EJECT));
+        eject_button.whenInactive(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
 
-        aspirer_button.whenActive(new Configure_shooter(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.SHOOT_BANK, false, telemetry));
-        aspirer_button.whenInactive(new Stop_shooter(shooter_subsystem, telemetry));
+        aspirer_button.whenActive(new Configure_shooter(shooter_subsystem,Shooter_Subsystem.WantedState.SHOOT_BANK, false));
+        aspirer_button.whenInactive(new Stop_shooter(shooter_subsystem));
 
         plus_velo.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(10)));
         splus_velo.whenActive(new InstantCommand(()-> shooter_subsystem.change_velo(50)));
@@ -188,7 +201,7 @@ public class ALDNC_container{
         sminus_viseur.whenActive(new InstantCommand(()-> shooter_subsystem.change_visage(-0.05)));
 
 
-        reglage_shooter.toggleWhenPressed(new Configure_shooter(shooter_subsystem, apriljoke, Shooter_Subsystem.WantedState.AUTO, true, telemetry));
+        reglage_shooter.toggleWhenPressed(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.AUTO, true));
 
 
 

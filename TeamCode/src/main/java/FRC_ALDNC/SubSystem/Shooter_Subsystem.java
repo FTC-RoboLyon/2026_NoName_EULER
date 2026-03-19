@@ -1,24 +1,24 @@
 package FRC_ALDNC.SubSystem;
 
-import static FRC_ALDNC.CONSTANT.Constante_shooter.SHOOTER;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.ShooterKD;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.ShooterKD_velo;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.ShooterKF;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.ShooterKF_velo;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.ShooterKI;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.ShooterKI_velo;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.ShooterKP;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.ShooterKP_velo;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.VISEUR;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.posviseur_bank;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.posviseur_far;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.posviseur_mid;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.seuil_volt_shooter;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.shooter_aspirage_puissance;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.shooter_velo_tolerance;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.velo_shoot_bank;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.velo_shoot_far;
-import static FRC_ALDNC.CONSTANT.Constante_shooter.velo_shoot_mid;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.SHOOTER;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKD;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKD_velo;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKF;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKF_velo;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKI;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKI_velo;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKP;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ShooterKP_velo;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.VISEUR;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posviseur_bank;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posviseur_far;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.posviseur_mid;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.seuil_volt_shooter;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.shooter_aspirage_puissance;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.shooter_velo_tolerance;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_bank;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_far;
+import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.velo_shoot_mid;
 
 /*import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -27,9 +27,11 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -37,10 +39,12 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import java.util.function.DoubleSupplier;
 
 import FRC_ALDNC.ALDNC_container;
 import lib.Dashboard;
@@ -51,6 +55,8 @@ import lib.Utils;
 public class Shooter_Subsystem extends SubsystemBase {
     public DcMotorEx shooter;
     public Servo viseur;
+    public CRServo pont;
+
     public Telemetry telemetry;
     public FtcDashboard dashboard;
     PIDFCoefficients pidf = new PIDFCoefficients(p, i, d, f);
@@ -58,7 +64,6 @@ public class Shooter_Subsystem extends SubsystemBase {
     private static double i = 0.0;
     private static double d = 0.0;
     public static double f = 0.00509493117974126;
-    private static ElapsedTime pid_timer;
 
     public static double veloShooter = velo_shoot_mid, current_shoot_velo, veloShooter_auto;
     public static double posviseur = posviseur_mid, current_viseur_pos, posviseur_auto;
@@ -86,30 +91,61 @@ public class Shooter_Subsystem extends SubsystemBase {
     public static double Pow_shoot;
     public static PID_shooter shooter_pidf;
     public boolean inauto;
-    InterpLUT test;
+    InterpLUT met_la_moi_profond;
+    InterpLUT apprend_a_viser;
+
     private ALDNC_container robot;
-    public Shooter_Subsystem (HardwareMap hmap, Telemetry telemetry, ALDNC_container RoBot, boolean auto){
+    public DoubleSupplier distance_To_goal;
+
+    public Shooter_Subsystem (HardwareMap hmap, Telemetry telemetry, ALDNC_container RoBot, boolean auto, DoubleSupplier distance_to_goal){
+        distance_To_goal = distance_to_goal;
+
         inauto = auto;
         robot = RoBot;
         shooter_pidf = new PID_shooter(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
         shooter_pidf.SetTolerance(shooter_velo_tolerance);
-        pid_timer = new ElapsedTime();
 
-        test = new InterpLUT();
+        met_la_moi_profond = new InterpLUT();
+        apprend_a_viser = new InterpLUT();
+
         dashboard = FtcDashboard.getInstance();
         shooter = hmap.get(DcMotorEx.class, SHOOTER);
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooter.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
 
 
         viseur = hmap.get(Servo.class, VISEUR);
+        pont = hmap.get(CRServo.class, "chemin");
 
         this.telemetry = telemetry;
 
         voltageSensor = hmap.get(VoltageSensor.class, "Control Hub");
 
+    }
+    void apprend_a_viser(){
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+
+        apprend_a_viser.add(0,0);
+        apprend_a_viser.add(0,0);
+        apprend_a_viser.add(0,0);
+        apprend_a_viser.add(0,0);
+        apprend_a_viser.add(0,0);
+        apprend_a_viser.add(0,0);
+        apprend_a_viser.add(0,0);
+        apprend_a_viser.add(0,0);
+        apprend_a_viser.add(0,0);
+        apprend_a_viser.add(0,0);
     }
     public void update_input(){
         current_shoot_velo = shooter.getVelocity();
@@ -163,7 +199,9 @@ public class Shooter_Subsystem extends SubsystemBase {
                 }
 
             case AUTO:
+                calculate_postir(distance_To_goal.getAsDouble());
                 veloShooter = veloShooter_auto;
+                posviseur = posviseur_auto;
                 if (sysState != SystemState.READY_TO_SHOOT)
                 {
                     sysState = SystemState.PREPARING_TO_SHOOT;
@@ -211,13 +249,15 @@ public class Shooter_Subsystem extends SubsystemBase {
                 break;
 
             case ASPIRER:
+                pont.setPower(-1);
                 shooter.setVelocity(shooter_aspirage_puissance);
                 viseur.setPosition(1);
                 break;
             case PREPARING_TO_SHOOT:
+                pont.setPower(1);
                 viseur.setPosition(posviseur);
+                //setPower_voltage_PIDF();
                 shooter.setVelocity(veloShooter);
-                //shooter.setVelocity(veloShooter);
                 break;
             case READY_TO_SHOOT:
                 break;
@@ -246,19 +286,19 @@ public class Shooter_Subsystem extends SubsystemBase {
         }
     }
     public void updatePID(){
-        //shooter_pidf.SetGains(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
-        //shooter_pidf.SetTolerance(shooter_velo_tolerance);
-        //shooter_pidf.set_dt(pid_timer.milliseconds());
-        //pid_timer.reset();
+        shooter_pidf.SetGains(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
+        shooter_pidf.SetTolerance(shooter_velo_tolerance);
 
         pidf = new PIDFCoefficients(ShooterKP_velo, ShooterKI_velo, ShooterKD_velo, voltage != 0 ? ShooterKF_velo * (12/voltage) : ShooterKF_velo);
-        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+        //shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
     }
 
     public void calculate_postir(double distance_to_goal){
-        veloShooter_auto = (5.79573 * Math.pow(10, -7)) * Math.pow(distance_to_goal, 4) -0.000496167 * Math.pow(distance_to_goal, 3) +0.147211 * Math.pow(distance_to_goal, 2) -15.11259*distance_to_goal +1449.64095;//Definis moi ca
+        //veloShooter_auto = (5.79573 * Math.pow(10, -7)) * Math.pow(distance_to_goal, 4) -0.000496167 * Math.pow(distance_to_goal, 3) +0.147211 * Math.pow(distance_to_goal, 2) -15.11259*distance_to_goal +1449.64095;//Definis moi ca
         //posviseur_auto = -0.00168518*distance_to_goal +1.01528;
         //posviseur_auto = -(1.64249*Math.pow(10, -9)) * Math.pow(distance_to_goal, 4)+0.00000128437 * Math.pow(distance_to_goal, 3) -0.000335487 * Math.pow(distance_to_goal, 2) +0.0312942 * distance_to_goal +0.0758803;
+        veloShooter_auto = met_la_moi_profond.get(distance_to_goal);
+        posviseur_auto = apprend_a_viser.get(distance_to_goal);
     }
     public boolean has_shoot () {
         return sysState == SystemState.READY_TO_SHOOT && !Utils.IsInRange(current_shoot_velo, veloShooter, shooter_velo_tolerance);
@@ -285,7 +325,6 @@ public class Shooter_Subsystem extends SubsystemBase {
         telemetry.addData("valeur retourné par le pidf", shooter_pidf.calculateInternal(shooter.getVelocity()));
 //
         telemetry.update();
-
 
     }
 }

@@ -24,16 +24,16 @@ public class Shoot_auto extends SequentialCommandGroup {
                        Feeder_subsystem feederSubsystem,
                        Shooter_Subsystem.WantedState postir,
                        Intake_subsystem intake, Drive_Train chassis,
-                       Camera_subsystem cam ,Telemetry telemetry){
+                       Camera_subsystem cam ){
 
 
         addCommands(
                 new InstantCommand(()-> shooter_subsystem.viseur.setPosition(posviseur_mid)),
-                new Configure_shooter(shooter_subsystem, cam, postir, false, telemetry),
+                new Configure_shooter(shooter_subsystem, postir, false),
                 new WaitCommand(300),
                 //new AlignToTarget(chassis, cam, shooter_subsystem, false),
-                new feed_auto(feederSubsystem, intake, shooter_subsystem, telemetry),
-                new Stop_shooter(shooter_subsystem, telemetry)
+                new feed_auto(feederSubsystem, intake, shooter_subsystem),
+                new Stop_shooter(shooter_subsystem)
 
                 );
     }

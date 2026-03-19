@@ -13,18 +13,18 @@ import FRC_ALDNC.commands.Let_a_ball_pass;
 import FRC_ALDNC.commands.Shoot_a_ball_command;
 
 public class feed_auto extends SequentialCommandGroup {
-    public feed_auto(Feeder_subsystem feeder, Intake_subsystem intake_subsystem, Shooter_Subsystem shooter, Telemetry telemetry){
+    public feed_auto(Feeder_subsystem feeder, Intake_subsystem intake_subsystem, Shooter_Subsystem shooter){
         addCommands(
-                new Collect_command(intake_subsystem, Intake_subsystem.WantedState.COLLECT, telemetry),
-                new Shoot_a_ball_command(feeder, shooter, telemetry),
-                new Let_a_ball_pass(feeder, telemetry),
+                new Collect_command(intake_subsystem, Intake_subsystem.WantedState.COLLECT),
+                new Shoot_a_ball_command(feeder, shooter),
+                new Let_a_ball_pass(feeder),
 
-                new Shoot_a_ball_command(feeder, shooter, telemetry),
-                new Let_a_ball_pass(feeder, telemetry),
+                new Shoot_a_ball_command(feeder, shooter),
+                new Let_a_ball_pass(feeder),
 
-                new Shoot_a_ball_command(feeder, shooter, telemetry),
-                new Let_a_ball_pass(feeder, telemetry),
-                new Collect_command(intake_subsystem, Intake_subsystem.WantedState.STAND_BY, telemetry)
+                new Shoot_a_ball_command(feeder, shooter),
+                new Let_a_ball_pass(feeder),
+                new Collect_command(intake_subsystem, Intake_subsystem.WantedState.STAND_BY)
 
         );
     }

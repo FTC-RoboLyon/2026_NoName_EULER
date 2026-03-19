@@ -59,7 +59,7 @@ public class Flywheel_PID_Tuner extends OpMode {
         flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
-        updatePIDFCoefficients();
+        //updatePIDFCoefficients();
 
         telemetry.addLine("=== Flywheel PID Tuner ===");
         telemetry.addLine("Open Panels in FTC Dashboard");
@@ -78,22 +78,27 @@ public class Flywheel_PID_Tuner extends OpMode {
     public void loop() {
         viseur.setPosition(viseur_pos);
 
-        if (gamepad1.xWasPressed()) {
+        if (gamepad1.rightBumperWasPressed()) {
             motorsRunning = !motorsRunning;
             if (motorsRunning) {
                 runtime.reset();
                 resetMetrics();
             }
         }
-
+        if (gamepad1.bWasPressed()) {
+            flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(0, 0, 0, 0));
+        }
         if (gamepad1.yWasPressed()) {
             curTargetVelocity = (curTargetVelocity == highVelocity) ? lowVelocity : highVelocity;
             resetMetrics();
         }
+        if (gamepad1.leftBumperWasPressed())
+            updatePIDFCoefficients();
+        if (gamepad1.aWasPressed())
+            flywheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        updatePIDFCoefficients();
-
-        if (gamepad1.right_trigger > 0.3) {
+        if (gamepad1.xWasPressed()) {
             leftdoor.setPosition(posFeed);
 
         }
@@ -101,7 +106,7 @@ public class Flywheel_PID_Tuner extends OpMode {
 
             leftdoor.setPosition(posFeedrepos);
         }
-         if (gamepad1.right_bumper){
+         if (gamepad1.right_trigger >0.3){
              intake.setPower(0.7);
          } else
              intake.setPower(0);
@@ -116,6 +121,7 @@ public class Flywheel_PID_Tuner extends OpMode {
     }
 
     private void updatePIDFCoefficients() {
+        flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         PIDFCoefficients pidf = new PIDFCoefficients(P, I, D, F);
         flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
     }

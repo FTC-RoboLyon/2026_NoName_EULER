@@ -28,7 +28,7 @@ public class auto_red_far extends CommandOpMode {
                 //new AlignToTarget(robot.Chassis(), robot.Camera(), robot.Shooter(),false ),
                 //new Shoot_auto(robot.Shooter(), robot.Feeder(), Shooter_Subsystem.WantedState.SHOOT_FAR, robot.Intake(), robot.Chassis(), robot.Camera(), telemetry),//tirer les trois première
 
-        new Drive_command(robot.Chassis(), 1, 1, 300, telemetry)//Aller a la pos tir mid
+        new Drive_command(robot.Chassis(), 1, 1, 300)//Aller a la pos tir mid
                 //new WaitCommand(100),
                 // new Drive_command(robot.Chassis(), 0, -0.4, 550, telemetry),//se tourner vers le menisque
         ));

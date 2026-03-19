@@ -17,7 +17,7 @@ public class CONSTAAANT_CESTMOILEBON {
 
     public static double seuil_volt_shooter = 11; //TUNEME
 
-    public static double shooter_aspirage_puissance = -200;
+    public static double shooter_aspirage_puissance = -400;
 
     public static double ff_distance = 0.025; //TUNEME
     public static double tolerance_distance = 6; //TUNEME

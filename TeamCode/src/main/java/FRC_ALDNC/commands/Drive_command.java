@@ -14,10 +14,8 @@ public class Drive_command extends CommandBase {
     double forward;
     double turn;
     double temps_drive;
-    Telemetry telemetrY;
 
-    public Drive_command (Drive_Train chassi, double forward, double turn, double temps_drive, Telemetry telemetry){
-        telemetrY = telemetry;
+    public Drive_command (Drive_Train chassi, double forward, double turn, double temps_drive){
         this.chassi = chassi;
         this.forward = forward;
         this.turn = turn;
@@ -30,8 +28,7 @@ public class Drive_command extends CommandBase {
         chassi.drive(0, 0);
         timer = new ElapsedTime();
         timer.reset();
-        telemetrY.addLine("drive command is initialize");
-        telemetrY.update();
+
     }
 
 
@@ -40,15 +37,13 @@ public class Drive_command extends CommandBase {
     @Override
     public void execute() {
         chassi.drive(forward, turn);
-        telemetrY.addLine("drive command is execute");
-        telemetrY.update();
+
     }
 
     @Override
     public void end(boolean interrupted) {
         chassi.drive(0,0);
-        telemetrY.addLine("drive command has end");
-        telemetrY.update();
+
     }
 
     @Override

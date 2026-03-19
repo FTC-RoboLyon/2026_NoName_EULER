@@ -3,7 +3,6 @@ package FRC_ALDNC.CONSTANT;
 import com.acmerobotics.dashboard.config.Config;
 
 @Config
-
 public class Constante_shooter {
     public static String SHOOTER = "shooter", VISEUR = "viseur";
 

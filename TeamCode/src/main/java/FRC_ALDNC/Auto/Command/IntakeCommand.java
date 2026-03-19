@@ -3,13 +3,13 @@ package FRC_ALDNC.Auto.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import FRC_ALDNC.Auto.Subsystems.intakeSubsystem;
+import FRC_ALDNC.Auto.Subsystems.IntakeSubsystem;
 
-public class intakeCommand extends CommandBase {
-    intakeSubsystem intakeSubsystem;
+public class IntakeCommand extends CommandBase {
+    IntakeSubsystem intakeSubsystem;
     public enum intakage{OUI, NON, WAIT}
     intakage mode;
-    public intakeCommand(intakeSubsystem intakeSubsystem, intakage mode){
+    public IntakeCommand(IntakeSubsystem intakeSubsystem, intakage mode){
         this.mode = mode;
         this.intakeSubsystem = intakeSubsystem;
         addRequirements(intakeSubsystem);

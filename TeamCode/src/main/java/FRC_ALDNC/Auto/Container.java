@@ -5,26 +5,29 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import FRC_ALDNC.Auto.Command.DriveCommand;
 import FRC_ALDNC.Auto.Subsystems.DriveSubsystem;
+import FRC_ALDNC.Auto.Subsystems.ShooterSubsystem;
+import FRC_ALDNC.Auto.Subsystems.IntakeSubsystem;
+import FRC_ALDNC.Auto.Subsystems.FeederSubsystem;
 
 public class Container{
-    public double x, y;
-    Gamepad manette;
+    public double x, y , xDepart, yDepart, angleDepart;
     HardwareMap hmap;
     Telemetry telemetry;
-    DriveSubsystem driveSubsystem;
-    public Container(HardwareMap hamp, Telemetry telemetry, Gamepad gamepad1){
+    public static DriveSubsystem driveSubsystem;
+    public static IntakeSubsystem intakeSubsystem;
+    public static ShooterSubsystem shooterSubsystem;
+    public static FeederSubsystem feeder_subsystem;
+    public Container(HardwareMap hamp, Telemetry telemetry, double xDepart, double yDepart, double angleDepart){
+        this.angleDepart = angleDepart;
+        this.yDepart = yDepart;
+        this.xDepart = xDepart;
         this.telemetry = telemetry;
         this.hmap = hamp;
-        manette = gamepad1;
-        driveSubsystem = new DriveSubsystem(hmap, telemetry);
-        driveSubsystem.setDefaultCommand(new DriveCommand(driveSubsystem, manette));
-    }
-    public double getX(){
-        return x;
-    }
-    public double getY(){
-        return y;
+        feeder_subsystem = new FeederSubsystem(hmap);
+        intakeSubsystem = new IntakeSubsystem(hmap, telemetry);
+        driveSubsystem = new DriveSubsystem(hmap, telemetry, xDepart, yDepart, angleDepart);
+        shooterSubsystem = new ShooterSubsystem(hmap);
+
     }
 }

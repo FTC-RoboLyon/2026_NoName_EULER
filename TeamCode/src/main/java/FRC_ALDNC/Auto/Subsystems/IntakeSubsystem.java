@@ -11,12 +11,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class intakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
     HardwareMap hmap;
     private double powerIntake;
     DcMotorEx motorIntake;
     Telemetry telemetry;
-    public intakeSubsystem(HardwareMap hmap, Telemetry telemetry){
+    public IntakeSubsystem(HardwareMap hmap, Telemetry telemetry){
         this.telemetry = telemetry;
         this.hmap = hmap;
         motorIntake = hmap.get(DcMotorEx.class, Constant.INTAKE);

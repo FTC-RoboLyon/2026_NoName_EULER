@@ -48,7 +48,7 @@ public class FRC_ALDNC_telopblue extends CommandOpMode {
         gamepad0 = new GamepadEx(gamepad1);
         gamEpad2 = new GamepadEx(gamepad2);
         lefT_triger = () -> gamepad1.left_trigger > 0.3;
-        right_trigger = () -> gamepad1.right_trigger > 0.3;
+        right_trigger = () -> gamepad1.back;
 
         slefT_triger = () -> gamepad2.left_trigger > 0.3;
         sright_trigger = () -> gamepad2.right_trigger > 0.3;
@@ -57,25 +57,25 @@ public class FRC_ALDNC_telopblue extends CommandOpMode {
                 gamepad0, GamepadKeys.Button.DPAD_UP
         );
         feeder_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.X
+                gamEpad2, GamepadKeys.Button.X
         );
         shoot_bank_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.B
+                gamEpad2, GamepadKeys.Button.B
         );
         shoot_mid_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.Y
+                gamEpad2, GamepadKeys.Button.Y
         );
         shoot_far_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.A
+                gamEpad2, GamepadKeys.Button.A
         );
         aspirer_button = new GamepadButton(
-                gamepad0, GamepadKeys.Button.RIGHT_BUMPER
+                gamEpad2, GamepadKeys.Button.RIGHT_BUMPER
         );
         Intake_button = new GamepadButton(
                 gamepad0, GamepadKeys.Button.LEFT_BUMPER
         );
         reglage_shooter = new GamepadButton(
-                gamEpad2, GamepadKeys.Button.X
+                gamEpad2, GamepadKeys.Button.LEFT_BUMPER
         );
         plus_velo = new GamepadButton(
                 gamEpad2, GamepadKeys.Button.DPAD_UP
@@ -93,7 +93,7 @@ public class FRC_ALDNC_telopblue extends CommandOpMode {
                 gamEpad2, GamepadKeys.Button.RIGHT_BUMPER
         );
         plus_viseur = new GamepadButton(
-                gamEpad2, GamepadKeys.Button.LEFT_BUMPER
+                gamEpad2, GamepadKeys.Button.LEFT_STICK_BUTTON
         );
 
         Eject_button = new Trigger(lefT_triger);

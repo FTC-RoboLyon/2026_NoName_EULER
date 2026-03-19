@@ -17,15 +17,17 @@ public class DriveSubsystem extends SubsystemBase {
     private double  valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,  angleDegrees, DG, DD, h;
     public double  x, y, angle, forward, turn, left_motor_power, right_motor_power;
     private double erreurAngle, pAngle = 2.0, targetAngle, pDistance = 0.07;
-    double CPR = 8192,diametre = 7.27,DL = 16.21;
+    private double offsetAngle = 0;
 
+    double CPR = 8192,diametre = 7.27,DL = 16.21;
+    double angleDepart;
     private final
     DcMotorEx motorRight, motorLeft;
     HardwareMap hmap;
     Telemetry telemetry;
     IMU imu;
     public DriveSubsystem(HardwareMap hmap, Telemetry telemetry, double xDepart, double yDepart, double angleDepart){
-        vieuxAngle = angleDepart;
+        this.angleDepart = angleDepart;
         vieuxX = xDepart;
         vieuxY = yDepart;
         this.telemetry = telemetry;
@@ -51,6 +53,7 @@ public class DriveSubsystem extends SubsystemBase {
         motorRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         motorRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        offsetAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) - this.angleDepart;
     }
     private void calculateValuesEncoderDetG() {
         valueEncoderD = motorRight.getCurrentPosition() - vielleValueD;
@@ -65,7 +68,8 @@ public class DriveSubsystem extends SubsystemBase {
         DD = DD * valueEncoderD;
     }
     private void calculateAngleRadiant() {
-        vieuxAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        double rawAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        vieuxAngle = rawAngle - offsetAngle;
         if(vieuxAngle > Math.PI){
             vieuxAngle -= 2*Math.PI;
         }
@@ -76,7 +80,7 @@ public class DriveSubsystem extends SubsystemBase {
         h = (DG + DD) / 2;
     }
     public void resetAngle(){
-        imu.resetYaw();
+        offsetAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) - this.angleDepart;
     }
     public double getAngle(){
         return vieuxAngle;
@@ -112,6 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
             erreurAngle += 2*Math.PI;
         double turn = erreurAngle*pAngle;
         if(turn > 0.8)turn = 0.8;
+        if(turn < -0.8)turn = -0.8;
         right_motor_power = turn;
         left_motor_power = -right_motor_power;
     }

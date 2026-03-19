@@ -39,9 +39,9 @@ public class DriveCommand extends CommandBase {
     @Override
     public boolean isFinished(){
         if(mode == driveMode.GoAngle){
-            return driveSubsystem.getAngleTo() < 0.02;
+            return Math.abs(driveSubsystem.getAngleTo()) < 0.02;
         }else {
-            return driveSubsystem.getDistanceTo(x,y) < 1.5;
+            return Math.abs(driveSubsystem.getDistanceTo(x,y)) < 1.5;
         }
     }
 
@@ -49,5 +49,7 @@ public class DriveCommand extends CommandBase {
     public void end(boolean interrupted){
         driveSubsystem.right_motor_power = 0;
         driveSubsystem.left_motor_power = 0;
+        telemetry.addLine("finish");
+        telemetry.update();
     }
 }

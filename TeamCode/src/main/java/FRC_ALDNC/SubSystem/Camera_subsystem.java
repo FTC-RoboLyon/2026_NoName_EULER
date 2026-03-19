@@ -85,9 +85,6 @@ public class Camera_subsystem extends SubsystemBase {
     public void telemetry(){
         telemetry.addData("# AprilTags Detected", detections.size());
         TelemetryPacket mon_ptit_truc = new TelemetryPacket();
-        mon_ptit_truc.put("# AprilTags Detected", detections.size());
-        mon_ptit_truc.put("distance to goal", actual_detection.ftcPose.y);
-        dashboard.sendTelemetryPacket(mon_ptit_truc);
 
 
         // Step through the list of detections and display info for each one.

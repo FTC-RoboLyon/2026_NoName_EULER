@@ -37,6 +37,8 @@ import FRC_ALDNC.ALDNC_container;
 import lib.PidRBL;
 import lib.Utils;
 
+
+
 public class Drive_Train extends SubsystemBase {
     DcMotorEx left_drive, right_drive/*, encoderD, encoderG*/;
     private double left_motor_power, right_motor_power, x, y, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle, angle, angleDegrees, rayon = 5.7, CPR = 580, DG, DD, DL = 36, h;

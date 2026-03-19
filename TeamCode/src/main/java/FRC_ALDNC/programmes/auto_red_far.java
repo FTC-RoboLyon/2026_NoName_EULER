@@ -12,7 +12,7 @@ import java.util.function.BooleanSupplier;
 import FRC_ALDNC.ALDNC_container;
 import FRC_ALDNC.SubSystem.Shooter_Subsystem;
 import FRC_ALDNC.commands.AlignToTarget;
-import FRC_ALDNC.commands.Command_groups.Shoot_auto;
+//import FRC_ALDNC.commands.Command_groups.Shoot_auto;
 import FRC_ALDNC.commands.Drive_command;
 import FRC_ALDNC.commands.Wait_for_start;
 @Autonomous(name = "FRC ALDNC auto RED Far", group = "FRC_style")

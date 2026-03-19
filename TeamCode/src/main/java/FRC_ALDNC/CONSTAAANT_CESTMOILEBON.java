@@ -24,7 +24,7 @@ public class CONSTAAANT_CESTMOILEBON {
     public static double kp_distance = 0.005; //TUNEME
 
 
-    public static double ff_rotation = 6.43;
+    public static double ff_rotation = 0.11;
     public static double p_rotation = 0.0025;
     public static double tolerence_rotation = 0.25;
     public  static double seuilDriveShooter = 0.05;
@@ -38,7 +38,7 @@ public class CONSTAAANT_CESTMOILEBON {
     public  static double time_auto = 1000;
 
 
-    public static double posFeed = 0.33, posFeedrepos = 0.125 ; //tunme
+    public static double posFeed = 0.33, posFeedrepos = 0.16 ; //tunme
     public  static  double time_to_let_a_ball_pass = 2250; //TUNEME IN MILLISECOND
 
 

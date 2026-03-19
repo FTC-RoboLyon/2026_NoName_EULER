@@ -18,6 +18,7 @@ import FRC_ALDNC.CONSTAAANT_CESTMOILEBON;
 import FRC_ALDNC.SubSystem.joystick_subsystem;
 
 public class AlignToTarget extends CommandBase {
+    double targetAngle;
 
     private final Drive_Train drive;
     private final Camera_subsystem camera;
@@ -53,18 +54,22 @@ public class AlignToTarget extends CommandBase {
     @Override
     public void execute() {
 
-        erreurPos = camera.getBearing() == 100000? erreurPos : camera.getBearing() * ff_rotation;
+        targetAngle = camera.getBearing() == 100000? targetAngle : drive.getHeadingRadians()+camera.getBearing();
+        erreurPos = targetAngle - drive.getHeadingRadians();
+        if (erreurPos > 180) erreurPos -= 2*Math.PI;
+        if (erreurPos < -180) erreurPos += 2*Math.PI;
 
         if (Math.abs(erreurPos) < tolerence_rotation) {
             erreurPos = 2;
         }
 
-        double turn = -Math.max(-0.3, Math.min(0.3, erreurPos * p_rotation));
+        double turn = -Math.max(-0.3, Math.min(0.3, erreurPos * ff_rotation + erreurPos * p_rotation));
 
         drive.drive(forward.getAsDouble()/1.3, turn + this.turn.getAsDouble()/1.3);
         //TelemetryPacket pack = new TelemetryPacket();
         //pack.put("erreur alignement : ", erreurPos);
-        //dash.sendTelemetryPacket(pack);
+        //dash.sendTelemetryPacket(pack);<xpklkjo+
+
         //caa
     }
 

@@ -82,13 +82,12 @@ public class ALDNC_container{
                 return 0;
             }
         };
-
-
+        BooleanSupplier is_intaking = ()-> intake.getM_systemState() == Intake_subsystem.SystemState.INTAKING;
 
         chassis_subsystem = new Drive_Train(hmap, telemetry, x, y, this);
 
 
-        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this, !is_inTeleop, diStance_to_goal);
+        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this, !is_inTeleop, diStance_to_goal, is_intaking);
 
 
 

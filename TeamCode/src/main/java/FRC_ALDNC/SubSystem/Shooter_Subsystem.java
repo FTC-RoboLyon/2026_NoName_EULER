@@ -44,6 +44,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import FRC_ALDNC.ALDNC_container;
@@ -96,10 +97,13 @@ public class Shooter_Subsystem extends SubsystemBase {
 
     private ALDNC_container robot;
     public DoubleSupplier distance_To_goal;
+    BooleanSupplier iNtake;
 
-    public Shooter_Subsystem (HardwareMap hmap, Telemetry telemetry, ALDNC_container RoBot, boolean auto, DoubleSupplier distance_to_goal){
+
+    public Shooter_Subsystem (HardwareMap hmap, Telemetry telemetry, ALDNC_container RoBot, boolean auto, DoubleSupplier distance_to_goal, BooleanSupplier intake){
         distance_To_goal = distance_to_goal;
 
+        iNtake = intake;
         inauto = auto;
         robot = RoBot;
         shooter_pidf = new PID_shooter(ShooterKP, ShooterKI, ShooterKD, ShooterKF);
@@ -246,6 +250,7 @@ public class Shooter_Subsystem extends SubsystemBase {
         {
             case WAITING:
                 shooter.setVelocity(0);
+                pont.setPower(iNtake.getAsBoolean() ? -1 : 0);
                 break;
 
             case ASPIRER:

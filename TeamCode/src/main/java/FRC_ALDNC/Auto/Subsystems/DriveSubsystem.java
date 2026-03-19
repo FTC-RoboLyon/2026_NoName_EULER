@@ -1,29 +1,45 @@
 package FRC_ALDNC.Auto.Subsystems;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.opencv.core.Mat;
 
 import FRC_ALDNC.Auto.Constant;
-@Config
 public class DriveSubsystem extends SubsystemBase {
-    private double left_motor_power, right_motor_power, valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,  angleDegrees, DG, DD, h;
-    public double  x, y, angle, forward, turn;
-    public static double DL = 16.5;
+    private double  valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,  angleDegrees, DG, DD, h;
+    public double  x, y, angle, forward, turn, left_motor_power, right_motor_power;
+    private double erreurAngle, pAngle = 2.0, targetAngle, pDistance = 0.07;
+    double CPR = 8192,diametre = 7.27,DL = 16.21;
 
     private final
     DcMotorEx motorRight, motorLeft;
     HardwareMap hmap;
     Telemetry telemetry;
-    public DriveSubsystem(HardwareMap hmap, Telemetry telemetry){
+    IMU imu;
+    public DriveSubsystem(HardwareMap hmap, Telemetry telemetry, double xDepart, double yDepart, double angleDepart){
+        vieuxAngle = angleDepart;
+        vieuxX = xDepart;
+        vieuxY = yDepart;
         this.telemetry = telemetry;
         this.hmap = hmap;
+        imu = hmap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                )
+        );
+
+        imu.initialize(parameters);
+
         motorRight = hmap.get(DcMotorEx.class, Constant.RIGHT_MOTOR);
         motorLeft = hmap.get(DcMotorEx.class, Constant.LEFT_MOTOR);
 
@@ -43,29 +59,31 @@ public class DriveSubsystem extends SubsystemBase {
         vielleValueG = motorLeft.getCurrentPosition();
     }
     private void calculateDistanceGetD() {
-        double CPR = 8192;
-        double diametre = 7.27;
         DG = Math.PI * diametre / CPR;
         DG = DG * valueEncoderG;
         DD = Math.PI * diametre / CPR;
         DD = DD * valueEncoderD;
     }
     private void calculateAngleRadiant() {
-        angle = (DD - DG)/DL;
-        vieuxAngle += angle;
-        if (vieuxAngle > Math.PI){
+        vieuxAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        if(vieuxAngle > Math.PI){
             vieuxAngle -= 2*Math.PI;
         }
-        else if (vieuxAngle < -Math.PI){
+        if(vieuxAngle < -Math.PI){
             vieuxAngle += 2*Math.PI;
         }
         angleDegrees = Math.toDegrees(vieuxAngle);
         h = (DG + DD) / 2;
     }
+    public void resetAngle(){
+        imu.resetYaw();
+    }
+    public double getAngle(){
+        return vieuxAngle;
+    }
     private void calculateXY() {
-        x = Math.sin(vieuxAngle) * h;
-        x = -x;
-        y = Math.cos(vieuxAngle) * h;
+        x = Math.cos(vieuxAngle) * h;
+        y = Math.sin(vieuxAngle) * h;
         vieuxX += x;
         vieuxY += y;
     }
@@ -73,8 +91,7 @@ public class DriveSubsystem extends SubsystemBase {
         telemetry.addData("x", vieuxX);
         telemetry.addData("y", vieuxY);
         telemetry.addData("angle", angleDegrees);
-        telemetry.addData("jambe gauche", motorLeft.getCurrentPosition());
-        telemetry.addData("jambe droite", motorRight.getCurrentPosition());
+        telemetry.addData("targetAngle", Math.toDegrees(targetAngle));
         telemetry.update();
     }
     public void odometrie(){
@@ -84,14 +101,57 @@ public class DriveSubsystem extends SubsystemBase {
         calculateXY();
         telemetrieOdometrie();
     }
-    public void drive(Gamepad gamepad1){
-        forward = -gamepad1.left_stick_y;
-        turn = gamepad1.right_stick_x;
-        right_motor_power = forward-turn;
-        left_motor_power = forward+turn;
+    public void goAngle(double x, double y){
+        y -= vieuxY;
+        x -= vieuxX;
+        targetAngle = Math.atan2(y ,x);
+        erreurAngle = targetAngle - vieuxAngle;
+        if(erreurAngle > Math.PI)
+            erreurAngle -= 2*Math.PI;
+        else if(erreurAngle < -Math.PI)
+            erreurAngle += 2*Math.PI;
+        double turn = erreurAngle*pAngle;
+        if(turn > 0.8)turn = 0.8;
+        right_motor_power = turn;
+        left_motor_power = -right_motor_power;
     }
-    public void goAngle(){
+    public void goPos(double targetX, double targetY){
+        double dx = targetX - vieuxX;
+        double dy = targetY - vieuxY;
 
+        double distance = Math.sqrt(dx*dx + dy*dy);
+
+        double targetAngleToPos = Math.atan2(dy, dx);
+
+        double angleDiff = targetAngleToPos - vieuxAngle;
+        while(angleDiff > Math.PI) angleDiff -= 2*Math.PI;
+        while(angleDiff < -Math.PI) angleDiff += 2*Math.PI;
+
+        double directionMultiplier = 1.0;
+        if(Math.abs(angleDiff) > Math.PI/2){
+            directionMultiplier = -1.0;
+            angleDiff = angleDiff > 0 ? angleDiff - Math.PI : angleDiff + Math.PI;
+        }
+
+        double vitesseDistance = distance * pDistance;
+        if(vitesseDistance > 0.8) vitesseDistance = 0.8;
+
+        double turn = angleDiff * pAngle;
+
+        right_motor_power = directionMultiplier * vitesseDistance + turn;
+        left_motor_power  = directionMultiplier * vitesseDistance - turn;
+    }
+    public double getDistanceTo(double targetX, double targetY){
+        double dx = targetX - vieuxX;
+        double dy = targetY - vieuxY;
+        return Math.sqrt(dx*dx + dy*dy);
+    }
+    public double getAngleTo(){
+        return erreurAngle;
+    }
+    public void drive(double forward, double turn){
+        right_motor_power = -forward-turn;
+        left_motor_power = -forward+turn;
     }
     @Override
     public void periodic(){

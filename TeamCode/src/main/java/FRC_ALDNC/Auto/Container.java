@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import FRC_ALDNC.Auto.Subsystems.DriveSubsystem;
+import FRC_ALDNC.Auto.Subsystems.NavXSubsystem;
 import FRC_ALDNC.Auto.Subsystems.ShooterSubsystem;
 import FRC_ALDNC.Auto.Subsystems.IntakeSubsystem;
 import FRC_ALDNC.Auto.Subsystems.FeederSubsystem;
@@ -14,6 +15,7 @@ public class Container{
     public double x, y , xDepart, yDepart, angleDepart;
     HardwareMap hmap;
     Telemetry telemetry;
+    NavXSubsystem navx;
     public static DriveSubsystem driveSubsystem;
     public static IntakeSubsystem intakeSubsystem;
     public static ShooterSubsystem shooterSubsystem;
@@ -26,7 +28,7 @@ public class Container{
         this.hmap = hamp;
         feeder_subsystem = new FeederSubsystem(hmap);
         intakeSubsystem = new IntakeSubsystem(hmap, telemetry);
-        driveSubsystem = new DriveSubsystem(hmap, telemetry, xDepart, yDepart, angleDepart);
+        driveSubsystem = new DriveSubsystem(navx, hmap, telemetry, xDepart, yDepart, angleDepart);
         shooterSubsystem = new ShooterSubsystem(hmap);
 
     }

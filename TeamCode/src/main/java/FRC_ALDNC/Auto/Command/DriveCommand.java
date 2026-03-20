@@ -23,6 +23,10 @@ public class DriveCommand extends CommandBase {
         addRequirements(driveSubsystem);
     }
     @Override
+    public void initialize(){
+        driveSubsystem.navxInit();
+    }
+    @Override
     public void execute(){
         switch(mode){
             case GoPos:

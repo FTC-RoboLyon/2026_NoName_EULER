@@ -17,7 +17,6 @@ public class DriveSubsystem extends SubsystemBase {
     private double  valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,angleAncienneLoop,  angleDegrees, DG, DD, h;
     public double  x, y, angle, forward, turn, left_motor_power, right_motor_power;
     public static double erreurAngle, pAngle = 2.0, targetAngle, pDistance = 0.07;
-    private double offsetAngle = 0;
 
     double CPR = 8192,diametre = 7.27,DL = 16.21;
 
@@ -25,22 +24,15 @@ public class DriveSubsystem extends SubsystemBase {
     DcMotorEx motorRight, motorLeft;
     HardwareMap hmap;
     Telemetry telemetry;
-    IMU imu;
-    public DriveSubsystem(HardwareMap hmap, Telemetry telemetry, double xDepart, double yDepart, double angleDepart){
+
+    NavXSubsystem navx;
+    public DriveSubsystem(NavXSubsystem navx, HardwareMap hmap, Telemetry telemetry, double xDepart, double yDepart, double angleDepart){
+        this.navx = navx;
         vieuxAngle = angleDepart;
         vieuxX = xDepart;
         vieuxY = yDepart;
         this.telemetry = telemetry;
         this.hmap = hmap;
-        imu = hmap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(
-                new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
-                )
-        );
-
-        imu.initialize(parameters);
 
         motorRight = hmap.get(DcMotorEx.class, Constant.RIGHT_MOTOR);
         motorLeft = hmap.get(DcMotorEx.class, Constant.LEFT_MOTOR);
@@ -53,7 +45,10 @@ public class DriveSubsystem extends SubsystemBase {
         motorRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         motorRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        angleAncienneLoop = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        angleAncienneLoop = navx.getAngle();
+    }
+    public void navxInit(){
+        navx.reset_A_MettreDans_L_Init();
     }
     private void calculateValuesEncoderDetG() {
         valueEncoderD = motorRight.getCurrentPosition() - vielleValueD;
@@ -68,11 +63,11 @@ public class DriveSubsystem extends SubsystemBase {
         DD = DD * valueEncoderD;
     }
     private void calculateAngleRadiant() {
-        angle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        angle = navx.getAngle();
+        angleAncienneLoop = navx.getAngle();
         double deltaAngle = angle - angleAncienneLoop;
         if(deltaAngle > Math.PI)deltaAngle -= 2*Math.PI;
         if(deltaAngle < -Math.PI)deltaAngle += 2*Math.PI;
-        angleAncienneLoop = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         vieuxAngle += deltaAngle;
         if(vieuxAngle > Math.PI){
             vieuxAngle -= 2*Math.PI;
@@ -82,9 +77,6 @@ public class DriveSubsystem extends SubsystemBase {
         }
         angleDegrees = Math.toDegrees(vieuxAngle);
         h = (DG + DD) / 2;
-    }
-    public void resetAngle(){
-        imu.resetYaw();
     }
     public double getAngle(){
         return vieuxAngle;

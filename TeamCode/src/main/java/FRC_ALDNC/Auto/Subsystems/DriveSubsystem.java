@@ -65,6 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
     private void calculateAngleRadiant() {
         angle = navx.getAngle();
         angleAncienneLoop = navx.getAngle();
+        vieuxAngle += angle;
         double deltaAngle = angle - angleAncienneLoop;
         if(deltaAngle > Math.PI)deltaAngle -= 2*Math.PI;
         if(deltaAngle < -Math.PI)deltaAngle += 2*Math.PI;

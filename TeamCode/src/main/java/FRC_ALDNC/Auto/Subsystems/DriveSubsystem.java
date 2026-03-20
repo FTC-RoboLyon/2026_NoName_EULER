@@ -1,5 +1,6 @@
 package FRC_ALDNC.Auto.Subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Mat;
 
 import FRC_ALDNC.Auto.Constant;
+@Config
 public class DriveSubsystem extends SubsystemBase {
     private double  valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,angleAncienneLoop,  angleDegrees, DG, DD, h;
     public double  x, y, angle, forward, turn, left_motor_power, right_motor_power;

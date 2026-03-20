@@ -11,6 +11,7 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import java.util.function.DoubleSupplier;
 
 import FRC_ALDNC.ALDNC_container;
+import FRC_ALDNC.CONSTAAANT_CESTMOILEBON;
 import FRC_ALDNC.SubSystem.Camera_subsystem;
 import FRC_ALDNC.SubSystem.Drive_Train;
 import FRC_ALDNC.SubSystem.Shooter_Subsystem;
@@ -53,13 +54,13 @@ public class AlignToTarget extends CommandBase {
     @Override
     public void execute() {
 
-        erreurPos = camera.getBearing() == 100000? erreurPos : camera.getBearing() * ff_rotation;
+        erreurPos = camera.getBearing() * CONSTAAANT_CESTMOILEBON.ff_rotation;
 
-        if (Math.abs(erreurPos) < tolerence_rotation) {
+        if (Math.abs(erreurPos) < CONSTAAANT_CESTMOILEBON.tolerence_rotation) {
             erreurPos = 2;
         }
 
-        double turn = -Math.max(-0.3, Math.min(0.3, erreurPos * p_rotation));
+        double turn = -Math.max(-0.3, Math.min(0.3, erreurPos * CONSTAAANT_CESTMOILEBON.p_rotation));
 
         drive.drive(forward.getAsDouble()/1.3, turn + this.turn.getAsDouble()/1.3);
         TelemetryPacket pack = new TelemetryPacket();
@@ -82,3 +83,4 @@ public class AlignToTarget extends CommandBase {
         dash.sendTelemetryPacket(pack);
     }
 }
+

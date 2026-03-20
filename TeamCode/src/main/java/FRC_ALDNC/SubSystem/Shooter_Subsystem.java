@@ -113,7 +113,7 @@ public class Shooter_Subsystem extends SubsystemBase {
         apprend_a_viser = new InterpLUT();
         apprend_a_viser();
         setMet_la_moi_profond();
-        
+
 
 
         dashboard = FtcDashboard.getInstance();
@@ -309,8 +309,8 @@ public class Shooter_Subsystem extends SubsystemBase {
         //veloShooter_auto = (5.79573 * Math.pow(10, -7)) * Math.pow(distance_to_goal, 4) -0.000496167 * Math.pow(distance_to_goal, 3) +0.147211 * Math.pow(distance_to_goal, 2) -15.11259*distance_to_goal +1449.64095;//Definis moi ca
         //posviseur_auto = -0.00168518*distance_to_goal +1.01528;
         //posviseur_auto = -(1.64249*Math.pow(10, -9)) * Math.pow(distance_to_goal, 4)+0.00000128437 * Math.pow(distance_to_goal, 3) -0.000335487 * Math.pow(distance_to_goal, 2) +0.0312942 * distance_to_goal +0.0758803;
-        veloShooter_auto = met_la_moi_profond.get(distance_to_goal);
-        posviseur_auto = apprend_a_viser.get(distance_to_goal);
+        //veloShooter_auto = met_la_moi_profond.get(distance_to_goal);
+        //posviseur_auto = apprend_a_viser.get(distance_to_goal);
     }
     public boolean has_shoot () {
         return sysState == SystemState.READY_TO_SHOOT && !Utils.IsInRange(current_shoot_velo, veloShooter, shooter_velo_tolerance);

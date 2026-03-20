@@ -96,8 +96,8 @@ public class Camera_subsystem extends SubsystemBase {
                 telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
 
                 mon_ptit_truc.put("distance to goal ", detection.ftcPose.y);
+                mon_ptit_truc.put("Id de l'april détécté", detection.id);
 
-                ;
                 dashboard.sendTelemetryPacket(mon_ptit_truc);
             } else {
                 telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));

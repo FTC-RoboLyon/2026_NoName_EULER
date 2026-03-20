@@ -30,6 +30,6 @@ public class Container{
         intakeSubsystem = new IntakeSubsystem(hmap, telemetry);
         driveSubsystem = new DriveSubsystem(navx, hmap, telemetry, xDepart, yDepart, angleDepart);
         shooterSubsystem = new ShooterSubsystem(hmap);
-
+        navx = new NavXSubsystem(hmap);
     }
 }

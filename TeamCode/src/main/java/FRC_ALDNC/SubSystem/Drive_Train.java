@@ -18,6 +18,7 @@ import android.os.FileUriExposedException;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -29,6 +30,8 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 import java.util.Base64;
 
@@ -45,7 +48,7 @@ public class Drive_Train extends SubsystemBase {
     private int v = 0;
     public static PidRBL rotattion_Pid = new PidRBL(rotation_P, rotation_I, rotation_D);
     private final Telemetry telemetry;
-    private IMU imu;
+    private NavxMicroNavigationSensor imu;
     private ALDNC_container robot;
     private double targetPosition;
     private double erreurPos;
@@ -82,7 +85,7 @@ public class Drive_Train extends SubsystemBase {
         rotattion_Pid.SetTolerance(0.01);
         rotattion_Pid.SetInputLimits(0, Math.PI * 2);
         rotattion_Pid.SetContinuous(true);
-        imu = hmap.get(IMU.class, "imu");
+        imu = hmap.get(NavxMicroNavigationSensor.class, "navx");
 
         IMU.Parameters parameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(
@@ -90,10 +93,6 @@ public class Drive_Train extends SubsystemBase {
                         RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
                 )
         );
-
-        imu.initialize(parameters);
-        imu.resetYaw();
-
 
     }
 
@@ -148,7 +147,7 @@ public class Drive_Train extends SubsystemBase {
     }
     public double getHeadingRadians() {
         if (imu == null) return 0;
-        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        return 0;
     }
 
     private void calculateDistanceGetD() {

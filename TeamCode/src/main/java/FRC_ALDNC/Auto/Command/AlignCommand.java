@@ -4,7 +4,7 @@ import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ff_rotation;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import ExercicesAntoineChatGPT.CameraSimple;
+//import ExercicesAntoineChatGPT.CameraSimple;
 import FRC_ALDNC.Auto.Subsystems.DriveSubsystem;
 import FRC_ALDNC.Auto.Subsystems.NavXSubsystem;
 import FRC_ALDNC.SubSystem.Camera_subsystem;

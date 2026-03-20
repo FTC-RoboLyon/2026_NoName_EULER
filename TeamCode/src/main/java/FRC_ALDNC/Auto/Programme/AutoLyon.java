@@ -27,6 +27,5 @@ public class AutoLyon extends CommandOpMode {
         container = new Container(hardwareMap, telemetry, xDepart, yDepart, angleDepart);
         new SequentialCommandGroup(new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoPos, 180, 180 ),
                 new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoPos, 0, 0)).schedule();
-
     }
 }

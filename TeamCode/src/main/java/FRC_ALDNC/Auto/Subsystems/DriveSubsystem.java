@@ -78,6 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
         angleDegrees = Math.toDegrees(vieuxAngle);
         h = (DG + DD) / 2;
     }
+
     public double getAngle(){
         return vieuxAngle;
     }

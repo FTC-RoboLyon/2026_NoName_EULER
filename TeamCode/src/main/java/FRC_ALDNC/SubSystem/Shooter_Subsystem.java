@@ -111,6 +111,10 @@ public class Shooter_Subsystem extends SubsystemBase {
 
         met_la_moi_profond = new InterpLUT();
         apprend_a_viser = new InterpLUT();
+        apprend_a_viser();
+        setMet_la_moi_profond();
+        
+
 
         dashboard = FtcDashboard.getInstance();
         shooter = hmap.get(DcMotorEx.class, SHOOTER);
@@ -129,16 +133,7 @@ public class Shooter_Subsystem extends SubsystemBase {
 
     }
     void apprend_a_viser(){
-        met_la_moi_profond.add(0,0);
-        met_la_moi_profond.add(0,0);
-        met_la_moi_profond.add(0,0);
-        met_la_moi_profond.add(0,0);
-        met_la_moi_profond.add(0,0);
-        met_la_moi_profond.add(0,0);
-        met_la_moi_profond.add(0,0);
-        met_la_moi_profond.add(0,0);
-        met_la_moi_profond.add(0,0);
-        met_la_moi_profond.add(0,0);
+
 
         apprend_a_viser.add(0,0);
         apprend_a_viser.add(0,0);
@@ -150,6 +145,18 @@ public class Shooter_Subsystem extends SubsystemBase {
         apprend_a_viser.add(0,0);
         apprend_a_viser.add(0,0);
         apprend_a_viser.add(0,0);
+    }
+    void setMet_la_moi_profond(){
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
+        met_la_moi_profond.add(0,0);
     }
     public void update_input(){
         current_shoot_velo = shooter.getVelocity();

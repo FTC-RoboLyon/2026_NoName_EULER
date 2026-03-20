@@ -15,7 +15,7 @@ public class Container{
     public double x, y , xDepart, yDepart, angleDepart;
     HardwareMap hmap;
     Telemetry telemetry;
-    NavXSubsystem navx;
+    public static NavXSubsystem navx;
     public static DriveSubsystem driveSubsystem;
     public static IntakeSubsystem intakeSubsystem;
     public static ShooterSubsystem shooterSubsystem;

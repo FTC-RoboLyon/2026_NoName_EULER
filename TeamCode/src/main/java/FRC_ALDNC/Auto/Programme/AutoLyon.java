@@ -25,6 +25,7 @@ public class AutoLyon extends CommandOpMode {
     @Override
     public void initialize() {
         container = new Container(hardwareMap, telemetry, xDepart, yDepart, angleDepart);
+        telemetry.addData("angle", Container.driveSubsystem.getAngle());
         new SequentialCommandGroup(new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoPos, 180, 180 ),
                 new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoPos, 0, 0)).schedule();
     }

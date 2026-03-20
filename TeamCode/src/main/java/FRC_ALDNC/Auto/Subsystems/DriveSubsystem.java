@@ -18,7 +18,7 @@ import FRC_ALDNC.Auto.Constant;
 public class DriveSubsystem extends SubsystemBase {
     private double  valueEncoderD, valueEncoderG, vielleValueD, vielleValueG, vieuxX, vieuxY, vieuxAngle,angleAncienneLoop,  angleDegrees, DG, DD, h;
     public double  x, y, angle, forward, turn, left_motor_power, right_motor_power;
-    public static double erreurAngle, pAngle = 2.0, targetAngle, pDistance = 0.07;
+    public static double erreurAngle, pAngle = 1.7, targetAngle, pDistance = 0.07;
 
     double CPR = 8192,diametre = 7.27,DL = 16.21;
 
@@ -137,7 +137,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         double turn = angleDiff * pAngle;
         if(turn > 0.5)turn = 0.5;
-        if(turn < 0.5) turn = -0.5;
+        if(turn < 0) turn = 0;
 
         right_motor_power = directionMultiplier * vitesseDistance + turn;
         left_motor_power  = directionMultiplier * vitesseDistance - turn;

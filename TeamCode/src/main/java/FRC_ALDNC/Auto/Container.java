@@ -26,10 +26,12 @@ public class Container{
         this.xDepart = xDepart;
         this.telemetry = telemetry;
         this.hmap = hamp;
+        navx = new NavXSubsystem(hmap);
         feeder_subsystem = new FeederSubsystem(hmap);
         intakeSubsystem = new IntakeSubsystem(hmap, telemetry);
         driveSubsystem = new DriveSubsystem(navx, hmap, telemetry, xDepart, yDepart, angleDepart);
         shooterSubsystem = new ShooterSubsystem(hmap);
-        navx = new NavXSubsystem(hmap);
+
+
     }
 }

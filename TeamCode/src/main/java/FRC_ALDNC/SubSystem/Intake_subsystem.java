@@ -111,10 +111,10 @@ public class Intake_subsystem extends SubsystemBase {
                 break;
 
             case INTAKING:
-                intake.setPower(0.5);
+                intake.setPower(1);
                 break;
             case EJeCT:
-                intake.setPower(-0.5);
+                intake.setPower(-1);
                 break;
             default:
                 //Dashboard.Telemetry_with_Text("Intake", "unknown system state used");

@@ -13,6 +13,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.arcrobotics.ftclib.command.button.Button;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -122,7 +123,7 @@ public class ALDNC_container{
                     ),
                     chassis_subsystem));
             new Trigger(() -> shooter_subsystem.Is_Shooting())
-                    .whileActiveContinuous(new AlignToTarget(chassis_subsystem, apriljoke, shooter_subsystem, is_inTeleop, forward, turn));
+                    .whileActiveContinuous(new AlignToTarget(chassis_subsystem, apriljoke, shooter_subsystem, is_inTeleop, forward, turn, LED));
         } else {
             //new Trigger(() -> shooter_subsystem.Is_Shooting())
             //        .whileActiveContinuous(new AlignToTarget(chassis_subsystem, apriljoke, shooter_subsystem, true));
@@ -132,6 +133,8 @@ public class ALDNC_container{
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
 
+        LED = hmap.get(RevBlinkinLedDriver.class, "LED");
+        LED.setPattern(RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_WHITE);
 //
     }
 
@@ -162,11 +165,11 @@ public class ALDNC_container{
             Button splus_velo,
             Button sminus_velo){
 
-        feeder_button.whenPressed(new Shoot_a_ball_command(feeder, shooter_subsystem));
+        feeder_button.whenPressed(new Shoot_a_ball_command(feeder, shooter_subsystem, LED));
         feeder_button.whenReleased(new Let_a_ball_pass(feeder));
 
-        intake_button.whenPressed(new Collect_command(intake, Intake_subsystem.WantedState.COLLECT));
-        intake_button.whenReleased(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
+        intake_button.whenPressed(new Collect_command(intake, Intake_subsystem.WantedState.COLLECT, LED));
+        intake_button.whenReleased(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY, LED));
 
         shoot_bank_button.toggleWhenPressed(new Configure_shooter(shooter_subsystem,Shooter_Subsystem.WantedState.SHOOT_BANK, true));
         //shoot_bank_button.whenReleased(new Configure_shooter(shooter_subsystem, Shooter_Subsystem.WantedState.WAIT));
@@ -180,8 +183,8 @@ public class ALDNC_container{
         aspirer_button.toggleWhenPressed(new Stop_shooter(shooter_subsystem));
         //aspirer_button.whenReleased(new Configure_shooter_with_toggle(shooter_subsystem,  apriljoke,Shooter_Subsystem.WantedState.WAIT));
 
-        eject_button.whenActive(new Collect_command(intake, Intake_subsystem.WantedState.EJECT));
-        eject_button.whenInactive(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY));
+        eject_button.whenActive(new Collect_command(intake, Intake_subsystem.WantedState.EJECT, LED));
+        eject_button.whenInactive(new Collect_command(intake, Intake_subsystem.WantedState.STAND_BY, LED));
 
         aspirer_button.whenActive(new Configure_shooter(shooter_subsystem,Shooter_Subsystem.WantedState.SHOOT_BANK, false));
         aspirer_button.whenInactive(new Stop_shooter(shooter_subsystem));
@@ -242,7 +245,7 @@ public class ALDNC_container{
     public joystick_subsystem Right_joystick (){return right_joystick;}
     public RobotMode which_programm (){return team_and_mode;}
 
-
+    public RevBlinkinLedDriver LED;
 
     public void ActualiseVoltageSensorValue()
     {

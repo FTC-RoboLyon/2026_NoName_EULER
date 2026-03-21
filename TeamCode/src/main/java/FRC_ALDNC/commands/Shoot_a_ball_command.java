@@ -4,6 +4,7 @@ package FRC_ALDNC.commands;
 import static FRC_ALDNC.CONSTANT.constante_feeder.posFeed;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.robocol.Command;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -18,11 +19,14 @@ public class Shoot_a_ball_command extends CommandBase {
     Feeder_subsystem feeder;
     Shooter_Subsystem shooter;
     ElapsedTime time;
-    public Shoot_a_ball_command (Feeder_subsystem feeder, Shooter_Subsystem shooter){
+
+    private RevBlinkinLedDriver led;
+    public Shoot_a_ball_command (Feeder_subsystem feeder, Shooter_Subsystem shooter, RevBlinkinLedDriver led){
 
         this.shooter = shooter;
         this.feeder = feeder;
-        addRequirements( feeder);
+        this.led = led;
+        addRequirements(feeder);
     }
 
     @Override
@@ -31,6 +35,13 @@ public class Shoot_a_ball_command extends CommandBase {
 
         time = new ElapsedTime();
         time.reset();
+        led.setPattern(RevBlinkinLedDriver.BlinkinPattern.SHOT_RED);
+    }
+
+    @Override
+    public void end (boolean interrupted)
+    {
+        led.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
     }
 
 

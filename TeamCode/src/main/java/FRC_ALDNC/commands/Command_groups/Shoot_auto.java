@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -24,7 +25,8 @@ public class Shoot_auto extends SequentialCommandGroup {
                        Feeder_subsystem feederSubsystem,
                        Shooter_Subsystem.WantedState postir,
                        Intake_subsystem intake, Drive_Train chassis,
-                       Camera_subsystem cam ){
+                       Camera_subsystem cam,
+                       RevBlinkinLedDriver led){
 
 
         addCommands(
@@ -32,7 +34,7 @@ public class Shoot_auto extends SequentialCommandGroup {
                 new Configure_shooter(shooter_subsystem, postir, false),
                 new WaitCommand(300),
                 //new AlignToTarget(chassis, cam, shooter_subsystem, false),
-                new feed_auto(feederSubsystem, intake, shooter_subsystem),
+                new feed_auto(feederSubsystem, intake, shooter_subsystem,led),
                 new Stop_shooter(shooter_subsystem)
 
                 );

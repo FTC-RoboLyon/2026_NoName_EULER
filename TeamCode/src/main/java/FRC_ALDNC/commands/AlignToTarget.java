@@ -7,6 +7,7 @@ import static FRC_ALDNC.CONSTANT.constante_joystick_and_base.tolerence_rotation;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 import java.util.function.DoubleSupplier;
 
@@ -27,26 +28,33 @@ public class AlignToTarget extends CommandBase {
     double erreurPos = 2;
     private DoubleSupplier forward;
     private DoubleSupplier turn;
+
+    private RevBlinkinLedDriver led;
     FtcDashboard dash = FtcDashboard.getInstance();
 
 
     public AlignToTarget(Drive_Train drive,
                          Camera_subsystem camera,
                          Shooter_Subsystem shooter,
-                         boolean InTeleop) {
-        this(drive, camera, shooter, InTeleop, ()-> 0, ()->0);
+                         boolean InTeleop,
+                         RevBlinkinLedDriver led) {
+        this(drive, camera, shooter, InTeleop, ()-> 0, ()->0, led);
     }
     public AlignToTarget(Drive_Train drive,
                          Camera_subsystem camera,
                          Shooter_Subsystem shooter,
                          boolean InTeleop, DoubleSupplier Forward,
-                         DoubleSupplier tUrn){
+                         DoubleSupplier tUrn,
+                         RevBlinkinLedDriver led){
         turn = tUrn;
         inTeleop = InTeleop;
         this.drive = drive;
         this.camera = camera;
         this.shooter = shooter;
         forward = Forward;
+
+        this.led = led;
+        this.led.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_GRAY);
 
         addRequirements(drive); // IMPORTANT
     }
@@ -81,6 +89,7 @@ public class AlignToTarget extends CommandBase {
         TelemetryPacket pack = new TelemetryPacket();
         pack.addLine("I'm done");
         dash.sendTelemetryPacket(pack);
+        led.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
     }
 }
 

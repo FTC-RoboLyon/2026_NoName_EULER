@@ -2,6 +2,7 @@ package FRC_ALDNC.commands.Command_groups;
 
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -13,18 +14,18 @@ import FRC_ALDNC.commands.Let_a_ball_pass;
 import FRC_ALDNC.commands.Shoot_a_ball_command;
 
 public class feed_auto extends SequentialCommandGroup {
-    public feed_auto(Feeder_subsystem feeder, Intake_subsystem intake_subsystem, Shooter_Subsystem shooter){
+    public feed_auto(Feeder_subsystem feeder, Intake_subsystem intake_subsystem, Shooter_Subsystem shooter, RevBlinkinLedDriver led){
         addCommands(
-                new Collect_command(intake_subsystem, Intake_subsystem.WantedState.COLLECT),
-                new Shoot_a_ball_command(feeder, shooter),
+                new Collect_command(intake_subsystem, Intake_subsystem.WantedState.COLLECT, led),
+                new Shoot_a_ball_command(feeder, shooter, led),
                 new Let_a_ball_pass(feeder),
 
-                new Shoot_a_ball_command(feeder, shooter),
+                new Shoot_a_ball_command(feeder, shooter, led),
                 new Let_a_ball_pass(feeder),
 
-                new Shoot_a_ball_command(feeder, shooter),
+                new Shoot_a_ball_command(feeder, shooter, led),
                 new Let_a_ball_pass(feeder),
-                new Collect_command(intake_subsystem, Intake_subsystem.WantedState.STAND_BY)
+                new Collect_command(intake_subsystem, Intake_subsystem.WantedState.STAND_BY, led)
 
         );
     }

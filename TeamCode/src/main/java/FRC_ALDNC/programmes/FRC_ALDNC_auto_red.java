@@ -42,16 +42,16 @@ public class FRC_ALDNC_auto_red extends CommandOpMode {
                             new Drive_command(robot.Chassis(), -1, -0.05
                                     , 1050 ), //Aller a la pos tir mid
                             //new WaitCommand(100),
-                            new Shoot_auto(robot.Shooter(), robot.Feeder(), Shooter_Subsystem.WantedState.SHOOT_MID, robot.Intake(), robot.Chassis(), robot.Camera()),//tirer les trois première
+                            new Shoot_auto(robot.Shooter(), robot.Feeder(), Shooter_Subsystem.WantedState.SHOOT_MID, robot.Intake(), robot.Chassis(), robot.Camera(), robot.LED),//tirer les trois première
                            // new Drive_command(robot.Chassis(), 0, -0.4, 550),//se tourner vers le menisque
                             new WaitCommand(100),
                     new Drive_command(robot.Chassis(), 0, 0.4, 500), //a peu près 400, a revoir
-                    new Collect_command(robot.Intake(), Intake_subsystem.WantedState.COLLECT), // activer l'intake
+                    new Collect_command(robot.Intake(), Intake_subsystem.WantedState.COLLECT, robot.LED), // activer l'intake
                     new Drive_command(robot.Chassis(), 0.9, 0.1, 300),// avancer pr récupérer les balle
                     new WaitCommand(100),
                     new Drive_command(robot.Chassis(), 0.225, 0.001, 3100),// s'arrêter pdnt un tt petit moment
                     new WaitCommand(100),
-                            new Collect_command(robot.Intake(), Intake_subsystem.WantedState.COLLECT)
+                            new Collect_command(robot.Intake(), Intake_subsystem.WantedState.COLLECT, robot.LED)
                     //new Drive_command(robot.Chassis(), -1, 0, 1250), // reculer//                       les valeurs ici sont égale a la deuxième ligne au dessus
                     //new WaitCommand(100),
                     //new Drive_command(robot.Chassis(), 0, -0.5, 575),

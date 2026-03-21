@@ -13,7 +13,7 @@ public class Constante_shooter {
     public  static  double shooter_timestamp = 20; //Tunme
 
     public static double posviseur_bank = 0.3, posviseur_mid = 0.58, posviseur_far = 0.45; //TUNEME
-    public static double velo_shoot_bank = 1150, velo_shoot_mid = 1500, velo_shoot_far = 1500; //TUNEME
+    public static double velo_shoot_bank = 1250, velo_shoot_mid = 1500, velo_shoot_far = 1500; //TUNEME
 
     public static double seuil_volt_shooter = 11; //TUNEME
 

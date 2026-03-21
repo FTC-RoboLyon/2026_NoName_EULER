@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import FRC_ALDNC.Auto.Subsystems.DriveSubsystem;
-import FRC_ALDNC.Auto.Subsystems.NavXSubsystem;
+import FRC_ALDNC.SubSystem.NavXSubsystem;
 import FRC_ALDNC.Auto.Subsystems.ShooterSubsystem;
 import FRC_ALDNC.Auto.Subsystems.IntakeSubsystem;
 import FRC_ALDNC.Auto.Subsystems.FeederSubsystem;

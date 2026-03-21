@@ -1,12 +1,10 @@
 package FRC_ALDNC.Auto.Command;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import FRC_ALDNC.Auto.Subsystems.DriveSubsystem;
-import FRC_ALDNC.Auto.Subsystems.NavXSubsystem;
 
 public class DriveCommand extends CommandBase {
     private double x, y;

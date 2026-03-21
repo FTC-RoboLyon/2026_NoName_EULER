@@ -28,7 +28,7 @@ public class AutoLyon extends CommandOpMode {
         telemetry.addData("angle", Container.driveSubsystem.getAngle());
         telemetry.update();
         new SequentialCommandGroup(
-                new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoAngle, 180, 180),
+                /*new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoAngle, 180, 180),
                 new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoPos, 180, 180 ),
                 new ParallelRaceGroup(new ShooterCommand(Container.shooterSubsystem, ShooterCommand.shooterState.Far),
                                         new FeederCommand(Container.feeder_subsystem, telemetry,Container.shooterSubsystem)),
@@ -42,7 +42,7 @@ public class AutoLyon extends CommandOpMode {
                 new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoAngle, 325, 45),
                 new AlignCommand(Container.driveSubsystem, Container.cameraSubsystem),
                 new ParallelRaceGroup(new ShooterCommand(Container.shooterSubsystem, ShooterCommand.shooterState.Far),
-                                        new FeederCommand(Container.feeder_subsystem, telemetry, Container.shooterSubsystem)),
-                new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoPos, 180, 120 )).schedule();
+                                        new FeederCommand(Container.feeder_subsystem, telemetry, Container.shooterSubsystem)),*/
+                new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoPos, 240, 60 )).schedule();
     }
 }

@@ -137,7 +137,7 @@ public class ALDNC_container{
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
 
-        LED = hmap.get(RevBlinkinLedDriver.class, "LED");
+        LED = hmap.get(RevBlinkinLedDriver.class, "led");
         LED.setPattern(RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_WHITE);
 //
     }

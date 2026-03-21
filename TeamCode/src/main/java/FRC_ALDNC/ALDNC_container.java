@@ -125,8 +125,8 @@ public class ALDNC_container{
                             turn.getAsDouble()
                     ),
                     chassis_subsystem));
-            new Trigger(() -> shooter_subsystem.Is_Shooting())
-                    .whileActiveContinuous(new AlignToTarget(chassis_subsystem, apriljoke, shooter_subsystem, is_inTeleop, forward, turn));
+            //new Trigger(() -> shooter_subsystem.Is_Shooting())
+            //        .whileActiveContinuous(new AlignToTarget(chassis_subsystem, apriljoke, shooter_subsystem, is_inTeleop, forward, turn));
         } else {
             //new Trigger(() -> shooter_subsystem.Is_Shooting())
             //        .whileActiveContinuous(new AlignToTarget(chassis_subsystem, apriljoke, shooter_subsystem, true));

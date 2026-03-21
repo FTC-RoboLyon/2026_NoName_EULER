@@ -19,7 +19,7 @@ public class AutoLyon extends CommandOpMode {
 
     Container container;
     HardwareMap hmap;
-    private double xDepart = 325, yDepart = 45, angleDepart = 0;
+    private double xDepart = 0, yDepart = 240, angleDepart = 0;
 
 
     @Override
@@ -43,6 +43,6 @@ public class AutoLyon extends CommandOpMode {
                 new AlignCommand(Container.driveSubsystem, Container.cameraSubsystem),
                 new ParallelRaceGroup(new ShooterCommand(Container.shooterSubsystem, ShooterCommand.shooterState.Far),
                                         new FeederCommand(Container.feeder_subsystem, telemetry, Container.shooterSubsystem)),*/
-                new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoPos, 240, 60 )).schedule();
+                new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoPos, 0, 300 )).schedule();
     }
 }

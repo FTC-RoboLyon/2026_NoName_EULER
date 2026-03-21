@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.arcrobotics.ftclib.command.button.Button;
@@ -89,7 +90,6 @@ public class ALDNC_container{
         chassis_subsystem = new Drive_Train(hmap, telemetry, x, y, this, is_intaking);
 
 
-        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this, !is_inTeleop, diStance_to_goal, is_intaking);
 
 
 
@@ -104,6 +104,11 @@ public class ALDNC_container{
         right_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.right);
         forward = () -> left_joystick.getX();
         turn = () -> right_joystick.getY();
+        BooleanSupplier Chemin_shooter = ()-> gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER);
+        BooleanSupplier Chemin_intake = ()-> gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER);
+
+        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this, !is_inTeleop, diStance_to_goal, is_intaking, Chemin_intake, Chemin_shooter);
+
 
 
 

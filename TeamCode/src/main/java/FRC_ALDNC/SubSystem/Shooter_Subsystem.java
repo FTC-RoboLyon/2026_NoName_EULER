@@ -98,10 +98,14 @@ public class Shooter_Subsystem extends SubsystemBase {
     private ALDNC_container robot;
     public DoubleSupplier distance_To_goal;
     BooleanSupplier iNtake;
+    BooleanSupplier Chem_shoot;
+    BooleanSupplier Chem_inta;
 
 
-    public Shooter_Subsystem (HardwareMap hmap, Telemetry telemetry, ALDNC_container RoBot, boolean auto, DoubleSupplier distance_to_goal, BooleanSupplier intake){
+    public Shooter_Subsystem (HardwareMap hmap, Telemetry telemetry, ALDNC_container RoBot, boolean auto, DoubleSupplier distance_to_goal, BooleanSupplier intake, BooleanSupplier chemIn, BooleanSupplier chSh){
         distance_To_goal = distance_to_goal;
+        Chem_shoot = chSh;
+        Chem_inta = chemIn;
 
         iNtake = intake;
         inauto = auto;
@@ -257,7 +261,6 @@ public class Shooter_Subsystem extends SubsystemBase {
         {
             case WAITING:
                 shooter.setVelocity(0);
-                pont.setPower(iNtake.getAsBoolean() ? -1 : 0);
                 break;
 
             case ASPIRER:
@@ -266,7 +269,6 @@ public class Shooter_Subsystem extends SubsystemBase {
                 viseur.setPosition(1);
                 break;
             case PREPARING_TO_SHOOT:
-                pont.setPower(1);
                 viseur.setPosition(posviseur);
                 //setPower_voltage_PIDF();
                 shooter.setVelocity(veloShooter);
@@ -319,6 +321,11 @@ public class Shooter_Subsystem extends SubsystemBase {
     public void periodic(){
         update_input();
         updatePID();
+
+        if (Chem_shoot.getAsBoolean())
+            pont.setPower(1);
+        else if (Chem_inta.getAsBoolean())
+            pont.setPower(-1);
 
         RunStateShooter();
         Shoot();

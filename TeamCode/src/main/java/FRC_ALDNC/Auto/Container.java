@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.function.BooleanSupplier;
+
 import FRC_ALDNC.Auto.Subsystems.DriveSubsystem;
 import FRC_ALDNC.SubSystem.NavXSubsystem;
 import FRC_ALDNC.Auto.Subsystems.ShooterSubsystem;

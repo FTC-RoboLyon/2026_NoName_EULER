@@ -23,13 +23,6 @@ public class NavXSubsystem extends SubsystemBase {
     }
 
     public void reset_A_MettreDans_L_Init() {
-        Orientation angles = navx.getAngularOrientation(
-                AxesReference.INTRINSIC,
-                AxesOrder.ZYX,
-                AngleUnit.RADIANS
-        );
-
-        offset = angles.firstAngle;
     }
 
     @Override
@@ -41,8 +34,7 @@ public class NavXSubsystem extends SubsystemBase {
                 AngleUnit.RADIANS
         );
 
-        double rawYaw = angles.firstAngle;
 
-        angle = rawYaw - offset;
+        angle = angles.firstAngle;
     }
 }

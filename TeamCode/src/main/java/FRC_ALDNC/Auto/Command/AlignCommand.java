@@ -4,7 +4,7 @@ import static FRC_ALDNC.CONSTAAANT_CESTMOILEBON.ff_rotation;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import ExercicesAntoineChatGPT.CameraSimple;
+//import ExercicesAntoineChatGPT.CameraSimple;
 import FRC_ALDNC.Auto.Subsystems.DriveSubsystem;
 import FRC_ALDNC.Auto.Subsystems.NavXSubsystem;
 import FRC_ALDNC.SubSystem.Camera_subsystem;
@@ -28,5 +28,14 @@ public class AlignCommand extends CommandBase{
         turn = erreurPos*ff_rotation + erreurPos*p_rotation;
         driveSubsystem.drive(0, turn);
 
+    }
+    @Override
+    public boolean isFinished(){
+        return Math.abs(erreurPos) < 2;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        driveSubsystem.drive(0,0);
     }
 }

@@ -6,7 +6,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import FRC_ALDNC.commands.AlignCommand;
+//import FRC_ALDNC.commands.AlignCommand;
 import FRC_ALDNC.Auto.Command.DriveCommand;
 import FRC_ALDNC.Auto.Command.FeederCommand;
 import FRC_ALDNC.Auto.Command.IntakeCommand;

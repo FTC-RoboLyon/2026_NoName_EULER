@@ -1,4 +1,4 @@
-package FRC_ALDNC.Auto.Subsystems;
+package FRC_ALDNC.SubSystem;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;

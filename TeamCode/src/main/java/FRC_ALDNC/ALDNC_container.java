@@ -23,6 +23,7 @@ import FRC_ALDNC.SubSystem.Camera_subsystem;
 import FRC_ALDNC.SubSystem.Drive_Train;
 import FRC_ALDNC.SubSystem.Feeder_subsystem;
 import FRC_ALDNC.SubSystem.Intake_subsystem;
+import FRC_ALDNC.SubSystem.NavXSubsystem;
 import FRC_ALDNC.SubSystem.Shooter_Subsystem;
 import FRC_ALDNC.SubSystem.joystick_subsystem;
 import FRC_ALDNC.commands.AlignToTarget;
@@ -67,6 +68,7 @@ public class ALDNC_container{
     public BooleanSupplier is_shooting;
 
     public double x,y;
+    public NavXSubsystem navx;
 
     public DoubleSupplier diStance_to_goal;
 
@@ -84,7 +86,7 @@ public class ALDNC_container{
         };
         BooleanSupplier is_intaking = ()-> intake.getM_systemState() == Intake_subsystem.SystemState.INTAKING;
 
-        chassis_subsystem = new Drive_Train(hmap, telemetry, x, y, this);
+        chassis_subsystem = new Drive_Train(hmap, telemetry, x, y, this, is_intaking);
 
 
         shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this, !is_inTeleop, diStance_to_goal, is_intaking);
@@ -95,13 +97,15 @@ public class ALDNC_container{
         intake = new Intake_subsystem(hmap);
 
         feeder = new Feeder_subsystem(hmap, this);
-
+        navx = new NavXSubsystem(hmap);
 
 
         left_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.left);
         right_joystick = new joystick_subsystem(gamepad, joystick_subsystem.Witch_stick.right);
         forward = () -> left_joystick.getX();
         turn = () -> right_joystick.getY();
+
+
 
 
 

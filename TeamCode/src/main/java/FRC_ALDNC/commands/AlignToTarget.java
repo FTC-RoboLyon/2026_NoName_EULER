@@ -54,7 +54,7 @@ public class AlignToTarget extends CommandBase {
     @Override
     public void execute() {
 
-        erreurPos = camera.getBearing() * CONSTAAANT_CESTMOILEBON.ff_rotation;
+        erreurPos = camera.getBearing() == 100000? erreurPos : camera.getBearing() * CONSTAAANT_CESTMOILEBON.ff_rotation;
 
         if (Math.abs(erreurPos) < CONSTAAANT_CESTMOILEBON.tolerence_rotation) {
             erreurPos = 2;

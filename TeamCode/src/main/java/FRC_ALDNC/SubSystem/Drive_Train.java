@@ -34,6 +34,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 import java.util.Base64;
+import java.util.function.BooleanSupplier;
 
 import FRC_ALDNC.ALDNC_container;
 import lib.PidRBL;
@@ -53,9 +54,11 @@ public class Drive_Train extends SubsystemBase {
     private double targetPosition;
     private double erreurPos;
     private VoltageSensor voltageSensor;
+    BooleanSupplier intake;
 
-    public Drive_Train(HardwareMap hmap, Telemetry tele, double x, double y, ALDNC_container roBot) {
+    public Drive_Train(HardwareMap hmap, Telemetry tele, double x, double y, ALDNC_container roBot, BooleanSupplier intakE) {
         robot = roBot;
+        intake = intakE;
 
         xOdo = x;
         yOdo = y;
@@ -123,6 +126,9 @@ public class Drive_Train extends SubsystemBase {
     }
 
     public void drive(double forward, double turn) {
+        if (intake.getAsBoolean()){
+            turn /=2;
+        }
         left_motor_power = forward + turn;
         right_motor_power = forward - turn;
 

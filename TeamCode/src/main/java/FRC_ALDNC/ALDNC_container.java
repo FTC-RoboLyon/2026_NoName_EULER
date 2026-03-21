@@ -111,9 +111,8 @@ public class ALDNC_container{
         shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this, !is_inTeleop, diStance_to_goal, is_intaking);
 
 
-
-
-
+        LED = hmap.get(RevBlinkinLedDriver.class, "led");
+        LED.setPattern(RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_WHITE);
 
 
 
@@ -140,10 +139,6 @@ public class ALDNC_container{
         this.telemetry = telemetry;
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
-
-
-        LED = hmap.get(RevBlinkinLedDriver.class, "led");
-        LED.setPattern(RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_WHITE);
 //
     }
 

@@ -29,7 +29,7 @@ public class AlignToTarget extends CommandBase {
     private DoubleSupplier forward;
     private DoubleSupplier turn;
 
-    private RevBlinkinLedDriver led;
+    private final RevBlinkinLedDriver led;
     FtcDashboard dash = FtcDashboard.getInstance();
 
 

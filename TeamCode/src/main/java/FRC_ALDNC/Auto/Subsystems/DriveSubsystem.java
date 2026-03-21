@@ -136,11 +136,13 @@ public class DriveSubsystem extends SubsystemBase {
         if(vitesseDistance > 0.5) vitesseDistance = 0.5;
 
         double turn = angleDiff * pAngle;
-        if(turn > 0.5)turn = 0.5;
-        if(turn < 0) turn = 0;
+        if(turn > 0.3)turn = 0.3;
+        if(turn < -0.3) turn = -0.3;
+        double turnDroite = turn < 0 ? 0 : turn;
+        double turnGauche = -turn < 0 ? 0 : -turn;
 
-        right_motor_power = directionMultiplier * vitesseDistance + turn;
-        left_motor_power  = directionMultiplier * vitesseDistance - turn;
+        right_motor_power = directionMultiplier * vitesseDistance + turnDroite;
+        left_motor_power  = directionMultiplier * vitesseDistance + turnGauche;
     }
     public double getDistanceTo(double targetX, double targetY){
         double dx = targetX - vieuxX;

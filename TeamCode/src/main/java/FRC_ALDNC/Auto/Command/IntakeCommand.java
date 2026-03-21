@@ -28,4 +28,9 @@ public class IntakeCommand extends CommandBase {
                 break;
         }
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        intakeSubsystem.configureIntake("Wait");
+    }
 }

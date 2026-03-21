@@ -22,7 +22,7 @@ public class ShooterCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return shooterSubsystem.getBallCount() >= 3;
+        return shooterSubsystem.getBallCount() >= 2;
     }
 
     @Override

@@ -29,4 +29,13 @@ public class AlignCommand extends CommandBase{
         driveSubsystem.drive(0, turn);
 
     }
+    @Override
+    public boolean isFinished(){
+        return Math.abs(erreurPos) < 2;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        driveSubsystem.drive(0,0);
+    }
 }

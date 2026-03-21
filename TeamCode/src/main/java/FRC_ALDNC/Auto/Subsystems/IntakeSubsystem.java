@@ -25,9 +25,9 @@ public class IntakeSubsystem extends SubsystemBase {
     }
     public void configureIntake(String intakeOuPas){
         if(intakeOuPas.equals("Intake")){
-            powerIntake = 0.7;
+            powerIntake = 1;
         }else if(intakeOuPas.equals("Reject")){
-            powerIntake = -0.7;
+            powerIntake = -1;
         }else {
             powerIntake = 0.0;
         }

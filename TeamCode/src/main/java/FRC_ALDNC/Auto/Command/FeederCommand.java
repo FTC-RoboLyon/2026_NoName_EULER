@@ -13,6 +13,8 @@ import FRC_ALDNC.Auto.Subsystems.ShooterSubsystem;
 
 public class FeederCommand extends CommandBase {
     int v = 0;
+    enum etat {haut, bas}
+    etat state;
 
     FeederSubsystem feeder;
     ShooterSubsystem shooterSubsystem;
@@ -22,44 +24,36 @@ public class FeederCommand extends CommandBase {
         this.shooterSubsystem = shooterSubsystem;
         telemetrY = telemetry;
         this.feeder = feeder;
+        state = etat.haut;
         addRequirements( feeder);
     }
 
     @Override
-    public void initialize() {
-
-    }
-
-    @Override
     public void execute() {
-        telemetrY.addLine("shoot a ball has execute");
-        telemetrY.update();
-        if(shooterSubsystem.bonneVitesseOuPas() && v == 0) {
-            feeder.setfeeder_wanted_state(FeederSubsystem.Feeder_wanted_state.Haut);
-            telemetrY.addLine("shoot a ball is initialize");
-            telemetrY.update();
-            time = new ElapsedTime();
-            time.reset();
-            v = 1;
+        if(shooterSubsystem.bonneVitesseOuPas()){
+            switch (state){
+                case haut:
+                    feeder.setfeeder_wanted_state(FeederSubsystem.Feeder_wanted_state.Haut);
+                    time = new ElapsedTime();
+                    time.reset();
+                    state = etat.bas;
+                    v = 0;
+                    break;
+                case bas:
+                    if(time.milliseconds() >= 250 && v == 0) {
+                        feeder.setfeeder_wanted_state(FeederSubsystem.Feeder_wanted_state.bas);
+                        time.reset();
+                        v = 1;
+                    }
+                    if (time.milliseconds() >= 3000) state = etat.haut;
+                    break;
+            }
         }
 
     }
 
-
-
-
     @Override
     public void end(boolean interrupted) {
-        telemetrY.addLine("shoot a ball has end");
-        telemetrY.update();
         feeder.setfeeder_wanted_state(FeederSubsystem.Feeder_wanted_state.bas);
-
-    }
-
-    @Override
-    public boolean isFinished() {
-        //return Utils.IsInRange(feeder.get_Pos(), posFeed, 0.005);
-        return v == 1 && time.milliseconds() >= 250;
-
     }
 }

@@ -107,7 +107,7 @@ public class ALDNC_container{
         BooleanSupplier Chemin_shooter = ()-> gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER);
         BooleanSupplier Chemin_intake = ()-> gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER);
 
-        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this, !is_inTeleop, diStance_to_goal, is_intaking, Chemin_intake, Chemin_shooter);
+        shooter_subsystem = new Shooter_Subsystem(hmap, telemetry, this, !is_inTeleop, diStance_to_goal, is_intaking);
 
 
 

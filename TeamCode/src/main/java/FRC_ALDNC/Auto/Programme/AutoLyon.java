@@ -19,7 +19,7 @@ public class AutoLyon extends CommandOpMode {
 
     Container container;
     HardwareMap hmap;
-    private double xDepart = 325, yDepart = 45, angleDepart = 0;
+    private double xDepart = 0, yDepart = 120, angleDepart = 0;
 
 
     @Override
@@ -27,8 +27,8 @@ public class AutoLyon extends CommandOpMode {
         container = new Container(hardwareMap, telemetry, xDepart, yDepart, angleDepart);
         telemetry.addData("angle", Container.driveSubsystem.getAngle());
         telemetry.update();
-        new SequentialCommandGroup(new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoAngle, 240, 60),
-                new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoPos, 240, 60)
+        new SequentialCommandGroup(new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoAngle, 60, 120),
+                new DriveCommand(Container.driveSubsystem, telemetry, DriveCommand.driveMode.GoPos, 60, 120)
                 ).schedule();
     }
 }

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class Shooter {
 
-    final DcMotor shooter;
+    public final DcMotor shooter;
 
     public Shooter(DcMotor shooter) {
         this.shooter = shooter;

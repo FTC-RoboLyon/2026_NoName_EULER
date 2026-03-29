@@ -74,6 +74,8 @@ public class EulerTeleop extends LinearOpMode {
             telemetry.addData("DriverState", myDriver.getState());
             telemetry.addData("IntakeState", myIntake.getState());
             telemetry.addData("ViseurState", myViseur.getState());
+            telemetry.addData("ShooterState", myShooter.getState());
+            telemetry.addData("ShooterValue", myShooter.shooter.getPower());
             telemetry.update();
 
             // ne pas oublier de call update sur les objets

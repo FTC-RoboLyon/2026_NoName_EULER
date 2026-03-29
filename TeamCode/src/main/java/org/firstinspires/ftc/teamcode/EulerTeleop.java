@@ -56,6 +56,9 @@ public class EulerTeleop extends LinearOpMode {
             float right = -gamepad1.right_stick_y;
             myDriver.drive(left, right);
 
+            telemetry.addData("DriverState", myDriver.getState());
+            telemetry.update();
+
             // attention à l'appui trop long ...
             // si besoin il faudra avoir un etat precedent et gerer en fonction
             if (gamepad1.left_bumper) {

@@ -16,6 +16,13 @@ public class Driver {
         this.rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
+
+    /**
+     * Drive the robot using arcade controls.
+     *
+     * @param left
+     * @param right
+     */
     public void drive(float left, float right) {
         leftMotor.setPower(left);
         rightMotor.setPower(right);

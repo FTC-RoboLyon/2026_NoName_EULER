@@ -3,19 +3,22 @@ package org.firstinspires.ftc.teamcode.euler.viseur;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+/**
+ * Viseur - Contrôle la position du servo d'inclinaison pour le tir.
+ * Architecture robuste basée sur des états internes et une mise à jour différée.
+ */
 public class Viseur {
     private final Servo viseurServo;
 
-    // Positions
-    public static final double NEAR_POSITION = 0.0;
-    public static final double MIDDLE_POSITION = 0.5;
-    public static final double FAR_POSITION = 1.0;
+    // Positions (Configuration Hardware)
+    private static final double NEAR_POSITION = 0.0;
+    private static final double MIDDLE_POSITION = 0.5;
+    private static final double FAR_POSITION = 1.0;
 
-    // Temps de trajet estimé
+    // Paramètres temporels
     public static final long TRAVEL_TIME_MS = 300;
 
-    private ViseurInternalState internalState = ViseurInternalState.NEAR;
-    private double targetPosition = NEAR_POSITION;
+    private ViseurTargetState targetState = ViseurTargetState.NEAR;
     private double lastCommandedPosition = -1;
     private final ElapsedTime timer = new ElapsedTime();
     private double moveStartTime = 0;
@@ -25,35 +28,59 @@ public class Viseur {
     }
 
     public void aimNear() {
-        setTarget(ViseurInternalState.NEAR, NEAR_POSITION);
+        setTarget(ViseurTargetState.NEAR);
     }
 
     public void aimMiddle() {
-        setTarget(ViseurInternalState.MIDDLE, MIDDLE_POSITION);
+        setTarget(ViseurTargetState.MIDDLE);
     }
 
     public void aimFar() {
-        setTarget(ViseurInternalState.FAR, FAR_POSITION);
+        setTarget(ViseurTargetState.FAR);
     }
 
-    private void setTarget(ViseurInternalState state, double position) {
-        if (this.internalState != state) {
-            this.internalState = state;
-            this.targetPosition = position;
+    private void setTarget(ViseurTargetState state) {
+        if (this.targetState != state) {
+            this.targetState = state;
             this.moveStartTime = timer.milliseconds();
         }
     }
 
+    /**
+     * Traduit l'état interne en position réelle pour le servo.
+     */
     public void update() {
-        if (targetPosition != lastCommandedPosition) {
-            viseurServo.setPosition(targetPosition);
-            lastCommandedPosition = targetPosition;
+        double targetPos;
+        switch (targetState) {
+            case MIDDLE:
+                targetPos = MIDDLE_POSITION;
+                break;
+            case FAR:
+                targetPos = FAR_POSITION;
+                break;
+            case NEAR:
+            default:
+                targetPos = NEAR_POSITION;
+                break;
+        }
+
+        if (targetPos != lastCommandedPosition) {
+            viseurServo.setPosition(targetPos);
+            lastCommandedPosition = targetPos;
         }
     }
 
+    /**
+     * Retourne l'intention actuelle.
+     */
+    public ViseurTargetState getTargetState() {
+        return targetState;
+    }
+
+    /**
+     * Retourne l'état physique estimé (MOVING ou IDLE).
+     */
     public ViseurState getState() {
-        // MOVING si on est en train de changer de position (basé sur le timer)
-        // Sinon IDLE
         if (timer.milliseconds() - moveStartTime < TRAVEL_TIME_MS) {
             return ViseurState.MOVING;
         }

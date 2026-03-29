@@ -2,43 +2,108 @@ package org.firstinspires.ftc.teamcode.euler.intake;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+/**
+ * Sous-système gérant le mécanisme de collecte (Intake).
+ */
 public class Intake {
 
-    final DcMotor intakeMotor;
+    private final DcMotor intakeMotor;
+    private IntakeState targetState = IntakeState.IDLE;
+
+    /**
+     * Initialise le moteur de l'intake.
+     *
+     * @param intakeMotor Le moteur physique de l'intake.
+     */
     public Intake(DcMotor intakeMotor) {
         this.intakeMotor = intakeMotor;
     }
 
+    /**
+     * Définit l'intention de collecter des éléments.
+     */
+    public void collect() {
+        targetState = IntakeState.COLLECT;
+    }
+
+    /**
+     * Définit l'intention d'éjecter des éléments.
+     */
+    public void eject() {
+        targetState = IntakeState.EJECT;
+    }
+
+    /**
+     * Définit l'intention d'arrêter le mécanisme.
+     */
+    public void stop() {
+        targetState = IntakeState.IDLE;
+    }
+
+    /**
+     * Alterne entre l'état de collecte et l'arrêt.
+     */
     public void toggleCollect() {
-        if(getState() == IntakeState.IDLE || getState() == IntakeState.EJECT) {
-            intakeMotor.setPower(0.7);
-        } else {
+        if (targetState == IntakeState.COLLECT) {
             stop();
+        } else {
+            collect();
         }
     }
 
-    public void toggleEject(){
-        if(getState() == IntakeState.IDLE || getState() == IntakeState.COLLECT ){
-            intakeMotor.setPower(-1);
-        } else {
+    /**
+     * Alterne entre l'état d'éjection et l'arrêt.
+     */
+    public void toggleEject() {
+        if (targetState == IntakeState.EJECT) {
             stop();
+        } else {
+            eject();
         }
     }
 
-    private void stop() {
-        intakeMotor.setPower(0);
+    /**
+     * Applique la puissance au moteur physique selon l'état cible.
+     * Doit être appelée à chaque itération.
+     */
+    public void update() {
+        switch (targetState) {
+            case COLLECT:
+                intakeMotor.setPower(0.7);
+                break;
+            case EJECT:
+                intakeMotor.setPower(-1.0);
+                break;
+            case IDLE:
+            default:
+                intakeMotor.setPower(0);
+                break;
+        }
     }
 
-    public IntakeState getState(){
-        if(intakeMotor.getPower() == 0){
+    /**
+     * Retourne l'intention actuelle du pilote.
+     *
+     * @return L'état cible demandé (IDLE, COLLECT ou EJECT).
+     */
+    public IntakeState getTargetState() {
+        return targetState;
+    }
+
+    /**
+     * Retourne l'état réel basé sur la puissance actuelle du moteur.
+     * Permet de vérifier si le hardware exécute bien l'ordre.
+     *
+     * @return L'état physique actuel (IDLE, COLLECT ou EJECT).
+     */
+    public IntakeState getState() {
+        double power = intakeMotor.getPower();
+        if (power == 0) {
             return IntakeState.IDLE;
-        }
-        if(intakeMotor.getPower() < 0) {
-            return IntakeState.EJECT;
-        } else {
+        } else if (power > 0) {
             return IntakeState.COLLECT;
+        } else {
+            return IntakeState.EJECT;
         }
     }
-
-
 }

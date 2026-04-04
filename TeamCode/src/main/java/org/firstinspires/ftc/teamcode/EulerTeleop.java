@@ -3,25 +3,28 @@ package org.firstinspires.ftc.teamcode;
 import static org.firstinspires.ftc.teamcode.euler.Constant.FEEDER_SERVO;
 import static org.firstinspires.ftc.teamcode.euler.Constant.INTAKE_MOTOR;
 import static org.firstinspires.ftc.teamcode.euler.Constant.LEFT_MOTOR;
+import static org.firstinspires.ftc.teamcode.euler.Constant.PATHER_SERVO;
 import static org.firstinspires.ftc.teamcode.euler.Constant.RIGHT_MOTOR;
 import static org.firstinspires.ftc.teamcode.euler.Constant.SHOOTER_MOTOR;
 import static org.firstinspires.ftc.teamcode.euler.Constant.VISEUR_SERVO;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.euler.driver.Driver;
 import org.firstinspires.ftc.teamcode.euler.feeder.Feeder;
 import org.firstinspires.ftc.teamcode.euler.intake.Intake;
+import org.firstinspires.ftc.teamcode.euler.pather.Pather;
 import org.firstinspires.ftc.teamcode.euler.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.euler.utils.ButtonReader;
 import org.firstinspires.ftc.teamcode.euler.viseur.Viseur;
 
 /**
  * EulerTeleop - OpMode principal.
- * Version avec Feeder simplifié à 2 positions (Haut/Bas).
+ * Version finale avec architecture intention/action et gestion homogène des boutons.
  */
 @TeleOp(name = "EulerTeleop", group = "Euler")
 public class EulerTeleop extends LinearOpMode {
@@ -30,6 +33,7 @@ public class EulerTeleop extends LinearOpMode {
     private Shooter myShooter;
     private Viseur myViseur;
     private Feeder myFeeder;
+    private Pather myPather;
 
     private ButtonReader btnA;
     private ButtonReader btnB;
@@ -37,20 +41,25 @@ public class EulerTeleop extends LinearOpMode {
     private ButtonReader btnL_Bumper;
     private ButtonReader btnL_Trigger;
     private ButtonReader btnR_Bumper;
+    private ButtonReader btnR_Trigger;
 
     void initialize() {
+        // Hardware
         myDriver = new Driver(hardwareMap.get(DcMotor.class, LEFT_MOTOR), hardwareMap.get(DcMotor.class, RIGHT_MOTOR));
         myIntake = new Intake(hardwareMap.get(DcMotor.class, INTAKE_MOTOR));
         myShooter = new Shooter(hardwareMap.get(DcMotor.class, SHOOTER_MOTOR));
         myViseur = new Viseur(hardwareMap.get(Servo.class, VISEUR_SERVO));
         myFeeder = new Feeder(hardwareMap.get(Servo.class, FEEDER_SERVO));
+        myPather = new Pather(hardwareMap.get(CRServo.class, PATHER_SERVO));
 
+        // Boutons
         btnA = new ButtonReader(() -> gamepad1.a);
         btnB = new ButtonReader(() -> gamepad1.b);
         btnX = new ButtonReader(() -> gamepad1.x);
         btnL_Bumper = new ButtonReader(() -> gamepad1.left_bumper);
         btnL_Trigger = new ButtonReader(() -> gamepad1.left_trigger > 0.5);
         btnR_Bumper = new ButtonReader(() -> gamepad1.right_bumper);
+        btnR_Trigger = new ButtonReader(() -> gamepad1.right_trigger > 0.5);
     }
 
     @Override
@@ -66,7 +75,7 @@ public class EulerTeleop extends LinearOpMode {
 
             // 1. COMMANDES (INTENTIONS)
 
-            // Shooter & Viseur
+            // Shooter & Viseur (A, B, X)
             if (btnA.wasJustPressed()) {
                 myShooter.toggleShootNear();
                 myViseur.aimNear();
@@ -78,16 +87,21 @@ public class EulerTeleop extends LinearOpMode {
                 myViseur.aimFar();
             }
 
-            // Feeder : Action simple Toggle (Haut / Bas)
+            // Pather (RT)
+            if (btnR_Trigger.wasJustPressed()) {
+                myPather.toggleForward();
+            }
+
+            // Feeder (RB)
             if (btnR_Bumper.wasJustPressed()) {
                 myFeeder.toggle();
             }
 
-            // Intake
+            // Intake (LB / LT)
             if (btnL_Bumper.wasJustPressed()) myIntake.toggleCollect();
             if (btnL_Trigger.wasJustPressed()) myIntake.toggleEject();
 
-            // Pilotage
+            // Pilotage (Sticks)
             myDriver.drive(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
 
             // 2. ACTIONS (RÉALITÉ)
@@ -96,17 +110,22 @@ public class EulerTeleop extends LinearOpMode {
             myShooter.update();
             myViseur.update();
             myFeeder.update();
+            myPather.update();
 
             // 3. TÉLÉMÉTRIE
-            telemetry.addLine("--- SYSTÈMES ---");
+            telemetry.addLine("--- MOUVEMENT ---");
             telemetry.addData("Châssis", myDriver.getState());
+            telemetry.addData("Pather", myPather.getState() + " (" + myPather.getTargetState() + ")");
+            telemetry.addData("Manette", gamepad1.left_stick_y + ", " + gamepad1.right_stick_y);
+
+            telemetry.addLine("--- COLLECTE ---");
             telemetry.addData("Intake", myIntake.getState());
 
-            telemetry.addLine("--- SHOOTER / VISEUR / FEEDER ---");
-            telemetry.addData("Shooter", myShooter.getState() + " - " + myShooter.getTargetState());
-            telemetry.addData("Prêt ?", myShooter.isReady() ? "[OUI]" : "Ajustement...");
-            telemetry.addData("Viseur", myViseur.getState() + " - " + myViseur.getTargetState());
-            telemetry.addData("Feeder", myFeeder.getState() + " - " + myFeeder.getTargetState());
+            telemetry.addLine("--- TIR ---");
+            telemetry.addData("Shooter", myShooter.getState() + (myShooter.isReady() ? " [PRÊT]" : " [LOADING]"));
+            telemetry.addData("Viseur", myViseur.getState() + " (" + myViseur.getTargetState() + ")");
+            telemetry.addData("Feeder", myFeeder.getState() + " (" + myFeeder.getTargetState() + ")");
+            telemetry.addData("Pather", myPather.getState() + " (" + myPather.getTargetState() + ")");
 
             telemetry.update();
         }

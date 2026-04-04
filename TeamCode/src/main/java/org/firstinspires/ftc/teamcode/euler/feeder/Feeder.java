@@ -11,8 +11,8 @@ public class Feeder {
     private final Servo feederServo;
 
     // Positions de configuration
-    public static final double PUSH_POSITION = 1.0;
-    public static final double IDLE_POSITION = 0.0;
+    public static final double PUSH_POSITION = 0.3;
+    public static final double IDLE_POSITION = 0.18;
 
     // Temps estimé pour le mouvement mécanique du servo
     public static final long TRAVEL_TIME_MS = 250;

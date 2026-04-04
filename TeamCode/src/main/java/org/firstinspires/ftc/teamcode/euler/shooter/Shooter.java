@@ -14,8 +14,8 @@ public class Shooter {
 
     // Vitesse cible en tics par seconde
     private double targetVelocity = 0;
-    private static final double VELOCITY_NEAR = 800;
-    private static final double VELOCITY_MIDDLE = 1400;
+    private static final double VELOCITY_NEAR = 1400;
+    private static final double VELOCITY_MIDDLE = 2000;
     private static final double VELOCITY_FAR = 2200;
     private static final double VELOCITY_TOLERANCE = 50;
 

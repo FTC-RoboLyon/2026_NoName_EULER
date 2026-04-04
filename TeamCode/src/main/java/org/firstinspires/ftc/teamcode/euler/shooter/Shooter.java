@@ -2,31 +2,36 @@ package org.firstinspires.ftc.teamcode.euler.shooter;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 /**
  * Sous-système gérant le mécanisme de tir (Shooter).
  * Utilise {@link DcMotorEx} pour un contrôle précis de la vitesse par PID.
+ * Adapte la vélocité cible en fonction de la tension de la batterie.
  */
 public class Shooter {
 
     private final DcMotorEx shooterMotor;
+    private final VoltageSensor voltageSensor;
     private ShooterState targetState;
 
-    // Vitesse cible en tics par seconde
+    // Vitesse cible nominale (pour 12V) en tics par seconde
     private double targetVelocity = 0;
     private static final double VELOCITY_NEAR = 1400;
-    private static final double VELOCITY_MIDDLE = 2000;
-    private static final double VELOCITY_FAR = 2200;
+    private static final double VELOCITY_MIDDLE = 2100;
+    private static final double VELOCITY_FAR = 2400;
     private static final double VELOCITY_TOLERANCE = 50;
 
     /**
-     * Initialise le moteur du shooter et configure le mode encodeur.
+     * Initialise le moteur du shooter et le capteur de tension.
      *
-     * @param shooterMotor Le moteur physique du shooter.
+     * @param shooterMotor  Le moteur physique du shooter.
+     * @param voltageSensor Le capteur de tension de la batterie.
      */
-    public Shooter(DcMotor shooterMotor) {
+    public Shooter(DcMotor shooterMotor, VoltageSensor voltageSensor) {
         this.shooterMotor = (DcMotorEx) shooterMotor;
         this.shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.voltageSensor = voltageSensor;
         this.targetState = ShooterState.IDLE;
     }
 
@@ -96,36 +101,45 @@ public class Shooter {
     }
 
     /**
-     * Vérifie si le shooter a atteint la vitesse cible à une tolérance près.
+     * Vérifie si le shooter a atteint la vitesse cible adaptée à la tension.
      *
-     * @return true si le moteur est stabilisé à la vitesse demandée.
+     * @return true si le moteur est stabilisé à la vitesse compensée.
      */
     public boolean isReady() {
         if (targetState == ShooterState.IDLE) return false;
-        return Math.abs(shooterMotor.getVelocity() - targetVelocity) < VELOCITY_TOLERANCE;
+        return Math.abs(shooterMotor.getVelocity() - getCompensatedVelocity()) < VELOCITY_TOLERANCE;
     }
 
     /**
-     * Envoie la commande de vitesse au contrôleur de moteur.
-     * Doit être appelée à chaque itération pour assurer la régulation.
+     * Calcule la vélocité compensée en fonction de la tension batterie.
+     * Formule : V_cible = V_nominale * (12.0 / V_actuelle)
+     * Cela permet de garder une puissance de tir constante même quand la batterie faiblit.
+     */
+    private double getCompensatedVelocity() {
+        double voltage = voltageSensor.getVoltage();
+        if (voltage < 1.0) {
+            voltage = 12.0; // Sécurité si lecture erronée
+        }
+        return targetVelocity * (12.0 / voltage);
+    }
+
+    /**
+     * Envoie la commande de vitesse compensée au contrôleur de moteur.
+     * Doit être appelée à chaque itération.
      */
     public void update() {
-        shooterMotor.setVelocity(targetVelocity);
+        shooterMotor.setVelocity(getCompensatedVelocity());
     }
 
     /**
-     * Retourne l'intention de tir actuelle demandée par le pilote.
-     *
-     * @return L'état cible (IDLE ou SHOOTING).
+     * Retourne l'intention du pilote.
      */
     public ShooterState getTargetState() {
         return targetState;
     }
 
     /**
-     * Retourne l'état physique réel basé sur la vitesse actuelle lue par l'encodeur.
-     *
-     * @return L'état de mouvement réel du moteur (IDLE ou SHOOTING).
+     * Retourne l'état physique réel basé sur la vitesse actuelle.
      */
     public ShooterState getState() {
         if (Math.abs(shooterMotor.getVelocity()) < 10) {
@@ -136,9 +150,7 @@ public class Shooter {
     }
 
     /**
-     * Retourne la vitesse actuelle du moteur lue par l'encodeur.
-     *
-     * @return Vitesse en tics par seconde.
+     * Retourne la vitesse actuelle lue par l'encodeur.
      */
     public double getActualVelocity() {
         return shooterMotor.getVelocity();

@@ -18,7 +18,7 @@ public class Viseur {
     // Paramètres temporels
     public static final long TRAVEL_TIME_MS = 300;
 
-    private ViseurTargetState targetState = ViseurTargetState.NEAR;
+    private ViseurTargetState targetState = ViseurTargetState.FAR;
     private double lastCommandedPosition = -1;
     private final ElapsedTime timer = new ElapsedTime();
     private double moveStartTime = 0;

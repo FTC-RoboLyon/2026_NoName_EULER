@@ -47,7 +47,7 @@ public class EulerTeleop extends LinearOpMode {
         // Hardware
         myDriver = new Driver(hardwareMap.get(DcMotor.class, LEFT_MOTOR), hardwareMap.get(DcMotor.class, RIGHT_MOTOR));
         myIntake = new Intake(hardwareMap.get(DcMotor.class, INTAKE_MOTOR));
-        myShooter = new Shooter(hardwareMap.get(DcMotor.class, SHOOTER_MOTOR));
+        myShooter = new Shooter(hardwareMap.get(DcMotor.class, SHOOTER_MOTOR), hardwareMap.voltageSensor.iterator().next());
         myViseur = new Viseur(hardwareMap.get(Servo.class, VISEUR_SERVO));
         myFeeder = new Feeder(hardwareMap.get(Servo.class, FEEDER_SERVO));
         myPather = new Pather(hardwareMap.get(CRServo.class, PATHER_SERVO));
@@ -94,12 +94,17 @@ public class EulerTeleop extends LinearOpMode {
 
             // Feeder (RB)
             if (btnR_Bumper.wasJustPressed()) {
-                myFeeder.toggle();
+                myFeeder.autoFire();
             }
 
-            // Intake (LB / LT)
-            if (btnL_Bumper.wasJustPressed()) myIntake.toggleCollect();
-            if (btnL_Trigger.wasJustPressed()) myIntake.toggleEject();
+            // Intake (LB / LT) : Actif pendant l'appui (Mode "Hold")
+            if (btnL_Bumper.isDown()) {
+                myIntake.collect();
+            } else if (btnL_Trigger.isDown()) {
+                myIntake.eject();
+            } else {
+                myIntake.stop();
+            }
 
             // Pilotage (Sticks)
             myDriver.drive(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
@@ -116,7 +121,6 @@ public class EulerTeleop extends LinearOpMode {
             telemetry.addLine("--- MOUVEMENT ---");
             telemetry.addData("Châssis", myDriver.getState());
             telemetry.addData("Pather", myPather.getState() + " (" + myPather.getTargetState() + ")");
-            telemetry.addData("Manette", gamepad1.left_stick_y + ", " + gamepad1.right_stick_y);
 
             telemetry.addLine("--- COLLECTE ---");
             telemetry.addData("Intake", myIntake.getState());
@@ -125,7 +129,6 @@ public class EulerTeleop extends LinearOpMode {
             telemetry.addData("Shooter", myShooter.getState() + (myShooter.isReady() ? " [PRÊT]" : " [LOADING]"));
             telemetry.addData("Viseur", myViseur.getState() + " (" + myViseur.getTargetState() + ")");
             telemetry.addData("Feeder", myFeeder.getState() + " (" + myFeeder.getTargetState() + ")");
-            telemetry.addData("Pather", myPather.getState() + " (" + myPather.getTargetState() + ")");
 
             telemetry.update();
         }

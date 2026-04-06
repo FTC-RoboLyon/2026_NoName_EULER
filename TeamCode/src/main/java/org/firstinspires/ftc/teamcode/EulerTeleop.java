@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.euler.Robot;
@@ -8,10 +8,10 @@ import org.firstinspires.ftc.teamcode.euler.utils.ButtonReader;
 
 /**
  * EulerTeleop - OpMode principal.
- * Utilise la classe Robot pour simplifier la gestion des sous-systèmes.
+ * Version itérative (OpMode) utilisant la classe Robot.
  */
 @TeleOp(name = "EulerTeleop", group = "Euler")
-public class EulerTeleop extends LinearOpMode {
+public class EulerTeleop extends OpMode {
     private Robot robot;
 
     private ButtonReader btnA;
@@ -22,7 +22,8 @@ public class EulerTeleop extends LinearOpMode {
     private ButtonReader btnR_Bumper;
     private ButtonReader btnR_Trigger;
 
-    void initialize() {
+    @Override
+    public void init() {
         robot = new Robot(hardwareMap);
 
         // Configuration des boutons
@@ -33,57 +34,43 @@ public class EulerTeleop extends LinearOpMode {
         btnL_Trigger = new ButtonReader(() -> gamepad1.left_trigger > 0.5);
         btnR_Bumper = new ButtonReader(() -> gamepad1.right_bumper);
         btnR_Trigger = new ButtonReader(() -> gamepad1.right_trigger > 0.5);
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
     }
 
     @Override
-    public void runOpMode() {
-        initialize();
-
-        telemetry.addData("Status", "Ready");
-        telemetry.update();
-
-        waitForStart();
-
-        while (opModeIsActive()) {
-
-            // 1. COMMANDES (INTENTIONS)
-
-            // Shooter & Viseur
-            if (btnA.wasJustPressed()) {
-                robot.getShooter().toggleShootNear();
-                robot.getViseur().aimNear();
-            } else if (btnB.wasJustPressed()) {
-                robot.getShooter().toggleShootMiddle();
-                robot.getViseur().aimMiddle();
-            } else if (btnX.wasJustPressed()) {
-                robot.getShooter().toggleShootFar();
-                robot.getViseur().aimFar();
-            }
-
-            // Pather & Feeder
-            if (btnR_Trigger.wasJustPressed()) robot.getPather().toggleBackward();
-            if (btnR_Bumper.wasJustPressed()) robot.getFeeder().autoFire();
-
-            // Intake (Mode Hold)
-            if (btnL_Bumper.isDown()) {
-                robot.getIntake().collect();
-            } else if (btnL_Trigger.isDown()) {
-                robot.getIntake().eject();
-            } else {
-                robot.getIntake().stop();
-            }
-
-            // Châssis
-            robot.getDriver().drive(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
-
-
-            // 2. MISE À JOUR (ACTIONS)
-            robot.update();
-
-
-            // 3. TÉLÉMÉTRIE
-            displayTelemetry();
+    public void loop() {
+        // 1. COMMANDES (INTENTIONS)
+        if (btnA.wasJustPressed()) {
+            robot.getShooter().toggleShootNear();
+            robot.getViseur().aimNear();
+        } else if (btnB.wasJustPressed()) {
+            robot.getShooter().toggleShootMiddle();
+            robot.getViseur().aimMiddle();
+        } else if (btnX.wasJustPressed()) {
+            robot.getShooter().toggleShootFar();
+            robot.getViseur().aimFar();
         }
+
+        if (btnR_Trigger.wasJustPressed()) robot.getPather().toggleBackward();
+        if (btnR_Bumper.wasJustPressed()) robot.getFeeder().autoFire();
+
+        if (btnL_Bumper.isDown()) {
+            robot.getIntake().collect();
+        } else if (btnL_Trigger.isDown()) {
+            robot.getIntake().eject();
+        } else {
+            robot.getIntake().stop();
+        }
+
+        robot.getDriver().drive(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
+
+        // 2. MISE À JOUR (ACTIONS)
+        robot.update();
+
+        // 3. TÉLÉMÉTRIE
+        displayTelemetry();
     }
 
     private void displayTelemetry() {

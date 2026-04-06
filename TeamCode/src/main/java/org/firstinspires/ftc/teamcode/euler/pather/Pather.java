@@ -10,7 +10,6 @@ public class Pather {
     private final CRServo patherServo;
 
     // Vitesses de rotation (Configuration Hardware)
-    private static final double FORWARD_POWER = 1.0;
     private static final double BACKWARD_POWER = -1.0;
     private static final double STOP_POWER = 0.0;
 
@@ -25,12 +24,6 @@ public class Pather {
         this.patherServo = patherServo;
     }
 
-    /**
-     * Définit l'intention de rotation vers l'avant.
-     */
-    public void forward() {
-        targetState = PatherInternalState.FORWARD;
-    }
 
     /**
      * Définit l'intention de rotation vers l'arrière.
@@ -44,17 +37,6 @@ public class Pather {
      */
     public void stop() {
         targetState = PatherInternalState.IDLE;
-    }
-
-    /**
-     * Alterne entre la marche avant et l'arrêt.
-     */
-    public void toggleForward() {
-        if (targetState == PatherInternalState.FORWARD) {
-            stop();
-        } else {
-            forward();
-        }
     }
 
     /**
@@ -74,9 +56,6 @@ public class Pather {
      */
     public void update() {
         switch (targetState) {
-            case FORWARD:
-                patherServo.setPower(FORWARD_POWER);
-                break;
             case BACKWARD:
                 patherServo.setPower(BACKWARD_POWER);
                 break;

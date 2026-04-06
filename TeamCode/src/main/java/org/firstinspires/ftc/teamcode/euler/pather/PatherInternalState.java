@@ -5,6 +5,5 @@ package org.firstinspires.ftc.teamcode.euler.pather;
  */
 public enum PatherInternalState {
     IDLE,       // Servo à l'arrêt
-    FORWARD,    // Rotation horaire
     BACKWARD    // Rotation anti-horaire
 }

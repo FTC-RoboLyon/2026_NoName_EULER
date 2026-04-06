@@ -1,39 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.euler.Constant.FEEDER_SERVO;
-import static org.firstinspires.ftc.teamcode.euler.Constant.INTAKE_MOTOR;
-import static org.firstinspires.ftc.teamcode.euler.Constant.LEFT_MOTOR;
-import static org.firstinspires.ftc.teamcode.euler.Constant.PATHER_SERVO;
-import static org.firstinspires.ftc.teamcode.euler.Constant.RIGHT_MOTOR;
-import static org.firstinspires.ftc.teamcode.euler.Constant.SHOOTER_MOTOR;
-import static org.firstinspires.ftc.teamcode.euler.Constant.VISEUR_SERVO;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.euler.driver.Driver;
-import org.firstinspires.ftc.teamcode.euler.feeder.Feeder;
-import org.firstinspires.ftc.teamcode.euler.intake.Intake;
-import org.firstinspires.ftc.teamcode.euler.pather.Pather;
-import org.firstinspires.ftc.teamcode.euler.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.euler.Robot;
 import org.firstinspires.ftc.teamcode.euler.utils.ButtonReader;
-import org.firstinspires.ftc.teamcode.euler.viseur.Viseur;
 
 /**
  * EulerTeleop - OpMode principal.
- * Version finale avec architecture intention/action et gestion homogène des boutons.
+ * Utilise la classe Robot pour simplifier la gestion des sous-systèmes.
  */
 @TeleOp(name = "EulerTeleop", group = "Euler")
 public class EulerTeleop extends LinearOpMode {
-    private Driver myDriver;
-    private Intake myIntake;
-    private Shooter myShooter;
-    private Viseur myViseur;
-    private Feeder myFeeder;
-    private Pather myPather;
+    private Robot robot;
 
     private ButtonReader btnA;
     private ButtonReader btnB;
@@ -44,15 +23,9 @@ public class EulerTeleop extends LinearOpMode {
     private ButtonReader btnR_Trigger;
 
     void initialize() {
-        // Hardware
-        myDriver = new Driver(hardwareMap.get(DcMotor.class, LEFT_MOTOR), hardwareMap.get(DcMotor.class, RIGHT_MOTOR));
-        myIntake = new Intake(hardwareMap.get(DcMotor.class, INTAKE_MOTOR));
-        myShooter = new Shooter(hardwareMap.get(DcMotor.class, SHOOTER_MOTOR), hardwareMap.voltageSensor.iterator().next());
-        myViseur = new Viseur(hardwareMap.get(Servo.class, VISEUR_SERVO));
-        myFeeder = new Feeder(hardwareMap.get(Servo.class, FEEDER_SERVO));
-        myPather = new Pather(hardwareMap.get(CRServo.class, PATHER_SERVO));
+        robot = new Robot(hardwareMap);
 
-        // Boutons
+        // Configuration des boutons
         btnA = new ButtonReader(() -> gamepad1.a);
         btnB = new ButtonReader(() -> gamepad1.b);
         btnX = new ButtonReader(() -> gamepad1.x);
@@ -75,62 +48,57 @@ public class EulerTeleop extends LinearOpMode {
 
             // 1. COMMANDES (INTENTIONS)
 
-            // Shooter & Viseur (A, B, X)
+            // Shooter & Viseur
             if (btnA.wasJustPressed()) {
-                myShooter.toggleShootNear();
-                myViseur.aimNear();
+                robot.getShooter().toggleShootNear();
+                robot.getViseur().aimNear();
             } else if (btnB.wasJustPressed()) {
-                myShooter.toggleShootMiddle();
-                myViseur.aimMiddle();
+                robot.getShooter().toggleShootMiddle();
+                robot.getViseur().aimMiddle();
             } else if (btnX.wasJustPressed()) {
-                myShooter.toggleShootFar();
-                myViseur.aimFar();
+                robot.getShooter().toggleShootFar();
+                robot.getViseur().aimFar();
             }
 
-            // Pather (RT)
-            if (btnR_Trigger.wasJustPressed()) {
-                myPather.toggleForward();
-            }
+            // Pather & Feeder
+            if (btnR_Trigger.wasJustPressed()) robot.getPather().toggleBackward();
+            if (btnR_Bumper.wasJustPressed()) robot.getFeeder().autoFire();
 
-            // Feeder (RB)
-            if (btnR_Bumper.wasJustPressed()) {
-                myFeeder.autoFire();
-            }
-
-            // Intake (LB / LT) : Actif pendant l'appui (Mode "Hold")
+            // Intake (Mode Hold)
             if (btnL_Bumper.isDown()) {
-                myIntake.collect();
+                robot.getIntake().collect();
             } else if (btnL_Trigger.isDown()) {
-                myIntake.eject();
+                robot.getIntake().eject();
             } else {
-                myIntake.stop();
+                robot.getIntake().stop();
             }
 
-            // Pilotage (Sticks)
-            myDriver.drive(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
+            // Châssis
+            robot.getDriver().drive(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
 
-            // 2. ACTIONS (RÉALITÉ)
-            myDriver.update();
-            myIntake.update();
-            myShooter.update();
-            myViseur.update();
-            myFeeder.update();
-            myPather.update();
+
+            // 2. MISE À JOUR (ACTIONS)
+            robot.update();
+
 
             // 3. TÉLÉMÉTRIE
-            telemetry.addLine("--- MOUVEMENT ---");
-            telemetry.addData("Châssis", myDriver.getState());
-            telemetry.addData("Pather", myPather.getState() + " (" + myPather.getTargetState() + ")");
-
-            telemetry.addLine("--- COLLECTE ---");
-            telemetry.addData("Intake", myIntake.getState());
-
-            telemetry.addLine("--- TIR ---");
-            telemetry.addData("Shooter", myShooter.getState() + (myShooter.isReady() ? " [PRÊT]" : " [LOADING]"));
-            telemetry.addData("Viseur", myViseur.getState() + " (" + myViseur.getTargetState() + ")");
-            telemetry.addData("Feeder", myFeeder.getState() + " (" + myFeeder.getTargetState() + ")");
-
-            telemetry.update();
+            displayTelemetry();
         }
+    }
+
+    private void displayTelemetry() {
+        telemetry.addLine("--- MOUVEMENT ---");
+        telemetry.addData("Châssis", robot.getDriver().getState());
+        telemetry.addData("Pather", robot.getPather().getState() + " (" + robot.getPather().getTargetState() + ")");
+
+        telemetry.addLine("--- COLLECTE ---");
+        telemetry.addData("Intake", robot.getIntake().getState());
+
+        telemetry.addLine("--- TIR ---");
+        telemetry.addData("Shooter", robot.getShooter().getState() + (robot.getShooter().isReady() ? " [PRÊT]" : " [LOADING]"));
+        telemetry.addData("Viseur", robot.getViseur().getState() + " (" + robot.getViseur().getTargetState() + ")");
+        telemetry.addData("Feeder", robot.getFeeder().getState() + " (" + robot.getFeeder().getTargetState() + ")");
+
+        telemetry.update();
     }
 }

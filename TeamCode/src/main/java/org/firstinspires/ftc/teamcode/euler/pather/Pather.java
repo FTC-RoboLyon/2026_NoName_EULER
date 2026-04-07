@@ -2,11 +2,14 @@ package org.firstinspires.ftc.teamcode.euler.pather;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 
+import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
+import org.firstinspires.ftc.teamcode.euler.SubSystem;
+
 /**
  * Sous-système gérant le mécanisme Pather utilisant un servo à rotation continue (CRServo).
  * Suit l'architecture de séparation intention/action utilisée dans le projet.
  */
-public class Pather {
+public class Pather implements SubSystem {
     private final CRServo patherServo;
 
     // Vitesses de rotation (Configuration Hardware)
@@ -54,6 +57,7 @@ public class Pather {
      * Applique la puissance au servo physique en fonction de l'état cible.
      * Doit être appelée à chaque itération.
      */
+    @Override
     public void update() {
         switch (targetState) {
             case BACKWARD:
@@ -64,6 +68,11 @@ public class Pather {
                 patherServo.setPower(STOP_POWER);
                 break;
         }
+    }
+
+    @Override
+    public RobotTelemetry getTelemetry() {
+        return new RobotTelemetry("Pather", "State: " + getState() + "; Target State:" + getTargetState());
     }
 
     /**

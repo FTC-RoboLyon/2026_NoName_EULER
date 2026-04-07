@@ -4,12 +4,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
+import org.firstinspires.ftc.teamcode.euler.SubSystem;
+
 /**
  * Sous-système gérant le mécanisme de tir (Shooter).
  * Utilise {@link DcMotorEx} pour un contrôle précis de la vitesse par PID.
  * Adapte la vélocité cible en fonction de la tension de la batterie.
  */
-public class Shooter {
+public class Shooter implements SubSystem {
 
     private final DcMotorEx shooterMotor;
     private final VoltageSensor voltageSensor;
@@ -127,6 +130,7 @@ public class Shooter {
      * Envoie la commande de vitesse compensée au contrôleur de moteur.
      * Doit être appelée à chaque itération.
      */
+    @Override
     public void update() {
         shooterMotor.setVelocity(getCompensatedVelocity());
     }
@@ -147,6 +151,11 @@ public class Shooter {
         } else {
             return ShooterState.SHOOTING;
         }
+    }
+
+    @Override
+    public RobotTelemetry getTelemetry() {
+        return new RobotTelemetry("Shooter", "State: " + getState() + "; Target State:" + getTargetState());
     }
 
     /**

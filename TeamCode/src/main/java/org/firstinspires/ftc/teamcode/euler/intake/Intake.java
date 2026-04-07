@@ -2,10 +2,13 @@ package org.firstinspires.ftc.teamcode.euler.intake;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
+import org.firstinspires.ftc.teamcode.euler.SubSystem;
+
 /**
  * Sous-système gérant le mécanisme de collecte (Intake).
  */
-public class Intake {
+public class Intake implements SubSystem {
 
     private final DcMotor intakeMotor;
     private IntakeState targetState = IntakeState.IDLE;
@@ -66,6 +69,7 @@ public class Intake {
      * Applique la puissance au moteur physique selon l'état cible.
      * Doit être appelée à chaque itération.
      */
+    @Override
     public void update() {
         switch (targetState) {
             case COLLECT:
@@ -79,6 +83,11 @@ public class Intake {
                 intakeMotor.setPower(0);
                 break;
         }
+    }
+
+    @Override
+    public RobotTelemetry getTelemetry() {
+        return new RobotTelemetry("Intake", "State: " + getState());
     }
 
     /**

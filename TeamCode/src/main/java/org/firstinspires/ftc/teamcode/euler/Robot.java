@@ -21,6 +21,9 @@ import org.firstinspires.ftc.teamcode.euler.pather.Pather;
 import org.firstinspires.ftc.teamcode.euler.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.euler.viseur.Viseur;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Classe Robot englobant tous les sous-systèmes.
  * Centralise l'initialisation et la mise à jour périodique du hardware.
@@ -32,6 +35,7 @@ public class Robot {
     private final Viseur viseur;
     private final Feeder feeder;
     private final Pather pather;
+    private final List<SubSystem> subSystems;
 
     /**
      * Initialise tous les sous-systèmes du robot.
@@ -67,6 +71,8 @@ public class Robot {
         this.pather = new Pather(
                 hardwareMap.get(CRServo.class, PATHER_SERVO)
         );
+
+        this.subSystems = List.of(driver, viseur, pather, intake, shooter, feeder);
     }
 
     /**
@@ -74,12 +80,13 @@ public class Robot {
      * Doit être appelée à chaque itération de la boucle de l'OpMode.
      */
     public void update() {
-        driver.update();
-        intake.update();
-        shooter.update();
-        viseur.update();
-        feeder.update();
-        pather.update();
+        subSystems.forEach(subSystem -> subSystem.update());
+    }
+
+    public List<RobotTelemetry> getTelemetries() {
+        return subSystems.stream()
+                .map(subSystem -> subSystem.getTelemetry())
+                .collect(Collectors.toList());
     }
 
     public Driver getDriver() {

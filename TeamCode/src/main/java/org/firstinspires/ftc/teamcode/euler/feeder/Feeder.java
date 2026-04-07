@@ -3,11 +3,14 @@ package org.firstinspires.ftc.teamcode.euler.feeder;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
+import org.firstinspires.ftc.teamcode.euler.SubSystem;
+
 /**
  * Sous-système gérant le mécanisme d'introduction des projectiles (Feeder).
  * Permet un contrôle manuel (Haut/Bas) ou une séquence automatique de tir.
  */
-public class Feeder {
+public class Feeder implements SubSystem {
     private final Servo feederServo;
 
     // Positions de configuration
@@ -76,6 +79,7 @@ public class Feeder {
      * Applique la position et gère la séquence automatique si nécessaire.
      * Doit être appelée à chaque itération.
      */
+    @Override
     public void update() {
         double currentPos = targetState == FeederTargetState.IDLE ? IDLE_POSITION : PUSH_POSITION;
 
@@ -93,6 +97,11 @@ public class Feeder {
             feederServo.setPosition(currentPos);
             lastCommandedPosition = currentPos;
         }
+    }
+
+    @Override
+    public RobotTelemetry getTelemetry() {
+        return new RobotTelemetry("Feeder", "State: " + getState() + "; Target State:" + getTargetState());
     }
 
     /**

@@ -74,17 +74,10 @@ public class EulerTeleop extends OpMode {
     }
 
     private void displayTelemetry() {
-        telemetry.addLine("--- MOUVEMENT ---");
-        telemetry.addData("Châssis", robot.getDriver().getState());
-        telemetry.addData("Pather", robot.getPather().getState() + " (" + robot.getPather().getTargetState() + ")");
-
-        telemetry.addLine("--- COLLECTE ---");
-        telemetry.addData("Intake", robot.getIntake().getState());
-
-        telemetry.addLine("--- TIR ---");
-        telemetry.addData("Shooter", robot.getShooter().getState() + (robot.getShooter().isReady() ? " [PRÊT]" : " [LOADING]"));
-        telemetry.addData("Viseur", robot.getViseur().getState() + " (" + robot.getViseur().getTargetState() + ")");
-        telemetry.addData("Feeder", robot.getFeeder().getState() + " (" + robot.getFeeder().getTargetState() + ")");
+        robot.getTelemetries()
+                .forEach(robotTelemetry -> {
+                    telemetry.addData(robotTelemetry.getCaption(), robotTelemetry.getValue());
+                });
 
         telemetry.update();
     }

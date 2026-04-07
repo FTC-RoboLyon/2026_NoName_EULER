@@ -3,11 +3,14 @@ package org.firstinspires.ftc.teamcode.euler.driver;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
+import org.firstinspires.ftc.teamcode.euler.SubSystem;
+
 /**
  * Sous-système gérant le déplacement du robot (Tank Drive).
  * Utilise une architecture avec séparation de l'intention et de l'exécution.
  */
-public class Driver {
+public class Driver implements SubSystem {
 
     private final DcMotor leftMotor;
     private final DcMotor rightMotor;
@@ -44,9 +47,15 @@ public class Driver {
      * Applique les puissances cibles aux moteurs physiques.
      * Doit être appelée à chaque itération.
      */
+    @Override
     public void update() {
         leftMotor.setPower(targetLeftPower);
         rightMotor.setPower(targetRightPower);
+    }
+
+    @Override
+    public RobotTelemetry getTelemetry() {
+        return new RobotTelemetry("Chassis", "State: " + getState());
     }
 
     /**

@@ -3,11 +3,14 @@ package org.firstinspires.ftc.teamcode.euler.viseur;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
+import org.firstinspires.ftc.teamcode.euler.SubSystem;
+
 /**
  * Viseur - Contrôle la position du servo d'inclinaison pour le tir.
  * Architecture robuste basée sur des états internes et une mise à jour différée.
  */
-public class Viseur {
+public class Viseur implements SubSystem {
     private final Servo viseurServo;
 
     // Positions (Configuration Hardware)
@@ -49,6 +52,7 @@ public class Viseur {
     /**
      * Traduit l'état interne en position réelle pour le servo.
      */
+    @Override
     public void update() {
         double targetPos;
         switch (targetState) {
@@ -68,6 +72,11 @@ public class Viseur {
             viseurServo.setPosition(targetPos);
             lastCommandedPosition = targetPos;
         }
+    }
+
+    @Override
+    public RobotTelemetry getTelemetry() {
+        return new RobotTelemetry("Viseur", "State: " + getState() + "; Target State:" + getTargetState());
     }
 
     /**

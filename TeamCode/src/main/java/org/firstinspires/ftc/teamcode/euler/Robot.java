@@ -11,9 +11,11 @@ import static org.firstinspires.ftc.teamcode.euler.Constant.VISEUR_SERVO;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.teamcode.euler.compass.Compass;
 import org.firstinspires.ftc.teamcode.euler.driver.Driver;
 import org.firstinspires.ftc.teamcode.euler.feeder.Feeder;
 import org.firstinspires.ftc.teamcode.euler.intake.Intake;
@@ -29,14 +31,19 @@ import java.util.stream.Collectors;
  * Centralise l'initialisation et la mise à jour périodique du hardware.
  */
 public class Robot {
+    // SubSystems
     private final Driver driver;
     private final Intake intake;
     private final Shooter shooter;
     private final Viseur viseur;
     private final Feeder feeder;
     private final Pather pather;
+
     private final List<SubSystem> subSystems;
 
+    // Capteurs
+    private final Compass compass;
+    
     /**
      * Initialise tous les sous-systèmes du robot.
      *
@@ -70,6 +77,10 @@ public class Robot {
 
         this.pather = new Pather(
                 hardwareMap.get(CRServo.class, PATHER_SERVO)
+        );
+
+        this.compass = new Compass(
+                hardwareMap.get(IMU.class, "imu")
         );
 
         this.subSystems = List.of(driver, viseur, pather, intake, shooter, feeder);
@@ -111,5 +122,9 @@ public class Robot {
 
     public Pather getPather() {
         return pather;
+    }
+
+    public Compass getCompass() {
+        return compass;
     }
 }

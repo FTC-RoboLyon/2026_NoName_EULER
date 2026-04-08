@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.euler.Robot;
 import org.firstinspires.ftc.teamcode.euler.Step;
 import org.firstinspires.ftc.teamcode.euler.steps.ForwardByTime;
 import org.firstinspires.ftc.teamcode.euler.steps.Rotate;
+import org.firstinspires.ftc.teamcode.euler.steps.Shoot;
 import org.firstinspires.ftc.teamcode.euler.steps.StartCollect;
 import org.firstinspires.ftc.teamcode.euler.steps.StopCollect;
 
@@ -24,6 +25,7 @@ public class EulerAutonomous extends OpMode {
         robot = new Robot(hardwareMap);
         currentStepIndex = 0;
         steps = List.of(
+                new Shoot(Shoot.ShootPosition.MIDDLE, 3),
                 new ForwardByTime(1000, true),
                 new Rotate(90),
                 new StartCollect(),

@@ -31,6 +31,7 @@ public class EulerTeleop extends OpMode {
         btnA = new ButtonReader(() -> gamepad1.a);
         btnB = new ButtonReader(() -> gamepad1.b);
         btnX = new ButtonReader(() -> gamepad1.x);
+        btnY = new ButtonReader(() -> gamepad1.y);
         btnL_Bumper = new ButtonReader(() -> gamepad1.left_bumper);
         btnL_Trigger = new ButtonReader(() -> gamepad1.left_trigger > 0.5);
         btnR_Bumper = new ButtonReader(() -> gamepad1.right_bumper);

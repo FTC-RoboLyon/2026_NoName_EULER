@@ -57,13 +57,13 @@ public class Driver implements SubSystem {
      */
     @Override
     public void update() {
-        leftMotor.setPower(targetLeftPower);
-        rightMotor.setPower(targetRightPower);
+        leftMotor.setPower(targetLeftPower * coef);
+        rightMotor.setPower(targetRightPower * coef);
     }
 
     @Override
     public RobotTelemetry getTelemetry() {
-        return new RobotTelemetry("Chassis", "State: " + getState());
+        return new RobotTelemetry("Chassis", "State: " + getState() + "park: " + park);
     }
 
     /**

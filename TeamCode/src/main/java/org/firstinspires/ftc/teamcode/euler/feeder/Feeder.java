@@ -3,74 +3,121 @@ package org.firstinspires.ftc.teamcode.euler.feeder;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class Feeder {
+import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
+import org.firstinspires.ftc.teamcode.euler.SubSystem;
+
+/**
+ * Sous-système gérant le mécanisme d'introduction des projectiles (Feeder).
+ * Permet un contrôle manuel (Haut/Bas) ou une séquence automatique de tir.
+ */
+public class Feeder implements SubSystem {
     private final Servo feederServo;
-    
-    // Positions
-    public static final double PUSH_POSITION = 1.0;
-    public static final double IDLE_POSITION = 0.0;
-    public static final double RETRACT_POSITION = 0.1;
 
-    // Temps de trajet estimé en millisecondes
+    // Positions de configuration
+    public static final double PUSH_POSITION = 0.3;
+    public static final double IDLE_POSITION = 0.18;
+
+    // Temps de trajet du servo (ms)
     public static final long TRAVEL_TIME_MS = 250;
+    // Temps de maintien en position haute lors d'un autoFire (ms)
+    public static final long HOLD_TIME_MS = 150;
 
-    private FeederInternalState internalState = FeederInternalState.IDLE;
-    private double targetPosition = IDLE_POSITION;
-    private double lastCommandedPosition = -1; // Pour éviter les appels hardware inutiles
+    private FeederTargetState targetState = FeederTargetState.IDLE;
+    private double lastCommandedPosition = -1;
     private final ElapsedTime timer = new ElapsedTime();
     private double moveStartTime = 0;
 
+    /**
+     * Initialise le servo du feeder.
+     *
+     * @param feederServo Le servo physique du feeder.
+     */
     public Feeder(Servo feederServo) {
         this.feederServo = feederServo;
     }
 
+    /**
+     * Définit l'intention de pousser manuellement.
+     */
     public void push() {
-        setTarget(FeederInternalState.PUSHING, PUSH_POSITION);
+        setTarget(FeederTargetState.PUSH);
     }
 
-    public void retract() {
-        setTarget(FeederInternalState.RETRACTING, RETRACT_POSITION);
-    }
-
+    /**
+     * Définit l'intention de revenir au repos manuellement.
+     */
     public void idle() {
-        setTarget(FeederInternalState.IDLE, IDLE_POSITION);
+        setTarget(FeederTargetState.IDLE);
     }
 
-    private void setTarget(FeederInternalState state, double position) {
-        if (this.internalState != state) {
-            // ici on voit que internalState et targetPosition vont de pair
-            // il est donc dangereux d'avoir ces 2 variables séparée
-            // soit on determine internalState en fonction de la position du servo (getPosition)
-            // soit on stock dans l'enum InternalState la position
-            this.internalState = state;
-            this.targetPosition = position;
+    /**
+     * Déclenche une séquence automatique : Pousse, attend, puis revient.
+     */
+    public void autoFire() {
+        setTarget(FeederTargetState.AUTO_FIRE);
+    }
+
+    /**
+     * Alterne entre la position haute et basse (Contrôle manuel).
+     */
+    public void toggle() {
+        if (targetState == FeederTargetState.IDLE) {
+            push();
+        } else {
+            idle();
+        }
+    }
+
+    private void setTarget(FeederTargetState state) {
+        if (this.targetState != state) {
+            this.targetState = state;
             this.moveStartTime = timer.milliseconds();
         }
     }
 
+    /**
+     * Applique la position et gère la séquence automatique si nécessaire.
+     * Doit être appelée à chaque itération.
+     */
+    @Override
     public void update() {
-        // On ne communique avec le hardware que si la position cible a changé
-        if (targetPosition != lastCommandedPosition) {
-            feederServo.setPosition(targetPosition);
-            lastCommandedPosition = targetPosition;
+        double currentPos = targetState == FeederTargetState.IDLE ? IDLE_POSITION : PUSH_POSITION;
+
+        // Gestion de la séquence automatique (FSM interne)
+        if (targetState == FeederTargetState.AUTO_FIRE) {
+            long elapsed = (long) (timer.milliseconds() - moveStartTime);
+            // Si on a fini de pousser et de maintenir (Trajet + Maintien)
+            if (elapsed > (TRAVEL_TIME_MS + HOLD_TIME_MS)) {
+                idle(); // Revient automatiquement au repos
+            }
+        }
+
+        // Application hardware
+        if (currentPos != lastCommandedPosition) {
+            feederServo.setPosition(currentPos);
+            lastCommandedPosition = currentPos;
         }
     }
 
-    public FeederInternalState getInternalState() {
-        return internalState;
+    @Override
+    public RobotTelemetry getTelemetry() {
+        return new RobotTelemetry("Feeder", "State: " + getState() + "; Target State:" + getTargetState());
     }
 
+    /**
+     * Retourne l'intention actuelle.
+     */
+    public FeederTargetState getTargetState() {
+        return targetState;
+    }
+
+    /**
+     * Estime l'état physique actuel.
+     */
     public FeederState getState() {
-        // On considère que le servo bouge tant que le temps de trajet n'est pas écoulé
-        // sauf si on est en IDLE
-        if (internalState == FeederInternalState.IDLE) {
-            return FeederState.IDLE;
-        }
-        
         if (timer.milliseconds() - moveStartTime < TRAVEL_TIME_MS) {
             return FeederState.MOVING;
-        } else {
-            return FeederState.IDLE;
         }
+        return FeederState.IDLE;
     }
 }

@@ -1,85 +1,84 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.euler.Constant.INTAKE_MOTOR;
-import static org.firstinspires.ftc.teamcode.euler.Constant.LEFT_MOTOR;
-import static org.firstinspires.ftc.teamcode.euler.Constant.RIGHT_MOTOR;
-import static org.firstinspires.ftc.teamcode.euler.Constant.SHOOTER_MOTOR;
-import static org.firstinspires.ftc.teamcode.euler.Constant.VISEUR_SERVO;
-
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.euler.driver.Driver;
-import org.firstinspires.ftc.teamcode.euler.intake.Intake;
-import org.firstinspires.ftc.teamcode.euler.shooter.Shooter;
-import org.firstinspires.ftc.teamcode.euler.viseur.Viseur;
+import org.firstinspires.ftc.teamcode.euler.Robot;
+import org.firstinspires.ftc.teamcode.euler.utils.ButtonReader;
 
+/**
+ * EulerTeleop - OpMode principal.
+ * Version itérative (OpMode) utilisant la classe Robot.
+ */
 @TeleOp(name = "EulerTeleop", group = "Euler")
-public class EulerTeleop extends LinearOpMode {
-    Driver myDriver;
-    Intake myIntake;
-    Shooter myShooter;
-    Viseur myViseur;
+public class EulerTeleop extends OpMode {
+    private Robot robot;
 
-
-    void initialize() {
-        myDriver = new Driver(hardwareMap.get(DcMotor.class, LEFT_MOTOR), hardwareMap.get(DcMotor.class, RIGHT_MOTOR));
-        myIntake = new Intake(hardwareMap.get(DcMotor.class, INTAKE_MOTOR));
-        myShooter = new Shooter(hardwareMap.get(DcMotor.class, SHOOTER_MOTOR));
-        myViseur = new Viseur(hardwareMap.get(Servo.class, VISEUR_SERVO));
-    }
+    private ButtonReader btnA;
+    private ButtonReader btnB;
+    private ButtonReader btnX;
+    private ButtonReader btnL_Bumper;
+    private ButtonReader btnL_Trigger;
+    private ButtonReader btnR_Bumper;
+    private ButtonReader btnR_Trigger;
 
     @Override
-    public void runOpMode() {
-        initialize();
+    public void init() {
+        robot = new Robot(hardwareMap);
+
+        // Configuration des boutons
+        btnA = new ButtonReader(() -> gamepad1.a);
+        btnB = new ButtonReader(() -> gamepad1.b);
+        btnX = new ButtonReader(() -> gamepad1.x);
+        btnL_Bumper = new ButtonReader(() -> gamepad1.left_bumper);
+        btnL_Trigger = new ButtonReader(() -> gamepad1.left_trigger > 0.5);
+        btnR_Bumper = new ButtonReader(() -> gamepad1.right_bumper);
+        btnR_Trigger = new ButtonReader(() -> gamepad1.right_trigger > 0.5);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+    }
 
-        waitForStart();
-
-        while (opModeIsActive()) {
-
-            // Shooter & Viseur : règle position viseur + vélocité shooter
-            boolean shootNear = gamepad1.a;
-            boolean shootMiddle = gamepad1.b;
-            boolean shootFar = gamepad1.x;
-
-            if (shootNear) {
-                myShooter.toggleShootNear();
-                myViseur.aimNear();
-            } else if (shootMiddle) {
-                myShooter.toggleShootMiddle();
-                myViseur.aimMiddle();
-            } else if (shootFar) {
-                myShooter.toggleShootFar();
-                myViseur.aimFar();
-            }
-
-            float left = -gamepad1.left_stick_y;
-            float right = -gamepad1.right_stick_y;
-            myDriver.drive(left, right);
-
-            // attention à l'appui trop long ...
-            // si besoin il faudra avoir un etat precedent et gerer en fonction
-            if (gamepad1.left_bumper) {
-                myIntake.toggleCollect();
-            }
-            if (gamepad1.left_trigger_pressed) {
-                myIntake.toggleEject();
-            }
-
-            telemetry.addData("DriverState", myDriver.getState());
-            telemetry.addData("IntakeState", myIntake.getState());
-            telemetry.addData("ViseurState", myViseur.getState());
-            telemetry.addData("ShooterState", myShooter.getState());
-            telemetry.addData("ShooterValue", myShooter.shooter.getPower());
-            telemetry.update();
-
-            // ne pas oublier de call update sur les objets
-            myViseur.update();
+    @Override
+    public void loop() {
+        // 1. COMMANDES (INTENTIONS)
+        if (btnA.wasJustPressed()) {
+            robot.getShooter().toggleShootNear();
+            robot.getViseur().aimNear();
+        } else if (btnB.wasJustPressed()) {
+            robot.getShooter().toggleShootMiddle();
+            robot.getViseur().aimMiddle();
+        } else if (btnX.wasJustPressed()) {
+            robot.getShooter().toggleShootFar();
+            robot.getViseur().aimFar();
         }
+
+        if (btnR_Trigger.wasJustPressed()) robot.getPather().toggleBackward();
+        if (btnR_Bumper.wasJustPressed()) robot.getFeeder().autoFire();
+
+        if (btnL_Bumper.isDown()) {
+            robot.getIntake().collect();
+        } else if (btnL_Trigger.isDown()) {
+            robot.getIntake().eject();
+        } else {
+            robot.getIntake().stop();
+        }
+
+        robot.getDriver().drive(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
+
+        // 2. MISE À JOUR (ACTIONS)
+        robot.update();
+
+        // 3. TÉLÉMÉTRIE
+        displayTelemetry();
+    }
+
+    private void displayTelemetry() {
+        robot.getTelemetries()
+                .forEach(robotTelemetry -> {
+                    telemetry.addData(robotTelemetry.getCaption(), robotTelemetry.getValue());
+                });
+
+        telemetry.update();
     }
 }

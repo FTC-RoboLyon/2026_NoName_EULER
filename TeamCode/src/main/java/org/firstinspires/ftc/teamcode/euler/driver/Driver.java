@@ -16,9 +16,7 @@ public class Driver implements SubSystem {
     private final DcMotor rightMotor;
     private double targetLeftPower = 0;
     private double targetRightPower = 0;
-    double coef = 1;
-
-    private boolean park = false;
+    private RunMode parkMode = RunMode.NORMAL;
 
     /**
      * Initialise les moteurs du châssis.
@@ -45,10 +43,13 @@ public class Driver implements SubSystem {
         this.targetLeftPower = left;
         this.targetRightPower = right;
     }
-
+    
     public void toggleParkMode() {
-        this.park = true;
-        coef = 0.5;
+        if (this.parkMode == RunMode.NORMAL) {
+            parkMode = RunMode.PARK;
+        } else {
+            parkMode = RunMode.NORMAL;
+        }
     }
 
     /**
@@ -57,13 +58,13 @@ public class Driver implements SubSystem {
      */
     @Override
     public void update() {
-        leftMotor.setPower(targetLeftPower * coef);
-        rightMotor.setPower(targetRightPower * coef);
+        leftMotor.setPower(targetLeftPower * parkMode.getCoef());
+        rightMotor.setPower(targetRightPower * parkMode.getCoef());
     }
 
     @Override
     public RobotTelemetry getTelemetry() {
-        return new RobotTelemetry("Chassis", "State: " + getState() + "park: " + park);
+        return new RobotTelemetry("Chassis", "State: " + getState() + "park: " + parkMode);
     }
 
     /**

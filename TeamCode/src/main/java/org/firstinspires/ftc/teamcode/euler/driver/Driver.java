@@ -67,6 +67,23 @@ public class Driver implements SubSystem {
     }
 
     /**
+
+    /**
+     * Applique les puissances cibles aux moteurs physiques.
+     * Doit être appelée à chaque itération.
+     */
+    @Override
+    public void update() {
+        leftMotor.setPower(targetLeftPower);
+        rightMotor.setPower(targetRightPower);
+    }
+
+    @Override
+    public RobotTelemetry getTelemetry() {
+        return new RobotTelemetry("Chassis", "State: " + getState());
+    }
+
+    /**
      * Retourne l'intention de mouvement du pilote.
      *
      * @return L'état cible (MOVING ou IDLE).

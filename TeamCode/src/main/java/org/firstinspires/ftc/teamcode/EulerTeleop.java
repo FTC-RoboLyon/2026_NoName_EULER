@@ -15,6 +15,7 @@ public class EulerTeleop extends OpMode {
     private Robot robot;
 
     private ButtonReader btnA;
+    private ButtonReader btnY;
     private ButtonReader btnB;
     private ButtonReader btnX;
     private ButtonReader btnL_Bumper;
@@ -55,6 +56,7 @@ public class EulerTeleop extends OpMode {
 
         if (btnR_Trigger.wasJustPressed()) robot.getPather().toggleBackward();
         if (btnR_Bumper.wasJustPressed()) robot.getFeeder().autoFire();
+        if (btnY.wasJustPressed()) robot.getDriver().toggleParkMode();
 
         if (btnL_Bumper.isDown()) {
             robot.getIntake().collect();

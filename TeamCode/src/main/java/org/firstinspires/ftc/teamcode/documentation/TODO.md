@@ -1,4 +1,5 @@
 TODO :
+
 - gerer le stop à la fin de l'opMode
 - renommer Driver en TankDriver
 - extraire les magic number (exemple: setPower(0.7)) dans les constantes
@@ -33,3 +34,8 @@ Toujours etre en sync avec `main`
 
 - `git co main` + `git fetch` + `git pull`
 - creer une nouvelle branche de travail depuis `main` : `git checkout -b <nom> origin/main`
+  fait une class odometrie qui renvoie la position du robot par les encodeurs de deux nouveaux
+  moteurs décentralisés et espacé d'une distance x. Ils sont reiés a deux roues mortes qui sont dans
+  le méme sens, sens des rous du driver
+- ajouter un fichier AGENTS.md pour que gemini comprenne bien le projet avec ce que tu as compris du
+  contexte du programme (objectif faire un robot fonctionnel pour jouer au jeu ftc Decode)

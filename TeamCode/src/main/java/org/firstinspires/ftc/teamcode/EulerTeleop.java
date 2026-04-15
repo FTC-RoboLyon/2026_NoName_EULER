@@ -17,6 +17,7 @@ public class EulerTeleop extends OpMode {
     private ButtonReader btnA;
     private ButtonReader btnB;
     private ButtonReader btnX;
+    private ButtonReader btnY;
     private ButtonReader btnL_Bumper;
     private ButtonReader btnL_Trigger;
     private ButtonReader btnR_Bumper;
@@ -30,6 +31,7 @@ public class EulerTeleop extends OpMode {
         btnA = new ButtonReader(() -> gamepad1.a);
         btnB = new ButtonReader(() -> gamepad1.b);
         btnX = new ButtonReader(() -> gamepad1.x);
+        btnY = new ButtonReader(() -> gamepad1.y);
         btnL_Bumper = new ButtonReader(() -> gamepad1.left_bumper);
         btnL_Trigger = new ButtonReader(() -> gamepad1.left_trigger > 0.5);
         btnR_Bumper = new ButtonReader(() -> gamepad1.right_bumper);
@@ -53,6 +55,7 @@ public class EulerTeleop extends OpMode {
             robot.getViseur().aimFar();
         }
 
+        if (btnY.wasJustPressed()) robot.getDriver().park();
         if (btnR_Trigger.wasJustPressed()) robot.getPather().toggleBackward();
         if (btnR_Bumper.wasJustPressed()) robot.getFeeder().autoFire();
 

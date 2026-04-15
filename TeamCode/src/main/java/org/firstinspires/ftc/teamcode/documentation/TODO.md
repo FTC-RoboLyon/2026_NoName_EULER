@@ -1,11 +1,12 @@
 TODO :
+
 - gerer le stop à la fin de l'opMode
 - renommer Driver en TankDriver
 - extraire les magic number (exemple: setPower(0.7)) dans les constantes
 - ajouter un fichier AGENTS.md pour que gemini comprenne bien le projet (demandez à gemini sur le
   net comment faire)
 - creer une classe Robot qui encapsulent tous les systemes afin de simplifier l'OpMode
-- passer sur un OpMode iteratif plutot que LinearOpMode (conseillé en teleop)
+  ~~- passer sur un OpMode iteratif plutot que LinearOpMode (conseillé en teleop)~~
 - ajouter Gyro, Vision
 - tester sur le robot
 - enfin, tenter un mode autonome (avec plusieurs position de démarrage/imu/cam....)

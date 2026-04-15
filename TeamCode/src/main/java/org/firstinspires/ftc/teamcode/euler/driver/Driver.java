@@ -16,6 +16,7 @@ public class Driver implements SubSystem {
     private final DcMotor rightMotor;
     private double targetLeftPower = 0;
     private double targetRightPower = 0;
+    private double coef = 1;
 
     /**
      * Initialise les moteurs du châssis.
@@ -43,14 +44,18 @@ public class Driver implements SubSystem {
         this.targetRightPower = right;
     }
 
+    public void park() {
+        coef = 0.5;
+    }
+
     /**
      * Applique les puissances cibles aux moteurs physiques.
      * Doit être appelée à chaque itération.
      */
     @Override
     public void update() {
-        leftMotor.setPower(targetLeftPower);
-        rightMotor.setPower(targetRightPower);
+        leftMotor.setPower(targetLeftPower * coef);
+        rightMotor.setPower(targetRightPower * coef);
     }
 
     @Override

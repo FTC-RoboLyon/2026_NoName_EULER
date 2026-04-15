@@ -57,23 +57,6 @@ public class Driver implements SubSystem {
      */
     @Override
     public void update() {
-        leftMotor.setPower(targetLeftPower * coef);
-        rightMotor.setPower(targetRightPower * coef);
-    }
-
-    @Override
-    public RobotTelemetry getTelemetry() {
-        return new RobotTelemetry("Chassis", "State: " + getState() + " Park: " + park);
-    }
-
-    /**
-
-    /**
-     * Applique les puissances cibles aux moteurs physiques.
-     * Doit être appelée à chaque itération.
-     */
-    @Override
-    public void update() {
         leftMotor.setPower(targetLeftPower);
         rightMotor.setPower(targetRightPower);
     }

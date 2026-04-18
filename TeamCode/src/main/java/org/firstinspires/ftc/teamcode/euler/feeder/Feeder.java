@@ -4,13 +4,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
-import org.firstinspires.ftc.teamcode.euler.SubSystem;
+import org.firstinspires.ftc.teamcode.euler.TelemetryAware;
+import org.firstinspires.ftc.teamcode.euler.UpdateAware;
 
 /**
  * Sous-système gérant le mécanisme d'introduction des projectiles (Feeder).
  * Permet un contrôle manuel (Haut/Bas) ou une séquence automatique de tir.
  */
-public class Feeder implements SubSystem {
+public class Feeder implements UpdateAware, TelemetryAware {
     private final Servo feederServo;
 
     // Positions de configuration

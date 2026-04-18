@@ -3,13 +3,14 @@ package org.firstinspires.ftc.teamcode.euler.pather;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
-import org.firstinspires.ftc.teamcode.euler.SubSystem;
+import org.firstinspires.ftc.teamcode.euler.TelemetryAware;
+import org.firstinspires.ftc.teamcode.euler.UpdateAware;
 
 /**
  * Sous-système gérant le mécanisme Pather utilisant un servo à rotation continue (CRServo).
  * Suit l'architecture de séparation intention/action utilisée dans le projet.
  */
-public class Pather implements SubSystem {
+public class Pather implements UpdateAware, TelemetryAware {
     private final CRServo patherServo;
 
     // Vitesses de rotation (Configuration Hardware)

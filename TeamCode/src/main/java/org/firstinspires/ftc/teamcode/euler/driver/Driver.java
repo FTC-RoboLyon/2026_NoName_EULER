@@ -4,13 +4,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
-import org.firstinspires.ftc.teamcode.euler.SubSystem;
+import org.firstinspires.ftc.teamcode.euler.TelemetryAware;
+import org.firstinspires.ftc.teamcode.euler.UpdateAware;
 
 /**
  * Sous-système gérant le déplacement du robot (Tank Drive).
  * Utilise une architecture avec séparation de l'intention et de l'exécution.
  */
-public class Driver implements SubSystem {
+public class Driver implements UpdateAware, TelemetryAware {
 
     private final DcMotor leftMotor;
     private final DcMotor rightMotor;
@@ -43,7 +44,7 @@ public class Driver implements SubSystem {
         this.targetLeftPower = left;
         this.targetRightPower = right;
     }
-    
+
     public void toggleParkMode() {
         if (this.parkMode == RunMode.NORMAL) {
             parkMode = RunMode.PARK;

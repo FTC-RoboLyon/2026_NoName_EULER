@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.euler;
 import static org.firstinspires.ftc.teamcode.euler.Constant.FEEDER_SERVO;
 import static org.firstinspires.ftc.teamcode.euler.Constant.INTAKE_MOTOR;
 import static org.firstinspires.ftc.teamcode.euler.Constant.LEFT_MOTOR;
+import static org.firstinspires.ftc.teamcode.euler.Constant.ODO_LEFT_ENCODER;
+import static org.firstinspires.ftc.teamcode.euler.Constant.ODO_RIGHT_ENCODER;
 import static org.firstinspires.ftc.teamcode.euler.Constant.PATHER_SERVO;
 import static org.firstinspires.ftc.teamcode.euler.Constant.RIGHT_MOTOR;
 import static org.firstinspires.ftc.teamcode.euler.Constant.SHOOTER_MOTOR;
@@ -19,12 +21,14 @@ import org.firstinspires.ftc.teamcode.euler.compass.Compass;
 import org.firstinspires.ftc.teamcode.euler.driver.Driver;
 import org.firstinspires.ftc.teamcode.euler.feeder.Feeder;
 import org.firstinspires.ftc.teamcode.euler.intake.Intake;
+import org.firstinspires.ftc.teamcode.euler.odometry.Odometry;
 import org.firstinspires.ftc.teamcode.euler.pather.Pather;
 import org.firstinspires.ftc.teamcode.euler.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.euler.viseur.Viseur;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Classe Robot englobant tous les sous-systèmes.
@@ -39,11 +43,11 @@ public class Robot {
     private final Feeder feeder;
     private final Pather pather;
 
-    private final List<SubSystem> subSystems;
 
     // Capteurs
+    private final Odometry odometry;
     private final Compass compass;
-    
+
     /**
      * Initialise tous les sous-systèmes du robot.
      *
@@ -51,6 +55,8 @@ public class Robot {
      */
     public Robot(HardwareMap hardwareMap) {
         // Initialisation des composants individuels
+
+        // sous systemes operants
         this.driver = new Driver(
                 hardwareMap.get(DcMotor.class, LEFT_MOTOR),
                 hardwareMap.get(DcMotor.class, RIGHT_MOTOR)
@@ -79,11 +85,18 @@ public class Robot {
                 hardwareMap.get(CRServo.class, PATHER_SERVO)
         );
 
+
+        // capteurs
         this.compass = new Compass(
                 hardwareMap.get(IMU.class, "imu")
         );
 
-        this.subSystems = List.of(driver, viseur, pather, intake, shooter, feeder);
+        this.odometry = new Odometry(
+                hardwareMap.get(DcMotor.class, ODO_LEFT_ENCODER),
+                hardwareMap.get(DcMotor.class, ODO_RIGHT_ENCODER),
+                this.compass
+        );
+
     }
 
     /**
@@ -91,12 +104,16 @@ public class Robot {
      * Doit être appelée à chaque itération de la boucle de l'OpMode.
      */
     public void update() {
-        subSystems.forEach(subSystem -> subSystem.update());
+        Stream.of(driver, viseur, pather, intake, shooter, feeder, odometry)
+                .forEach(updateAware -> updateAware.update());
     }
 
+    /**
+     * Retourne la liste des télémètres dispo.
+     */
     public List<RobotTelemetry> getTelemetries() {
-        return subSystems.stream()
-                .map(subSystem -> subSystem.getTelemetry())
+        return Stream.of(driver, viseur, pather, intake, shooter, feeder, odometry, compass)
+                .map(telemetryAware -> telemetryAware.getTelemetry())
                 .collect(Collectors.toList());
     }
 
@@ -126,5 +143,9 @@ public class Robot {
 
     public Compass getCompass() {
         return compass;
+    }
+
+    public Odometry getOdometry() {
+        return odometry;
     }
 }

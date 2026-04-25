@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.euler.Robot;
 import org.firstinspires.ftc.teamcode.euler.utils.ButtonReader;
 
@@ -26,6 +29,7 @@ public class EulerTeleop extends OpMode {
     @Override
     public void init() {
         robot = new Robot(hardwareMap);
+        robot.getOdometry().reset(new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES, 0));
 
         // Configuration des boutons
         btnA = new ButtonReader(() -> gamepad1.a);
@@ -67,7 +71,7 @@ public class EulerTeleop extends OpMode {
             robot.getIntake().stop();
         }
 
-        robot.getDriver().drive(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
+        robot.getDriver().drive(-gamepad1.right_stick_y, gamepad1.left_stick_x);
 
         // 2. MISE À JOUR (ACTIONS)
         robot.update();

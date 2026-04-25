@@ -18,8 +18,9 @@ import java.util.Locale;
  */
 public class Odometry implements UpdateAware, TelemetryAware {
     // Constantes de conversion (à ajuster selon le matériel)
-    // Exemple : Roue de 32mm de diamètre, 2000 ticks par tour
-    public static double TICKS_PER_MM = 2000.0 / (32.0 * Math.PI);
+    // Exemple : Roue de 50mm (deadwheel), 90mm (traction) de diamètre, 28 ticks par tour (encoder externe 28192)
+
+    public static double TICKS_PER_MM = 28192 / (50.0 * Math.PI);
     private final DcMotor leftEncoder;
     private final DcMotor rightEncoder;
     private final Compass compass;
@@ -81,7 +82,7 @@ public class Odometry implements UpdateAware, TelemetryAware {
     public RobotTelemetry getTelemetry() {
         Pose2D position = getPose();
         return new RobotTelemetry("Odometry",
-                String.format(Locale.FRENCH, "X: %.1f mm, Y: %.1f mm, H: %.1f°", position.getX(DistanceUnit.MM), position.getY(DistanceUnit.MM), position.getHeading(AngleUnit.DEGREES)));
+                String.format(Locale.FRENCH, "X: %.1f mm, Y: %.1f mm, H: %.1f°, l: %d, r: %d", position.getX(DistanceUnit.MM), position.getY(DistanceUnit.MM), position.getHeading(AngleUnit.DEGREES), leftEncoder.getCurrentPosition(), rightEncoder.getCurrentPosition()));
     }
 
     /**

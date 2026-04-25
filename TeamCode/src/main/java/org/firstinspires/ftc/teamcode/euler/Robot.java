@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.euler;
 import static org.firstinspires.ftc.teamcode.euler.Constant.FEEDER_SERVO;
 import static org.firstinspires.ftc.teamcode.euler.Constant.INTAKE_MOTOR;
 import static org.firstinspires.ftc.teamcode.euler.Constant.LEFT_MOTOR;
-import static org.firstinspires.ftc.teamcode.euler.Constant.ODO_LEFT_ENCODER;
-import static org.firstinspires.ftc.teamcode.euler.Constant.ODO_RIGHT_ENCODER;
 import static org.firstinspires.ftc.teamcode.euler.Constant.PATHER_SERVO;
 import static org.firstinspires.ftc.teamcode.euler.Constant.RIGHT_MOTOR;
 import static org.firstinspires.ftc.teamcode.euler.Constant.SHOOTER_MOTOR;
@@ -91,8 +89,8 @@ public class Robot {
         );
 
         this.odometry = new Odometry(
-                hardwareMap.get(DcMotor.class, ODO_LEFT_ENCODER),
-                hardwareMap.get(DcMotor.class, ODO_RIGHT_ENCODER),
+                hardwareMap.get(DcMotor.class, LEFT_MOTOR),
+                hardwareMap.get(DcMotor.class, RIGHT_MOTOR),
                 this.compass
         );
     }

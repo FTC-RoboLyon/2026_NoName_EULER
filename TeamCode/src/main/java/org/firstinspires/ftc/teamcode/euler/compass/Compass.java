@@ -23,6 +23,7 @@ public class Compass implements TelemetryAware {
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
         ));
         this.imu.initialize(parameters);
+        this.imu.resetYaw();
     }
 
     public double getHeading(AngleUnit unit) {

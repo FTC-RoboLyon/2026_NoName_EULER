@@ -31,7 +31,9 @@ public class Driver implements UpdateAware, TelemetryAware {
         this.rightMotor = rightMotor1;
 
         this.leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     /**
@@ -42,8 +44,8 @@ public class Driver implements UpdateAware, TelemetryAware {
      * @param right Puissance cible pour le moteur droit (entre -1.0 et 1.0).
      */
     public void drive(double left, double right) {
-        this.targetLeftPower = left;
-        this.targetRightPower = right;
+        this.targetLeftPower = left + right;
+        this.targetRightPower = left - right;
     }
 
     public void toggleParkMode() {

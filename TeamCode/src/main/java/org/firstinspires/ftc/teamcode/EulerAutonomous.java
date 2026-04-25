@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.euler.Step;
 import org.firstinspires.ftc.teamcode.euler.steps.ForwardByTime;
 import org.firstinspires.ftc.teamcode.euler.steps.GoToCoordinate;
 import org.firstinspires.ftc.teamcode.euler.steps.Rotate;
-import org.firstinspires.ftc.teamcode.euler.steps.Shoot;
 import org.firstinspires.ftc.teamcode.euler.steps.StartCollect;
 import org.firstinspires.ftc.teamcode.euler.steps.StopCollect;
 
@@ -28,11 +27,11 @@ public class EulerAutonomous extends OpMode {
     public void init() {
         robot = new Robot(hardwareMap);
         // position de depart shoot rouge middle
-        robot.getOdometry().reset(new Pose2D(DistanceUnit.MM, 30, 30, AngleUnit.DEGREES, 45));
+        robot.getOdometry().reset(new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES, 0));
 
         currentStepIndex = 0;
         steps = List.of(
-                new Shoot(Shoot.ShootPosition.MIDDLE, 3),
+                // new Shoot(Shoot.ShootPosition.MIDDLE, 2),
                 new GoToCoordinate(new Pose2D(DistanceUnit.MM, -15, 15, AngleUnit.DEGREES, -180)),
                 new Rotate(90),
                 new StartCollect(),

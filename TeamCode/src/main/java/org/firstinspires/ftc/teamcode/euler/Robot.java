@@ -35,6 +35,7 @@ import java.util.stream.Stream;
  * Centralise l'initialisation et la mise à jour périodique du hardware.
  */
 public class Robot {
+
     // SubSystems
     private final Driver driver;
     private final Intake intake;
@@ -42,7 +43,6 @@ public class Robot {
     private final Viseur viseur;
     private final Feeder feeder;
     private final Pather pather;
-
 
     // Capteurs
     private final Odometry odometry;
@@ -85,7 +85,6 @@ public class Robot {
                 hardwareMap.get(CRServo.class, PATHER_SERVO)
         );
 
-
         // capteurs
         this.compass = new Compass(
                 hardwareMap.get(IMU.class, "imu")
@@ -96,7 +95,6 @@ public class Robot {
                 hardwareMap.get(DcMotor.class, ODO_RIGHT_ENCODER),
                 this.compass
         );
-
     }
 
     /**

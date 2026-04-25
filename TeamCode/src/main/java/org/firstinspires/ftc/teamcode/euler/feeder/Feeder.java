@@ -12,16 +12,16 @@ import org.firstinspires.ftc.teamcode.euler.UpdateAware;
  * Permet un contrôle manuel (Haut/Bas) ou une séquence automatique de tir.
  */
 public class Feeder implements UpdateAware, TelemetryAware {
-    private final Servo feederServo;
 
     // Positions de configuration
-    public static final double PUSH_POSITION = 0.3;
-    public static final double IDLE_POSITION = 0.18;
-
+    private static final double PUSH_POSITION = 0.3;
+    private static final double IDLE_POSITION = 0.18;
     // Temps de trajet du servo (ms)
-    public static final long TRAVEL_TIME_MS = 250;
+    private static final long TRAVEL_TIME_MS = 250;
     // Temps de maintien en position haute lors d'un autoFire (ms)
-    public static final long HOLD_TIME_MS = 150;
+    private static final long HOLD_TIME_MS = 150;
+
+    private final Servo feederServo;
 
     private FeederTargetState targetState = FeederTargetState.IDLE;
     private double lastCommandedPosition = -1;

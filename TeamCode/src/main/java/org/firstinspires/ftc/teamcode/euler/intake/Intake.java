@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.euler.UpdateAware;
 public class Intake implements UpdateAware, TelemetryAware {
 
     private final DcMotor intakeMotor;
+    
     private IntakeState targetState = IntakeState.IDLE;
 
     /**

@@ -8,11 +8,6 @@ import org.firstinspires.ftc.teamcode.euler.Step;
 
 public class GoToCoordinate implements Step {
 
-    private final Pose2D target;
-
-    private boolean initialized = false;
-    private boolean finished = false;
-
     // Constantes de précision
     private static final double DISTANCE_TOLERANCE = 20.0; // mm
     private static final double HEADING_TOLERANCE = Math.toRadians(3.0); // 3 degrés
@@ -20,6 +15,11 @@ public class GoToCoordinate implements Step {
     // Gains de puissance (P-Controller)
     private static final double Kp_DRIVE = 0.05;
     private static final double Kp_TURN = 0.8;
+
+    private final Pose2D target;
+
+    private boolean initialized = false;
+    private boolean finished = false;
 
     public GoToCoordinate(Pose2D target) {
         this.target = target;

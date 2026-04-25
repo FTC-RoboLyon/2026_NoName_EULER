@@ -11,11 +11,11 @@ import org.firstinspires.ftc.teamcode.euler.UpdateAware;
  * Suit l'architecture de séparation intention/action utilisée dans le projet.
  */
 public class Pather implements UpdateAware, TelemetryAware {
-    private final CRServo patherServo;
 
-    // Vitesses de rotation (Configuration Hardware)
     private static final double BACKWARD_POWER = -1.0;
     private static final double STOP_POWER = 0.0;
+
+    private final CRServo patherServo;
 
     private PatherInternalState targetState = PatherInternalState.IDLE;
 

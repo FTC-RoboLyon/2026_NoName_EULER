@@ -2,7 +2,7 @@ TODO :
 
 - ajouter un fichier AGENTS.md pour que gemini comprenne bien le projet (demandez à gemini sur le
   net comment faire)
-- ajouter Vision, Odometry
+- ajouter Vision
 - ajouter des Steps associées à la vision/odometry
 - suppr branch raf
 - suppr Constantes (tout rappatrier dans les classes necessaires)

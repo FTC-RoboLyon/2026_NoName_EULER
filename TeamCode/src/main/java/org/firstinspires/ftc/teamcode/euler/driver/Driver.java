@@ -15,6 +15,7 @@ public class Driver implements UpdateAware, TelemetryAware {
 
     private final DcMotor leftMotor;
     private final DcMotor rightMotor;
+
     private double targetLeftPower = 0;
     private double targetRightPower = 0;
     private RunMode parkMode = RunMode.NORMAL;
@@ -66,19 +67,6 @@ public class Driver implements UpdateAware, TelemetryAware {
     @Override
     public RobotTelemetry getTelemetry() {
         return new RobotTelemetry("Chassis", "State: " + getState() + "park: " + parkMode);
-    }
-
-    /**
-     * Retourne l'intention de mouvement du pilote.
-     *
-     * @return L'état cible (MOVING ou IDLE).
-     */
-    public DriverState getTargetState() {
-        if (targetLeftPower == 0 && targetRightPower == 0) {
-            return DriverState.IDLE;
-        } else {
-            return DriverState.MOVING;
-        }
     }
 
     /**

@@ -45,10 +45,12 @@ public class EulerAutonomous extends OpMode {
 
     @Override
     public void loop() {
-        if (currentStepIndex > steps.size()) {
+        if (currentStepIndex >= steps.size()) {
             // plus rien à faire
             return;
         }
+
+        displayTelemetry();
 
         Step currentStep = steps.get(currentStepIndex);
 
@@ -62,5 +64,17 @@ public class EulerAutonomous extends OpMode {
             currentStep.finish(robot);
             currentStepIndex++; // passe à la step suivante
         }
+    }
+
+    private void displayTelemetry() {
+        telemetry.addData("Step", steps.get(currentStepIndex).getClass().getName());
+        telemetry.addData("Step index", currentStepIndex + "/" + steps.size());
+
+        robot.getTelemetries()
+                .forEach(robotTelemetry -> {
+                    telemetry.addData(robotTelemetry.getCaption(), robotTelemetry.getValue());
+                });
+
+        telemetry.update();
     }
 }

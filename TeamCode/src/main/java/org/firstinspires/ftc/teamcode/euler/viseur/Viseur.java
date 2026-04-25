@@ -12,15 +12,13 @@ import org.firstinspires.ftc.teamcode.euler.UpdateAware;
  * Architecture robuste basée sur des états internes et une mise à jour différée.
  */
 public class Viseur implements UpdateAware, TelemetryAware {
-    private final Servo viseurServo;
 
-    // Positions (Configuration Hardware)
     private static final double NEAR_POSITION = 0.0;
     private static final double MIDDLE_POSITION = 0.5;
     private static final double FAR_POSITION = 1.0;
+    private static final long TRAVEL_TIME_MS = 300;
 
-    // Paramètres temporels
-    public static final long TRAVEL_TIME_MS = 300;
+    private final Servo viseurServo;
 
     private ViseurTargetState targetState = ViseurTargetState.FAR;
     private double lastCommandedPosition = -1;

@@ -8,4 +8,8 @@ public class Constant {
     public final static String SHOOTER_MOTOR = "shooter";
     public final static String VISEUR_SERVO = "viseur";
     public final static String PATHER_SERVO = "chemin";
+    
+    // Odometry Encoders
+    public final static String ODO_LEFT_ENCODER = "odo left";
+    public final static String ODO_RIGHT_ENCODER = "odo right";
 }

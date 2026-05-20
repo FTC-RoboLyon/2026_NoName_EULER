@@ -5,25 +5,26 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
-import org.firstinspires.ftc.teamcode.euler.SubSystem;
+import org.firstinspires.ftc.teamcode.euler.TelemetryAware;
+import org.firstinspires.ftc.teamcode.euler.UpdateAware;
 
 /**
  * Sous-système gérant le mécanisme de tir (Shooter).
  * Utilise {@link DcMotorEx} pour un contrôle précis de la vitesse par PID.
  * Adapte la vélocité cible en fonction de la tension de la batterie.
  */
-public class Shooter implements SubSystem {
+public class Shooter implements UpdateAware, TelemetryAware {
 
-    private final DcMotorEx shooterMotor;
-    private final VoltageSensor voltageSensor;
-    private ShooterState targetState;
-
-    // Vitesse cible nominale (pour 12V) en tics par seconde
-    private double targetVelocity = 0;
     private static final double VELOCITY_NEAR = 1400;
     private static final double VELOCITY_MIDDLE = 2100;
     private static final double VELOCITY_FAR = 2400;
     private static final double VELOCITY_TOLERANCE = 50;
+
+    private final DcMotorEx shooterMotor;
+    private final VoltageSensor voltageSensor;
+
+    private ShooterState targetState;
+    private double targetVelocity = 0;
 
     /**
      * Initialise le moteur du shooter et le capteur de tension.

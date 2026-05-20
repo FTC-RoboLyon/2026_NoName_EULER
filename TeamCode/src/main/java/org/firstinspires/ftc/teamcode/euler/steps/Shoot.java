@@ -40,14 +40,17 @@ public class Shoot implements Step {
             case NEAR: {
                 robot.getShooter().shootNear();
                 robot.getViseur().aimNear();
+                break;
             }
             case MIDDLE: {
                 robot.getShooter().shootMiddle();
                 robot.getViseur().aimMiddle();
+                break;
             }
             case FAR: {
                 robot.getShooter().shootFar();
                 robot.getViseur().aimFar();
+                break;
             }
         }
         this.internalState = InternalState.PREPARATION;
@@ -67,7 +70,7 @@ public class Shoot implements Step {
 
         if (this.internalState == InternalState.READY_TO_SHOOT && robot.getFeeder().getState() == FeederState.IDLE) {
             // internalState=SHOOTING ET feederState=IDLE
-            if (this.nbBallShooted > this.numberOfBalls) {
+            if (this.nbBallShooted >= this.numberOfBalls) {
                 this.finished = true;
             } else {
                 this.nbBallShooted++;

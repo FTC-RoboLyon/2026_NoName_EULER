@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.euler;
 
-public interface SubSystem {
-    void update();
-
+public interface TelemetryAware {
     RobotTelemetry getTelemetry();
 }

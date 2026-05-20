@@ -3,14 +3,16 @@ package org.firstinspires.ftc.teamcode.euler.intake;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
-import org.firstinspires.ftc.teamcode.euler.SubSystem;
+import org.firstinspires.ftc.teamcode.euler.TelemetryAware;
+import org.firstinspires.ftc.teamcode.euler.UpdateAware;
 
 /**
  * Sous-système gérant le mécanisme de collecte (Intake).
  */
-public class Intake implements SubSystem {
+public class Intake implements UpdateAware, TelemetryAware {
 
     private final DcMotor intakeMotor;
+    
     private IntakeState targetState = IntakeState.IDLE;
 
     /**

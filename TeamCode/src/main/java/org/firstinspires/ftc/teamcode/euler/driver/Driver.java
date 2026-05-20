@@ -4,16 +4,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.euler.RobotTelemetry;
-import org.firstinspires.ftc.teamcode.euler.SubSystem;
+import org.firstinspires.ftc.teamcode.euler.TelemetryAware;
+import org.firstinspires.ftc.teamcode.euler.UpdateAware;
 
 /**
  * Sous-système gérant le déplacement du robot (Tank Drive).
  * Utilise une architecture avec séparation de l'intention et de l'exécution.
  */
-public class Driver implements SubSystem {
+public class Driver implements UpdateAware, TelemetryAware {
 
     private final DcMotor leftMotor;
     private final DcMotor rightMotor;
+
     private double targetLeftPower = 0;
     private double targetRightPower = 0;
     private RunMode parkMode = RunMode.NORMAL;
@@ -29,7 +31,9 @@ public class Driver implements SubSystem {
         this.rightMotor = rightMotor1;
 
         this.leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     /**
@@ -40,10 +44,10 @@ public class Driver implements SubSystem {
      * @param right Puissance cible pour le moteur droit (entre -1.0 et 1.0).
      */
     public void drive(double left, double right) {
-        this.targetLeftPower = left;
-        this.targetRightPower = right;
+        this.targetLeftPower = left + right;
+        this.targetRightPower = left - right;
     }
-    
+
     public void toggleParkMode() {
         if (this.parkMode == RunMode.NORMAL) {
             parkMode = RunMode.PARK;
@@ -65,19 +69,6 @@ public class Driver implements SubSystem {
     @Override
     public RobotTelemetry getTelemetry() {
         return new RobotTelemetry("Chassis", "State: " + getState() + "park: " + parkMode);
-    }
-
-    /**
-     * Retourne l'intention de mouvement du pilote.
-     *
-     * @return L'état cible (MOVING ou IDLE).
-     */
-    public DriverState getTargetState() {
-        if (targetLeftPower == 0 && targetRightPower == 0) {
-            return DriverState.IDLE;
-        } else {
-            return DriverState.MOVING;
-        }
     }
 
     /**

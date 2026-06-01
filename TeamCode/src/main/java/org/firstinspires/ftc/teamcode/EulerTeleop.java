@@ -32,15 +32,15 @@ import java.util.function.BooleanSupplier;
 @TeleOp(name = "EulerTeleop", group = "Euler")
 public class EulerTeleop extends OpMode {
 
-    private DcMotor left_drive;
-    private DcMotor right_drive;
-    private DcMotor Intake;
-    private DcMotorEx Shooter;
+    private DcMotor left_base_motor;
+    private DcMotor right_base_motor;
+    private DcMotor Intake_motor;
+    private DcMotorEx Shooter_motor;
 
 
-    private Servo viseur;
-    private Servo feeder;
-    private CRServo chemin;
+    private Servo viseur_servo;
+    private Servo feeder_servo;
+    private CRServo chemin_servo;
 
     public static AprilTagProcessor april_joke;
     private VisionPortal visionPortal;
@@ -106,29 +106,29 @@ public class EulerTeleop extends OpMode {
 
     }
     public void Init_motors (){
-        left_drive = hardwareMap.get(DcMotorEx.class, "left motor");
-        right_drive = hardwareMap.get(DcMotorEx.class, "righr motor");
-        Intake = hardwareMap.get(DcMotorEx.class, "Intake");
-        Shooter = hardwareMap.get(DcMotorEx.class, "Shooter");
+        left_base_motor = hardwareMap.get(DcMotorEx.class, "left motor");
+        right_base_motor = hardwareMap.get(DcMotorEx.class, "right motor");
+        Intake_motor = hardwareMap.get(DcMotorEx.class, "intake");
+        Shooter_motor = hardwareMap.get(DcMotorEx.class, "shooter");
 
-        viseur = hardwareMap.get(Servo.class, "viseur");
-        feeder = hardwareMap.get(Servo.class, "feeder");
-        chemin = hardwareMap.get(CRServo.class, "chemin");
+        viseur_servo = hardwareMap.get(Servo.class, "viseur");
+        feeder_servo = hardwareMap.get(Servo.class, "feeder");
+        chemin_servo = hardwareMap.get(CRServo.class, "chemin");
 
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
-        left_drive.setDirection(DcMotorSimple.Direction.REVERSE);
-        right_drive.setDirection(DcMotorSimple.Direction.FORWARD);
+        left_base_motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        right_base_motor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        left_drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        right_drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        left_base_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        right_base_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-        Shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Shooter_motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        Shooter_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
     public double get_Shooter_RPM (){
-        return (Shooter.getVelocity() / CPR) * 60;     // if yous want to use a gear ratio, divide this by this gear ratio
+        return (Shooter_motor.getVelocity() / CPR) * 60;     // if yous want to use a gear ratio, divide this by this gear ratio
     }
     public double get_voltage_compensated (double power){
         return (power*voltage)/13;
@@ -142,9 +142,8 @@ public class EulerTeleop extends OpMode {
         double ff = (shooter_kv*velocity) + shooter_ks;
         double fb = error * shooter_kp;
 
-        Shooter.setPower(get_voltage_compensated(ff + fb));
+        Shooter_motor.setPower(get_voltage_compensated(ff + fb));
         telemetry.addData("erreur", error);
-        telemetry.update();
     }
     public void Joystick (){
         double coeff_smooth_forward = 0.45, vpower_forward = 2;
@@ -172,14 +171,16 @@ public class EulerTeleop extends OpMode {
     }
 
     public void Drive_loop (double forward, double turn){
-        left_drive.setPower(get_voltage_compensated(forward - turn));
-        right_drive.setPower(get_voltage_compensated(forward + turn));
+        left_base_motor.setPower(get_voltage_compensated(forward - turn));
+        right_base_motor.setPower(get_voltage_compensated(forward + turn));
     }
     public void intake_loop (){
         if (gamepad1.right_trigger_pressed)
-            Intake.setPower(get_voltage_compensated(1));
-        if (gamepad1.left_trigger_pressed)
-            Intake.setPower(get_voltage_compensated(-1));
+            Intake_motor.setPower(get_voltage_compensated(1));
+        else if (gamepad1.left_trigger_pressed)
+            Intake_motor.setPower(get_voltage_compensated(-1));
+        else
+            Intake_motor.setPower(0);
     }
     public void Shooter_loop (){
         if (gamepad1.bWasPressed())
@@ -216,8 +217,8 @@ public class EulerTeleop extends OpMode {
                 break;
         }
         set_velo_shooter(velo_shoot);
-        viseur.setPosition(pos_viseur);
-        //if (velo_shoot - shooter_tolerance < Shooter.getVelocity() && Shooter.getVelocity() < velo_shoot + shooter_tolerance)
+        viseur_servo.setPosition(pos_viseur);
+        //if (velo_shoot - shooter_tolerance < Shooter_motor.getVelocity() && Shooter_motor.getVelocity() < velo_shoot + shooter_tolerance)
           //  shooter_sys_state = Shooter_sys_state.READY;
 
     }
@@ -248,15 +249,18 @@ public class EulerTeleop extends OpMode {
     }
     @SuppressLint("DefaultLocale")
     public void telemetry(){
-        telemetry.addData("velocité shooter (RPM)", get_Shooter_RPM());
+        telemetry.addData("shooter velocity  (RPM)", get_Shooter_RPM());
 
         telemetry.addData("shooter kp", shooter_kp);
         telemetry.addData("shooter kv", shooter_kv);
         telemetry.addData("shooter ks", shooter_ks);
-        telemetry.addData("shooter tolérance", shooter_tolerance);
+        telemetry.addData("shooter tolerance", shooter_tolerance);
+        telemetry.addLine("--------------------");
 
         telemetry.addData("left stick x", gamepad1.left_stick_x);
         telemetry.addData("left stick y", gamepad1.left_stick_y);
+        telemetry.addLine("--------------------");
+
         telemetry.addData("right stick x", gamepad1.right_stick_x);
         telemetry.addData("right stick y", gamepad1.right_stick_y);
 
@@ -288,7 +292,7 @@ public class EulerTeleop extends OpMode {
         voltage = voltageSensor.getVoltage();
 
         forward = gamepad1.left_stick_y;
-        if (shooter_state == Shooter_wanted_state.Shoot_bank ||shooter_state == Shooter_wanted_state.Shoot_mid ||shooter_state == Shooter_wanted_state.Shoot_far ||){
+        if (shooter_state == Shooter_wanted_state.Shoot_bank ||shooter_state == Shooter_wanted_state.Shoot_mid ||shooter_state == Shooter_wanted_state.Shoot_far ){
             turn = gamepad1.right_stick_x + get_power_to_auto_align(0, 24);
         }else{
             turn = gamepad1.right_stick_x;
@@ -300,15 +304,15 @@ public class EulerTeleop extends OpMode {
         intake_loop();
         Shooter_loop();
         if (gamepad2.left_bumper)
-            chemin.setPower(-1);
+            chemin_servo.setPower(-1);
         else if (gamepad2.right_bumper)
-            chemin.setPower(1);
+            chemin_servo.setPower(1);
 
 
         if (gamepad2.x)
-            feeder.setPosition(posFeed);
+            feeder_servo.setPosition(posFeed);
         else
-            feeder.setPosition(posFeedrepos);
+            feeder_servo.setPosition(posFeedrepos);
         telemetry();
     }
 }

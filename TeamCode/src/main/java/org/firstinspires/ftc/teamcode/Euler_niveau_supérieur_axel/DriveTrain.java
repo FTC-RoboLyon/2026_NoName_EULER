@@ -9,8 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class DriveTrain {
-    private DcMotor left_drive;
-    private DcMotor right_drive;
+    private DcMotor left_drive; //Je t'ai deja dis, si cette variable est un moteur précise le dans son nom, en plus le mot drive n'est pas vraiment adapté
+    private DcMotor right_drive; //comme pour l'autre moteur
     public double left_motor_power;
     public double right_motor_power;
     public enum Drive_mode {
@@ -32,13 +32,13 @@ public class DriveTrain {
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void Drive (double turn, double forward){
-        left_motor_power = turn - forward;
-        right_motor_power = turn + forward;
+        left_motor_power = turn - forward; //je crois qu'il y a une erreur ici
+        right_motor_power = turn + forward; //ici aussi (oublies pas que tu as reverse tes moteurs)
     }
 
     public void loop(double voltage){
-        left_drive.setPower(left_motor_power*voltage/13);
-        right_drive.setPower(right_motor_power*voltage/13);
+        left_drive.setPower(left_motor_power*voltage/13);  //Mettre un voltage compensation sur une base controlee manuelement  est un peu inutile
+        right_drive.setPower(right_motor_power*voltage/13); //parce qu'on a pas besoin de précision et qu'au contraire ca pourrait la limiter
 
     }
 

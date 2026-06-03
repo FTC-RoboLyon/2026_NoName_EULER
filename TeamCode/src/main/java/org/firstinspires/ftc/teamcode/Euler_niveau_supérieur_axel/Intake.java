@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake {
-    private DcMotor intake;
+    private DcMotor intake; //manque le Motor a la fin du nom
     public double intake_power;
     public Intake (HardwareMap hmap){
         intake = hmap.get(DcMotor.class, "intake");

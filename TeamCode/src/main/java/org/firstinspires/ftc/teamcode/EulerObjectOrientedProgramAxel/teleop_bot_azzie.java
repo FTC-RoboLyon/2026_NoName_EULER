@@ -26,7 +26,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 @TeleOp //c mieux avec ca
 public class teleop_bot_azzie extends OpMode {
-    drivetrain base; //Tu peux l'appeler drivetrain plutot (base ne veut rien dire en anglais)
+    Drivetrain base; //Tu peux l'appeler drivetrain plutot (base ne veut rien dire en anglais)
     Intake intake;
     Shooter shooter;
     Feeder feeder;
@@ -34,7 +34,7 @@ public class teleop_bot_azzie extends OpMode {
 
     @Override
     public void init() {
-         base = new drivetrain(hardwareMap);
+         base = new Drivetrain(hardwareMap);
          intake = new Intake(hardwareMap);
          shooter = new Shooter(hardwareMap);
          feeder = new Feeder(hardwareMap);

@@ -10,10 +10,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 public class Shooter {
-    private DcMotorEx ShooterMotor;
-    private Servo HoodServo;
-    private CRServo transfertServo;
-    public int CPR = 28; //fais gafeedForwarde ici tu declare variable comme un double et tu lui donnes une valeur d'int
+    private final DcMotorEx ShooterMotor;
+    private final Servo HoodServo;
+    private final CRServo transfertServo;
+    private int CPR = 28; //fais gafeedForwarde ici tu declare variable comme un double et tu lui donnes une valeur d'int
                             // il aurait soit fallu mettre la variable en int (le mieux ici car le CPR sera toujours un entier) ou alors mettre la valeur a 28.0
 
     public static double shooterTolerance = 100.0;      //jvais ptet revoir l'unité jsp encore mais pr l'instant c'est en rotaion/minute

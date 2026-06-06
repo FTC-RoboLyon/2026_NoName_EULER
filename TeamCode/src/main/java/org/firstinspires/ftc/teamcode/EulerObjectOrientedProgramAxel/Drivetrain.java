@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Drivetrain {
-    private final DcMotor leftMotor; //Je t'ai deja dis, si cette variable est un moteur précise le dans son nom, en plus le mot drive n'est pas vraiment adapté
-    private DcMotor rightMotor; //comme pour l'autre moteur
+    private final DcMotor leftMotor;
+    private DcMotor rightMotor;
     private double leftMotorPower;
     private double rightMotorPower;
     public enum Drive_mode {
@@ -28,16 +28,10 @@ public class Drivetrain {
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void Drive (double turn, double forward){
-        leftMotorPower = forward + turn; //je crois qu'il y a une erreur ici
-        rightMotorPower = forward - turn; //ici aussi (oublies pas que tu as reverse tes moteurs)    c tt bon mtn
+        leftMotorPower = forward + turn;
+        rightMotorPower = forward - turn;
 
-        leftMotor.setPower(leftMotorPower);  //Mettre un voltage compensation sur une base controlee manuelement  est un peu inutile
-        rightMotor.setPower(rightMotorPower); //parce qu'on a pas besoin de précision et qu'au contraire ca pourrait la limiter              j'av ta raison
-
+        leftMotor.setPower(leftMotorPower);
+        rightMotor.setPower(rightMotorPower);
     }
-
-    public void periodic(){
-
-    }
-
 }

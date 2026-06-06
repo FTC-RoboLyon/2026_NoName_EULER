@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Euler_niveau_supérieur_axel;
+package org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel;
 
 /*
  * Commentaire général:
@@ -17,8 +17,8 @@ package org.firstinspires.ftc.teamcode.Euler_niveau_supérieur_axel;
 
 
 
-import static org.firstinspires.ftc.teamcode.Euler_niveau_supérieur_axel.Feeder.PosFeederActive;
-import static org.firstinspires.ftc.teamcode.Euler_niveau_supérieur_axel.Feeder.PosFeederIddle;
+import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feeder.FeederActivePos;
+import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feeder.FeederIdlePos;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -26,20 +26,18 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 @TeleOp //c mieux avec ca
 public class teleop_bot_azzie extends OpMode {
-    DriveTrain base; //Tu peux l'appeler drivetrain plutot (base ne veut rien dire en anglais)
+    drivetrain base; //Tu peux l'appeler drivetrain plutot (base ne veut rien dire en anglais)
     Intake intake;
     Shooter shooter;
     Feeder feeder;
-    Path path; //C quoi la difference entre path et feeder (le nom path n'est pas tres clair)
     VoltageSensor voltageSensor;
 
     @Override
     public void init() {
-         base = new DriveTrain(hardwareMap);
+         base = new drivetrain(hardwareMap);
          intake = new Intake(hardwareMap);
          shooter = new Shooter(hardwareMap);
          feeder = new Feeder(hardwareMap);
-         path = new Path(hardwareMap);
 
          voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
     }
@@ -50,8 +48,7 @@ public class teleop_bot_azzie extends OpMode {
 
         base.Drive(gamepad1.left_stick_x, gamepad1.right_stick_y);
         intake.setIntake_power((double) (gamepad1.right_trigger - gamepad1.left_trigger));
-        feeder.setPosFeeder( gamepad2.x ? PosFeederActive : PosFeederIddle);
-        path.setPathPower(Math.abs(intake.intake_power) > 0 ? 1 : -1);        //inverser les 1 et -1 en fonction du sens voulu
+        feeder.setFeederPos(gamepad2.x ? FeederActivePos : FeederIdlePos);
         // fait les commentaires en anglais (t'as déjà de la prog en français toi ? et mes corrections ne comptent pas)
         /*
          * Petit beug je pense
@@ -60,20 +57,16 @@ public class teleop_bot_azzie extends OpMode {
          */
 
 
-        if (gamepad2.a)
-            shooter.setShooterState(Shooter.ShooterState.VeloShootFar);
-        else if (gamepad2.b) {
-            shooter.setShooterState(Shooter.ShooterState.VeloShootNear);
+        if (gamepad2.a) {
+            shooter.SetShooterTargets(Shooter.speedNear, Shooter.posHood_bank, voltage);
+        }else if (gamepad2.b) {
+            shooter.SetShooterTargets(Shooter.speedMid, Shooter.posHood_mid, voltage);
         } else if (gamepad2.y) {
-            shooter.setShooterState(Shooter.ShooterState.VeloShootMid);
+            shooter.SetShooterTargets(Shooter.speedFar, Shooter.posHood_far, voltage);
         }
 
 
-        base.loop(voltage);
-        intake.intake_loop();
-        shooter.shooterLoop(voltage);
-        feeder.feeder_loop();
-        path.Path_loop();
-        // tu peux juste laisser loop dans les noms des fonctions (comme t'as fait pour la base) et on préfèrera même periodic apres avec le command based
+
+        // tu peux juste laisser loop dans les noms des fonctions (comme t'as fait pour la base) et on préfèrera même periodic apres avec le command based         done
     }
 }

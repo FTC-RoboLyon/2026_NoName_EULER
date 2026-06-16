@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.arcrobotics.ftclib.util.InterpLUT;
 
 @Config
 public class Shooter {
@@ -24,6 +25,8 @@ public class Shooter {
 
     public static double posHood_bank = 0.3, posHood_mid = 0.58, posHood_far = 0.45; //TUNEME
     public static double speedNear = 1250, speedMid = 1500, speedFar = 1500; //TUNEME
+
+    private InterpLUT test
 
     private double ShooterPower;
 
@@ -51,6 +54,11 @@ public class Shooter {
         SetFlywheelTargetSpeed(speedTarget, voltage);
         HoodServo.setPosition(posTarget);
     }
+
+    public void SetShooterTargetAutomaticly (double distanceToGoal){
+
+    }
+
     public void SetFlywheelTargetSpeed (double targetSpeed, double voltage){
 
         double error = targetSpeed - get_Shooter_RPM();

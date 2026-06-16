@@ -4,8 +4,11 @@ import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feed
 import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feeder.FeederIdlePos;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+
+import java.lang.reflect.Field;
 
 @TeleOp
 public class teleop_bot_azzie extends OpMode {
@@ -13,7 +16,10 @@ public class teleop_bot_azzie extends OpMode {
     Intake intake;
     Shooter shooter;
     Feeder feeder;
+    Camera camera;
+
     VoltageSensor voltageSensor;
+
 
     @Override
     public void init() {
@@ -21,6 +27,7 @@ public class teleop_bot_azzie extends OpMode {
          intake = new Intake(hardwareMap);
          shooter = new Shooter(hardwareMap);
          feeder = new Feeder(hardwareMap);
+         camera = new Camera(hardwareMap);
 
          voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
     }
@@ -28,8 +35,10 @@ public class teleop_bot_azzie extends OpMode {
     @Override
     public void loop() {
         double voltage = voltageSensor.getVoltage();
-
-        drivetrain.Drive(gamepad1.left_stick_x, gamepad1.right_stick_y);
+        if (gamepad1.left_stick_button)
+            drivetrain.DriveAlongATarget(camera.getBearing(21),  gamepad1.right_stick_y);
+        else
+            drivetrain.Drive(gamepad1.left_stick_x, gamepad1.right_stick_y);
         intake.setIntake_power((double) (gamepad1.right_trigger - gamepad1.left_trigger));
         feeder.setFeederPos(gamepad2.x ? FeederActivePos : FeederIdlePos);
 
@@ -39,6 +48,8 @@ public class teleop_bot_azzie extends OpMode {
             shooter.SetShooterTargets(Shooter.speedMid, Shooter.posHood_mid, voltage);
         } else if (gamepad2.y) {
             shooter.SetShooterTargets(Shooter.speedFar, Shooter.posHood_far, voltage);
-        }
+        }else
+            shooter.SetShooterTargets(0,0,0);
+
     }
 }

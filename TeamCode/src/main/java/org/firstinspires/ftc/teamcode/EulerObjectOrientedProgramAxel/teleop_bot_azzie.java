@@ -35,21 +35,33 @@ public class teleop_bot_azzie extends OpMode {
     @Override
     public void loop() {
         double voltage = voltageSensor.getVoltage();
-        if (gamepad1.left_stick_button)
+        if (gamepad1.left_stick_button && camera.getBearing(21) != 7)
             drivetrain.DriveAlongATarget(camera.getBearing(21),  gamepad1.right_stick_y);
         else
             drivetrain.Drive(gamepad1.left_stick_x, gamepad1.right_stick_y);
         intake.setIntake_power((double) (gamepad1.right_trigger - gamepad1.left_trigger));
         feeder.setFeederPos(gamepad2.x ? FeederActivePos : FeederIdlePos);
 
-        if (gamepad2.a) {
+        if (gamepad2.a)
+        {
             shooter.SetShooterTargets(Shooter.speedNear, Shooter.posHood_bank, voltage);
-        }else if (gamepad2.b) {
+        }
+        else if (gamepad2.b)
+        {
             shooter.SetShooterTargets(Shooter.speedMid, Shooter.posHood_mid, voltage);
-        } else if (gamepad2.y) {
+        }
+        else if (gamepad2.y)
+        {
             shooter.SetShooterTargets(Shooter.speedFar, Shooter.posHood_far, voltage);
-        }else
-            shooter.SetShooterTargets(0,0,0);
+        }
+        else if (gamepad2.left_bumper && camera.getDistanceInch(21)>0)
+        {
+            shooter.SetShooterTargetAutomaticly(camera.getDistanceInch(21), voltage);
+        }
+        else
+        {
+            shooter.SetShooterTargets(0, 0, 0);
+        }
 
     }
 }

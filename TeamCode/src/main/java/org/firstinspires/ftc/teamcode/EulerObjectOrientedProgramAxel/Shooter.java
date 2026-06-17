@@ -26,7 +26,8 @@ public class Shooter {
     public static double posHood_bank = 0.3, posHood_mid = 0.58, posHood_far = 0.45; //TUNEME
     public static double speedNear = 1250, speedMid = 1500, speedFar = 1500; //TUNEME
 
-    private InterpLUT test
+    private InterpLUT FlywheelLUT;
+    private InterpLUT HoodLUT;
 
     private double ShooterPower;
 
@@ -45,6 +46,12 @@ public class Shooter {
 
         transfertServo = hmap.get(CRServo.class, "chemin");
         transfertServo.setPower(0);
+
+        FlywheelLUT = new InterpLUT();
+        FlywheelLUT.add(0,0); //add as much as you want  FlywheelLUT.add(input, output)
+
+        HoodLUT = new InterpLUT();
+        HoodLUT.add(0,0); //add as much as you want  HoodLUT.add(input, output)
     }
 
 
@@ -55,8 +62,11 @@ public class Shooter {
         HoodServo.setPosition(posTarget);
     }
 
-    public void SetShooterTargetAutomaticly (double distanceToGoal){
+    public void SetShooterTargetAutomaticly (double distanceToGoal, double voltage){
+        double speedTarget = FlywheelLUT.get(distanceToGoal);
+        double posTarget = HoodLUT.get(distanceToGoal);
 
+        SetShooterTargets(speedTarget, posTarget, voltage);
     }
 
     public void SetFlywheelTargetSpeed (double targetSpeed, double voltage){

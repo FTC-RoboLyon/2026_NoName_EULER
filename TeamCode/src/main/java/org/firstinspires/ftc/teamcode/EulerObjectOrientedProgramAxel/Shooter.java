@@ -20,14 +20,14 @@ public class Shooter {
 
     private final double gearRatio = 1.0;
 
-    public static double shooterKp, shooterKv, shooterKs;
+    public static double shooterKp, shooterKv, shooterKs; //et c'est ou que tu leur donne une valeur a eux
 
 
-    public static double posHood_bank = 0.3, posHood_mid = 0.58, posHood_far = 0.45; //TUNEME
-    public static double speedNear = 1250, speedMid = 1500, speedFar = 1500; //TUNEME
+    public static double posHood_bank = 0.3, posHood_mid = 0.58, posHood_far = 0.45; //TUNEME -> inverser pos et ce qui suit dans les noms c'est plus correct et respecter les convention de nommage (ex hoodBankPos)
+    public static double speedNear = 1250, speedMid = 1500, speedFar = 1500; //TUNEME -> inverser speed et ce qui suit dans les noms c'est plus correct (ex nearSpeed)
 
-    private InterpLUT FlywheelLUT;
-    private InterpLUT HoodLUT;
+    private InterpLUT FlywheelLUT; //pk une interpolation sur une spline et pas plutot lineaire ? et ajouter a quelle grandeur ca correspond (FlywheelSpeedLUT)
+    private InterpLUT HoodLUT; //pk une interpolation sur une spline et pas plutot lineaire ? et ajouter a quelle grandeur ca correspond (HoodPosLUT)
 
     private double ShooterPower;
 
@@ -62,7 +62,7 @@ public class Shooter {
         HoodServo.setPosition(posTarget);
     }
 
-    public void SetShooterTargetAutomaticly (double distanceToGoal, double voltage){
+    public void SetShooterTargetAutomaticly (double distanceToGoal, double voltage){ //On dit Automatically et pas Automaticly et le nom n'est pas fou, tu pourrais juste mettre SetShooterDistanceTarget() c mieux
         double speedTarget = FlywheelLUT.get(distanceToGoal);
         double posTarget = HoodLUT.get(distanceToGoal);
 
@@ -82,8 +82,7 @@ public class Shooter {
         ShooterPower = feedForward + feedBack;
         ShooterMotor.setPower(getVoltageCompensated(ShooterPower, voltage));
 
-        transfertServo.setPower(1);
-
+        transfertServo.setPower(1); //et lui il repasse jamais a 0 dcp
     }
 
     public void stopShooter(){

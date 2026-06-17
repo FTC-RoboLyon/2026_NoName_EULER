@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Field; //autant supprimer les import inutiles
 
 @TeleOp
 public class teleop_bot_azzie extends OpMode {
@@ -35,7 +35,7 @@ public class teleop_bot_azzie extends OpMode {
     @Override
     public void loop() {
         double voltage = voltageSensor.getVoltage();
-        if (gamepad1.left_stick_button && camera.getBearing(21) != 7)
+        if (gamepad1.left_stick_button && camera.getBearing(21) != 7)//la t'as mis l'id correspindant qu'a un seul goal mais si tu es dans l'autre alliance il se passe quoi
             drivetrain.DriveAlongATarget(camera.getBearing(21),  gamepad1.right_stick_y);
         else
             drivetrain.Drive(gamepad1.left_stick_x, gamepad1.right_stick_y);
@@ -63,5 +63,11 @@ public class teleop_bot_azzie extends OpMode {
             shooter.SetShooterTargets(0, 0, 0);
         }
 
+    }
+
+    @Override
+    public void stop()
+    {
+        camera.close();
     }
 }

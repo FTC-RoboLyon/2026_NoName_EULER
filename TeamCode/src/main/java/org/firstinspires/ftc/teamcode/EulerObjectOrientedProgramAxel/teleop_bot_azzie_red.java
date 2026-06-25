@@ -4,14 +4,11 @@ import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feed
 import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feeder.FeederIdlePos;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import java.lang.reflect.Field; //autant supprimer les import inutiles
-
 @TeleOp
-public class teleop_bot_azzie extends OpMode {
+public class teleop_bot_azzie_red extends OpMode {
     Drivetrain drivetrain;
     Intake intake;
     Shooter shooter;
@@ -35,8 +32,8 @@ public class teleop_bot_azzie extends OpMode {
     @Override
     public void loop() {
         double voltage = voltageSensor.getVoltage();
-        if (gamepad1.left_stick_button && camera.getBearing(21) != 7)//la t'as mis l'id correspindant qu'a un seul goal mais si tu es dans l'autre alliance il se passe quoi
-            drivetrain.DriveAlongATarget(camera.getBearing(21),  gamepad1.right_stick_y);
+        if (gamepad1.left_stick_button && camera.getBearing(24) != 7)
+            drivetrain.AlignWithTarget(camera.getBearing(24),  gamepad1.right_stick_y);
         else
             drivetrain.Drive(gamepad1.left_stick_x, gamepad1.right_stick_y);
         intake.setIntake_power((double) (gamepad1.right_trigger - gamepad1.left_trigger));
@@ -44,23 +41,23 @@ public class teleop_bot_azzie extends OpMode {
 
         if (gamepad2.a)
         {
-            shooter.SetShooterTargets(Shooter.speedNear, Shooter.posHood_bank, voltage);
+            shooter.SetShooterTargets(Shooter.speedNear, Shooter.hoodBankPos, voltage);
         }
         else if (gamepad2.b)
         {
-            shooter.SetShooterTargets(Shooter.speedMid, Shooter.posHood_mid, voltage);
+            shooter.SetShooterTargets(Shooter.speedMid, Shooter.hoodMidPos, voltage);
         }
         else if (gamepad2.y)
         {
-            shooter.SetShooterTargets(Shooter.speedFar, Shooter.posHood_far, voltage);
+            shooter.SetShooterTargets(Shooter.speedFar, Shooter.hoodFarPos, voltage);
         }
-        else if (gamepad2.left_bumper && camera.getDistanceInch(21)>0)
+        else if (gamepad2.left_bumper && camera.getDistanceMeters(24)>0)
         {
-            shooter.SetShooterTargetAutomaticly(camera.getDistanceInch(21), voltage);
+            shooter.SetShooterDistanceTarget(camera.getDistanceMeters(24), voltage);
         }
         else
         {
-            shooter.SetShooterTargets(0, 0, 0);
+            shooter.stopShooter();
         }
 
     }

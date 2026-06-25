@@ -13,9 +13,9 @@ public class Drivetrain {
     private final DcMotor rightMotor;
     private double leftMotorPower;
     private double rightMotorPower;
-    private ElapsedTime PDTimer = new ElapsedTime();//t'as oublie de le demarrer ton timer
-    private static double lastErrorPD;//previous mieux que last et PD doit venir avant Error -> previousPDError
-    private static double lastTimePD;//previous mieux que last et PD doit venir avant Time -> previousPDTime
+    private ElapsedTime PDTimer = new ElapsedTime();
+    private static double previousPDError = 0.0;
+    private static double previousPDTime = 0.0;
     public Drivetrain(HardwareMap hmap){
         leftMotor = hmap.get(DcMotor.class, "left motor");
         rightMotor = hmap.get(DcMotor.class, "right motor");
@@ -28,33 +28,35 @@ public class Drivetrain {
 
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        PDTimer.startTime();
     }
     public void Drive (double turn, double forward){
-        leftMotorPower = forward + turn;//Par convention ca doit etre l'inverse puisque selon les convention un output positif est cense faire tourner dans le sens trogonometrique
-        rightMotorPower = forward - turn;//Par convention ca doit etre l'inverse puisque selon les convention un output positif est cense faire tourner dans le sens trogonometrique
+        leftMotorPower = forward - turn;
+        rightMotorPower = forward + turn;
 
         leftMotor.setPower(leftMotorPower);
         rightMotor.setPower(rightMotorPower);
 
     }
 
-    public void DriveAlongATarget(double error, double forward){ //le nom de la fonction n'est pas tres fou, ca serait mieux AlignWithTarget ou un truc du genre
+    public void AlignWithTarget(double error, double forward){
 
         double pTerm = KP_AUTO_ALIGN * error; //choix de nom de variable pas ouf
 
         double actualTime = PDTimer.milliseconds();
-        double dTerm = KD_AUTO_ALIGN * ((error - lastErrorPD)/actualTime - lastTimePD);//et il se passe quoi s'il n'y avait pas de lastTimePD ou de lastErrorPD + il manque des parentheses ;)
+        double dTerm = KD_AUTO_ALIGN * ((error - previousPDError)/(actualTime - previousPDTime));//et il se passe quoi s'il n'y avait pas de previousPDTime ou de previousPDError + il manque des parentheses ;)
 
         double turn = pTerm + dTerm;
 
-        leftMotorPower = forward + turn; // pareil que ligne 33/34
-        rightMotorPower = forward - turn; // pareil que ligne 33/34
+        leftMotorPower = forward - turn;
+        rightMotorPower = forward + turn;
 
         leftMotor.setPower(leftMotorPower);
         rightMotor.setPower(rightMotorPower);
 
-        lastErrorPD = error;
-        lastTimePD = actualTime;
+        previousPDError = error;
+        previousPDTime = actualTime;
 
     }
 

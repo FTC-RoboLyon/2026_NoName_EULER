@@ -20,14 +20,14 @@ public class Shooter {
 
     private final double gearRatio = 1.0;
 
-    public static double shooterKp, shooterKv, shooterKs; //et c'est ou que tu leur donne une valeur a eux
+    public static double shooterKp = 1.0, shooterKv = 1.0, shooterKs = 1.0; //TUNEME
 
 
-    public static double posHood_bank = 0.3, posHood_mid = 0.58, posHood_far = 0.45; //TUNEME -> inverser pos et ce qui suit dans les noms c'est plus correct et respecter les convention de nommage (ex hoodBankPos)
-    public static double speedNear = 1250, speedMid = 1500, speedFar = 1500; //TUNEME -> inverser speed et ce qui suit dans les noms c'est plus correct (ex nearSpeed)
+    public static double hoodBankPos = 0.3, hoodMidPos = 0.58, hoodFarPos = 0.45; //TUNEME
+    public static double speedNear = 1250, speedMid = 1500, speedFar = 1500; //TUNEME
 
-    private InterpLUT FlywheelLUT; //pk une interpolation sur une spline et pas plutot lineaire ? et ajouter a quelle grandeur ca correspond (FlywheelSpeedLUT)
-    private InterpLUT HoodLUT; //pk une interpolation sur une spline et pas plutot lineaire ? et ajouter a quelle grandeur ca correspond (HoodPosLUT)
+    private InterpLUT FlywheelSpeedLUT; //pk une interpolation sur une spline et pas plutot lineaire ?
+    private InterpLUT HoodPosLUT; //pk une interpolation sur une spline et pas plutot lineaire ?
 
     private double ShooterPower;
 
@@ -42,16 +42,16 @@ public class Shooter {
         ShooterMotor.setPower(0.0);
 
         HoodServo = hmap.get(Servo.class, "viseur");
-        HoodServo.setPosition(posHood_bank);
+        HoodServo.setPosition(hoodBankPos);
 
         transfertServo = hmap.get(CRServo.class, "chemin");
         transfertServo.setPower(0);
 
-        FlywheelLUT = new InterpLUT();
-        FlywheelLUT.add(0,0); //add as much as you want  FlywheelLUT.add(input, output)
+        FlywheelSpeedLUT = new InterpLUT();
+        FlywheelSpeedLUT.add(0,0); //add as much as you want  FlywheelSpeedLUT.add(input, output)
 
-        HoodLUT = new InterpLUT();
-        HoodLUT.add(0,0); //add as much as you want  HoodLUT.add(input, output)
+        HoodPosLUT = new InterpLUT();
+        HoodPosLUT.add(0,0); //add as much as you want  HoodPosLUT.add(input, output)
     }
 
 
@@ -62,9 +62,9 @@ public class Shooter {
         HoodServo.setPosition(posTarget);
     }
 
-    public void SetShooterTargetAutomaticly (double distanceToGoal, double voltage){ //On dit Automatically et pas Automaticly et le nom n'est pas fou, tu pourrais juste mettre SetShooterDistanceTarget() c mieux
-        double speedTarget = FlywheelLUT.get(distanceToGoal);
-        double posTarget = HoodLUT.get(distanceToGoal);
+    public void SetShooterDistanceTarget (double distanceToGoal, double voltage){
+        double speedTarget = FlywheelSpeedLUT.get(distanceToGoal);
+        double posTarget = HoodPosLUT.get(distanceToGoal);
 
         SetShooterTargets(speedTarget, posTarget, voltage);
     }
@@ -82,12 +82,12 @@ public class Shooter {
         ShooterPower = feedForward + feedBack;
         ShooterMotor.setPower(getVoltageCompensated(ShooterPower, voltage));
 
-        transfertServo.setPower(1); //et lui il repasse jamais a 0 dcp
+        transfertServo.setPower(1);
     }
 
     public void stopShooter(){
         ShooterMotor.setPower(0.0);
-        HoodServo.setPosition(posHood_bank);
+        HoodServo.setPosition(hoodBankPos);
         transfertServo.setPower(0);
     }
 

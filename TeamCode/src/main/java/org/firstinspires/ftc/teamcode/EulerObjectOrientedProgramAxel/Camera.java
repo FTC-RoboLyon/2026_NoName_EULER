@@ -24,12 +24,12 @@ public class Camera {
 
     public Camera (HardwareMap hmap){
         aprilTagProcessor = new AprilTagProcessor.Builder()
-                .setDrawTagID(true) //-> on peut laisser true pour le dev et le debug mais je pense que en compet il faut pas oublier de le passer en false car cela doit ralentir le process
-                .setDrawTagOutline(true) //-> on peut laisser true pour le dev et le debug mais je pense que en compet il faut pas oublier de le passer en false car cela doit ralentir le process
-                .setDrawAxes(true) //-> on peut laisser true pour le dev et le debug mais je pense que en compet il faut pas oublier de le passer en false car cela doit ralentir le process
-                .setDrawCubeProjection(true) //-> on peut laisser true pour le dev et le debug mais je pense que en compet il faut pas oublier de le passer en false car cela doit ralentir le process
-                .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES) //->On prefere travailler dans le SI pour que ça soit mieux compréhensible par tout le monde ce qui donnerai plutot en metre et en radians
-                .setLensIntrinsics(1666.94, 1666.94, 930.463, 618.081)//Juste par curiosite tu les sors d'ou c'est valeurs ?
+                .setDrawTagID(false)
+                .setDrawTagOutline(false)
+                .setDrawAxes(false)
+                .setDrawCubeProjection(false)
+                .setOutputUnits(DistanceUnit.METER, AngleUnit.RADIANS)
+                .setLensIntrinsics(1666.94, 1666.94, 930.463, 618.081)
                 .build();
 
         VisionPortal.Builder builder = new VisionPortal.Builder();
@@ -37,34 +37,35 @@ public class Camera {
         builder.setCameraResolution(new Size(1920, 1080));
         builder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
         builder.setAutoStopLiveView(false);
-        builder.addProcessor(aprilTagProcessor); //-> pas tres important mais je pense que tu aurais pu tout mettre a la suite comme au dessus
+        builder.addProcessor(aprilTagProcessor);
         visionPortal = builder.build();
         visionPortal.setProcessorEnabled(aprilTagProcessor, true);
         FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
     }
 
-    public double getDistanceInch (int id){ //pk tu utilises de inch ? (pareil c'est mieux de convertir dans le SI donc en m)
+    public double getDistanceMeters (int id){
         for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
             if (aprilTag.id == id)
                 return aprilTag.ftcPose.range;
         }
-        return -1.0;
+        return -1.0;  // if id not detected, return a value that the camera would never return
     }
 
+    @Deprecated
     public double getDistanceCM (int id){
         for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
             if (aprilTag.id == id)
-                return aprilTag.ftcPose.range * 2.54;
+                return aprilTag.ftcPose.range /100;
         }
-        return -1.0;
+        return -1.0;  // if id not detected, return a value that the camera would never return
     }
 
     public double getBearing (int id){
         for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
             if (aprilTag.id == id)
-                return Math.toRadians(aprilTag.ftcPose.bearing);
+                return aprilTag.ftcPose.bearing;
         }
-        return 7.0; //pk 7.0 c'est tres aleatoire
+        return 7.0; // if id not detected, return a value that the camera would never return (the camera only reach pi in radiant)
     }
 
     public void close() //->Tjr mieux de l'arreter a la fin du code quand c'est possible

@@ -41,15 +41,15 @@ public class teleop_bot_azzie_blue extends OpMode {
 
         if (gamepad2.a)
         {
-            shooter.SetShooterTargets(Shooter.speedNear, Shooter.hoodBankPos, voltage);
+            shooter.SetShooterTargets(Shooter.nearSpeed, Shooter.nearPosHood, voltage);
         }
         else if (gamepad2.b)
         {
-            shooter.SetShooterTargets(Shooter.speedMid, Shooter.hoodMidPos, voltage);
+            shooter.SetShooterTargets(Shooter.midSpeed, Shooter.midPosHood, voltage);
         }
         else if (gamepad2.y)
         {
-            shooter.SetShooterTargets(Shooter.speedFar, Shooter.hoodFarPos, voltage);
+            shooter.SetShooterTargets(Shooter.farSpeed, Shooter.farPosHood, voltage);
         }
         else if (gamepad2.left_bumper && camera.getDistanceMeters(21)>0)
         {

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel;
 
+import android.util.AttributeSet;
+import android.view.animation.LinearInterpolator;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -23,11 +26,11 @@ public class Shooter {
     public static double shooterKp = 1.0, shooterKv = 1.0, shooterKs = 1.0; //TUNEME
 
 
-    public static double hoodBankPos = 0.3, hoodMidPos = 0.58, hoodFarPos = 0.45; //TUNEME
-    public static double speedNear = 1250, speedMid = 1500, speedFar = 1500; //TUNEME
+    public static double nearPosHood = 0.3, midPosHood = 0.58, farPosHood = 0.45; //TUNEME
+    public static double nearSpeed = 1250, midSpeed = 1500, farSpeed = 1500; //TUNEME
 
-    private InterpLUT FlywheelSpeedLUT; //pk une interpolation sur une spline et pas plutot lineaire ?
-    private InterpLUT HoodPosLUT; //pk une interpolation sur une spline et pas plutot lineaire ?
+    private LinearInterpolator FlywheelSpeedLUT; //pk une interpolation sur une spline et pas plutot lineaire ?
+    private LinearInterpolator HoodPosLUT; //pk une interpolation sur une spline et pas plutot lineaire ?
 
     private double ShooterPower;
 
@@ -42,16 +45,16 @@ public class Shooter {
         ShooterMotor.setPower(0.0);
 
         HoodServo = hmap.get(Servo.class, "viseur");
-        HoodServo.setPosition(hoodBankPos);
+        HoodServo.setPosition(nearPosHood);
 
         transfertServo = hmap.get(CRServo.class, "chemin");
         transfertServo.setPower(0);
 
-        FlywheelSpeedLUT = new InterpLUT();
-        FlywheelSpeedLUT.add(0,0); //add as much as you want  FlywheelSpeedLUT.add(input, output)
+        FlywheelSpeedLUT = new LinearInterpolator();
+        //FlywheelSpeedLUT.add(0,0); //add as much as you want  FlywheelSpeedLUT.add(input, output)
 
-        HoodPosLUT = new InterpLUT();
-        HoodPosLUT.add(0,0); //add as much as you want  HoodPosLUT.add(input, output)
+        HoodPosLUT = new LinearInterpolator();
+        //HoodPosLUT; //add as much as you want  HoodPosLUT.add(input, output)
     }
 
 
@@ -63,8 +66,8 @@ public class Shooter {
     }
 
     public void SetShooterDistanceTarget (double distanceToGoal, double voltage){
-        double speedTarget = FlywheelSpeedLUT.get(distanceToGoal);
-        double posTarget = HoodPosLUT.get(distanceToGoal);
+        double speedTarget = FlywheelSpeedLUT.getInterpolation((float)distanceToGoal);
+        double posTarget = HoodPosLUT.getInterpolation((float) distanceToGoal);
 
         SetShooterTargets(speedTarget, posTarget, voltage);
     }
@@ -87,7 +90,7 @@ public class Shooter {
 
     public void stopShooter(){
         ShooterMotor.setPower(0.0);
-        HoodServo.setPosition(hoodBankPos);
+        HoodServo.setPosition(nearPosHood);
         transfertServo.setPower(0);
     }
 

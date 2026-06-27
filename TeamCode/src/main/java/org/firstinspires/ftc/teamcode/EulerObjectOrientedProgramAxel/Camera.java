@@ -12,10 +12,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-/*
-- Truc plus global pour tes outputs qui veulent dire que rien n'est détécté (tes -1.0 et 7.0) la tu travailles tout seul donc tu sais ce que ça ve dire mais si tu travaillais en grp ça
-  serait bien de faire les specs de la fonction et de préciser que ça correspond à ça dedans
- */
+
 public class Camera {
     private static String cameraName = "Webcam 1";
 
@@ -51,14 +48,6 @@ public class Camera {
         return -1.0;  // if id not detected, return a value that the camera would never return
     }
 
-    @Deprecated
-    public double getDistanceCM (int id){
-        for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
-            if (aprilTag.id == id)
-                return aprilTag.ftcPose.range /100;
-        }
-        return -1.0;  // if id not detected, return a value that the camera would never return
-    }
 
     public double getBearing (int id){
         for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
@@ -68,7 +57,7 @@ public class Camera {
         return 7.0; // if id not detected, return a value that the camera would never return (the camera only reach pi in radiant)
     }
 
-    public void close() //->Tjr mieux de l'arreter a la fin du code quand c'est possible
+    public void close()
     {
         visionPortal.close();
     }

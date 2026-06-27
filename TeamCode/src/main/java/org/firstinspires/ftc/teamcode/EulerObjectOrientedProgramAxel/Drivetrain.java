@@ -14,8 +14,8 @@ public class Drivetrain {
     private double leftMotorPower;
     private double rightMotorPower;
     private ElapsedTime PDTimer = new ElapsedTime();
-    private static double previousPDError = 0.0;
-    private static double previousPDTime = 0.0;
+    private double previousPDError = 0.0;
+    private double previousPDTime = 0.0;
     public Drivetrain(HardwareMap hmap){
         leftMotor = hmap.get(DcMotor.class, "left motor");
         rightMotor = hmap.get(DcMotor.class, "right motor");
@@ -42,10 +42,10 @@ public class Drivetrain {
 
     public void AlignWithTarget(double error, double forward){
 
-        double pTerm = KP_AUTO_ALIGN * error; //choix de nom de variable pas ouf
+        double pTerm = KP_AUTO_ALIGN * error;
 
         double actualTime = PDTimer.milliseconds();
-        double dTerm = KD_AUTO_ALIGN * ((error - previousPDError)/(actualTime - previousPDTime));//et il se passe quoi s'il n'y avait pas de previousPDTime ou de previousPDError + il manque des parentheses ;)
+        double dTerm = KD_AUTO_ALIGN * ((error - previousPDError)/(actualTime - previousPDTime));//et il se passe quoi s'il n'y avait pas de previousPDTime ou de previousPDError
 
         double turn = pTerm + dTerm;
 

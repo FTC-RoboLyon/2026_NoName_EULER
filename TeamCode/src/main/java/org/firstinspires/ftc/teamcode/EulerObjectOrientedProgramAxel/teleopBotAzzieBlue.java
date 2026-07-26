@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 @TeleOp
-public class teleop_bot_azzie_blue extends OpMode {
+public class teleopBotAzzieBlue extends OpMode {
     Drivetrain drivetrain;
     Intake intake;
     Shooter shooter;
@@ -33,9 +33,9 @@ public class teleop_bot_azzie_blue extends OpMode {
     public void loop() {
         double voltage = voltageSensor.getVoltage();
         if (gamepad1.left_stick_button && camera.getBearing(21) != 7)
-            drivetrain.AlignWithTarget(camera.getBearing(21),  gamepad1.right_stick_y);
+            drivetrain.AlignWithTarget(camera.getBearing(21),  gamepad1.right_stick_y, gamepad1.left_stick_x);
         else
-            drivetrain.Drive(gamepad1.left_stick_x, gamepad1.right_stick_y);
+            drivetrain.Drive(gamepad1.left_stick_x, gamepad1.right_stick_y, gamepad1.right_stick_x);
         intake.setIntake_power((double) (gamepad1.right_trigger - gamepad1.left_trigger));
         feeder.setFeederPos(gamepad2.x ? FeederActivePos : FeederIdlePos);
 

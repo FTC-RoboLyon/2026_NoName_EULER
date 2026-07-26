@@ -82,7 +82,7 @@ public class EulerTeleop extends OpMode {
 
     public  double voltage;
     public VoltageSensor voltageSensor;
-    public final ElapsedTime timer_kd_rotation = new ElapsedTime();
+    public final ElapsedTime timerKdRotation = new ElapsedTime();
 
     public  void Init_camera (){
         april_joke = new AprilTagProcessor.Builder()
@@ -106,7 +106,7 @@ public class EulerTeleop extends OpMode {
 
     }
     public void Init_motors (){
-        left_base_motor = hardwareMap.get(DcMotorEx.class, "left motor");
+        left_base_motor = hardwareMap.get(DcMotor.class, "left motor");
         right_base_motor = hardwareMap.get(DcMotorEx.class, "right motor");
         Intake_motor = hardwareMap.get(DcMotorEx.class, "intake");
         Shooter_motor = hardwareMap.get(DcMotorEx.class, "shooter");
@@ -116,6 +116,7 @@ public class EulerTeleop extends OpMode {
         chemin_servo = hardwareMap.get(CRServo.class, "chemin");
 
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
+
 
         left_base_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         right_base_motor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -230,19 +231,19 @@ public class EulerTeleop extends OpMode {
         }
         if (tag == null){
             last_error = 0;
-            timer_kd_rotation.reset();
+            timerKdRotation.reset();
             return 0;
         }
 
         else{
             error = angle_goal - tag.ftcPose.bearing;
             if (Math.abs(error) < tolerance_rotation){
-                timer_kd_rotation.reset();
+                timerKdRotation.reset();
                 last_error = 0;
                 return 0;}
             double proportioal = kp_rotation*error;
-            double derivative = ((error - last_error)/timer_kd_rotation.milliseconds())*kd_rotation;
-            timer_kd_rotation.reset();
+            double derivative = ((error - last_error)/timerKdRotation.milliseconds())*kd_rotation;
+            timerKdRotation.reset();
             last_error = error;
             return proportioal + derivative;
         }
@@ -284,7 +285,7 @@ public class EulerTeleop extends OpMode {
     public void init() {
         Init_motors();
         Init_camera();
-        timer_kd_rotation.reset();
+        timerKdRotation.reset();
     }
 
     @Override
@@ -296,7 +297,7 @@ public class EulerTeleop extends OpMode {
             turn = gamepad1.right_stick_x + get_power_to_auto_align(0, 24);
         }else{
             turn = gamepad1.right_stick_x;
-            timer_kd_rotation.reset();
+            timerKdRotation.reset();
             last_error = 0;
         }
         Drive_loop(forward, turn);

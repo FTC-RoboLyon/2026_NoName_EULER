@@ -15,7 +15,6 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
 import org.firstinspires.ftc.vision.opencv.ColorRange;
 import org.firstinspires.ftc.vision.opencv.ImageRegion;
-import org.opencv.core.Point;
 
 import java.util.List;
 
@@ -72,13 +71,13 @@ public class Camera {
         return -1.0;  // if id not detected, return a value that the camera would never return
     }
 
-
+    //Et il se passe quoi si tu utilise un processor a l'arret ? Une erreur ? Un retour null ? Le renvoi des dernieres mesures ? (on aimerait eviter au moins deux des trois)
     public double getBearing (int id){
         for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
             if (aprilTag.id == id)
                 return aprilTag.ftcPose.bearing;
         }
-        return 7.0; // if id not detected, return a value that the camera would never return (the camera only reach pi in radiant)
+        return 7.0; // if id not detected, return a value that the camera would never return (the camera only reach pi radiant)
     }
 
     public ColorBlobLocatorProcessor.Blob getBigestBlob(){

@@ -16,17 +16,17 @@ public class Drivetrain {
     private final DcMotor backRightMotor;
     private final DcMotor backLeftMotor;
 
-    public final int tickPerRevolution = 8592; // Tuneme
-    public final double wheelDiameter = 9; //TUNEME
-    public final double meterPerTick = (9 * Math.PI) / tickPerRevolution;
-    public final double entreAxe = 5;
-    public final double entreAxeS = 5;
-    public final double kpX = 0.25; //TUNEME
-    public final double kpY = 0.25; //TUNEME
-    public final double kpHeading = 0.25; //TUNEME
-    public final double kdX = 0.25; //TUNEME
-    public final double kdY = 0.25; //TUNEME
-    public final double kdHeading = 0.25; //TUNEME
+    public final int TICKS_PER_REVOLUTION = 8592; // Tuneme
+    public final double WHEEL_DIAMETER = 9; //TUNEME
+    public final double METERS_PER_TICK = (WHEEL_DIAMETER * Math.PI) / TICKS_PER_REVOLUTION;
+    public final double ENTRE_AXES = 5;
+    public final double ENTRE_AXES_S = 5;
+    public final static double KP_X = 0.25; //TUNEME
+    public final static double KP_Y = 0.25; //TUNEME
+    public final static double KP_HEADING = 0.25; //TUNEME
+    public final static double KD_X = 0.25; //TUNEME
+    public final static double KD_Y = 0.25; //TUNEME
+    public final static double KD_HEADING = 0.25; //TUNEME
 
     private double frontLeftPower;
     private double frontRightPower;
@@ -86,14 +86,14 @@ public class Drivetrain {
         double yError = yTarget - robotY;
         double headingError = headingTarget - robotHeading;
 
-        double pTermX = kpX * xError;
-        double pTermY = kpY * yError;
-        double pTermHeading = kpHeading * headingError;
+        double pTermX = KP_X * xError;
+        double pTermY = KP_Y * yError;
+        double pTermHeading = KP_HEADING * headingError;
 
         double actualTime = PIDTimer.milliseconds();
-        double dTermX = kdX * ((xError - previousXError)/(actualTime - previousGoPosTime));
-        double dTermY = kdY * ((yError - previousYError)/(actualTime - previousGoPosTime));
-        double dTermHeading = kdHeading * ((headingError - previousHeadingError)/(actualTime - previousGoPosTime));
+        double dTermX = KD_X * ((xError - previousXError)/(actualTime - previousGoPosTime));
+        double dTermY = KD_Y * ((yError - previousYError)/(actualTime - previousGoPosTime));
+        double dTermHeading = KD_HEADING * ((headingError - previousHeadingError)/(actualTime - previousGoPosTime));
 
         double strafe = pTermX + dTermX;
         double forward = pTermY + dTermY;
@@ -120,19 +120,19 @@ public class Drivetrain {
 
     public void actualiseRobotPos (){
 
-        double actualL1 = frontLeftMotor.getCurrentPosition() * meterPerTick;
-        double actualL2 = frontRightMotor.getCurrentPosition() * meterPerTick;
-        double actualL3 = backRightMotor.getCurrentPosition() * meterPerTick;
+        double actualL1 = frontLeftMotor.getCurrentPosition() * METERS_PER_TICK;
+        double actualL2 = frontRightMotor.getCurrentPosition() * METERS_PER_TICK;
+        double actualL3 = backRightMotor.getCurrentPosition() * METERS_PER_TICK;
 
         double deltaL1 = actualL1 - formerL1;
         double deltaL2 = actualL2 - formerL2;
         double deltaL3 = actualL3 - formerL3;
 
-        double deltaHeading = (deltaL2 - deltaL1)/entreAxe;
+        double deltaHeading = (deltaL2 - deltaL1)/ ENTRE_AXES;
         robotHeading += deltaHeading;
 
         double forward = (deltaL1 + deltaL2)/2;
-        double strafe = deltaL3 - deltaHeading * entreAxeS;
+        double strafe = deltaL3 - deltaHeading * ENTRE_AXES_S;
 
         double deltaX = Math.cos(robotHeading) * forward - Math.sin(robotHeading) * strafe;
         double deltaY = Math.sin(robotHeading) * forward + Math.cos(robotHeading) * strafe;

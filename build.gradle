@@ -9,11 +9,12 @@ buildscript {
         google()
         mavenCentral()
     }
-    dependencies {
-        // Note for FTC Teams: Do not modify this yourself.
-        // Optimized: Using a stable AGP version.
-        classpath 'com.android.tools.build:gradle:8.2.2'
-    }
+}
+
+plugins {
+    // Note for FTC Teams: Do not modify this yourself.
+    id 'com.android.application' version '8.13.2' apply false
+    id 'com.android.library' version '8.13.2' apply false
 }
 
 // Optimized: Consolidated repositories here to avoid redundant lookups.

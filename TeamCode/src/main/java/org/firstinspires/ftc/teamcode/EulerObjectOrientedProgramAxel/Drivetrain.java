@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel;
 
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.Lib.utils;
 
 public class Drivetrain {
     public static final double KP_AUTO_ALIGN = 0.5; // TUNEME
@@ -16,22 +18,20 @@ public class Drivetrain {
     private final DcMotor backRightMotor;
     private final DcMotor backLeftMotor;
 
-    public final int TICKS_PER_REVOLUTION = 8592; // Tuneme
-    // bizarre comme valeur qui sort de nulle part, tu l'as calculee avec des reduction c'est ca ?
-    // Si c'est le cas ajoute une constante gear ratio et laisse la machine faire le calcul (comme pour les stagiaires)
-    public final double WHEEL_DIAMETER = 9; //TUNEME
-    // il faut preciser l'unite (qu'on prends d'ailleurs de preference dans le SI) et en general on prends plutôt le rayon qui est plus utile
-    public final double METERS_PER_TICK = (WHEEL_DIAMETER * Math.PI) / TICKS_PER_REVOLUTION;
-    // verifie tes unites ;)
-    public final double ENTRE_AXES = 5.0; //mets juste e et precise l'unite (de prefernece dans le SI) 
-    // et c'est un double donc chiffre a virgule pour eviter les erreurs d'arrondis et de conversions on de la machine on precise .0
-    public final double ENTRE_AXES_S = 5.0; //mets juste eS et precise l'unite (de prefernece dans le SI)
-    public final static double KP_X = 0.25; //TUNEME
-    public final static double KP_Y = 0.25; //TUNEME
-    public final static double KP_HEADING = 0.25; //TUNEME
-    public final static double KD_X = 0.25; //TUNEME
-    public final static double KD_Y = 0.25; //TUNEME
-    public final static double KD_HEADING = 0.25; //TUNEME
+    public final int TICKS_PER_REVOLUTION = 8192 ;
+    // Tune this to the number of tick your captor register per wheel revolution
+    public final double WHEEL_RADIUS = 0.45; //TUNEME in meters, ah ouais tu mets des sacres roues pour avoir 4.5m de rayon toi
+    public final double METERS_PER_TICK = (WHEEL_RADIUS * Math.PI * 2) / TICKS_PER_REVOLUTION;
+    public final double E = 5.0; // in meters
+    public final double ES = 5.0; //in meters
+    public final static double KP_STRAFE = 0.25; //TUNEME
+    public final static double KP_FORWARD = 0.25; //TUNEME
+    public final static double KP_TURN = 0.25; //TUNEME
+    public final static double KD_STRAFE = 0.25; //TUNEME
+    public final static double KD_FORWARD = 0.25; //TUNEME
+    public final static double KD_TURN = 0.25; //TUNEME
+    public final static double TOLERANCE_X_AND_Y = 0.05; //TUNEME IN METERS
+    public final static double TOLERANCE_HEADING = 0.25; //TUNEME
 
 
     private double frontLeftPower;
@@ -42,49 +42,66 @@ public class Drivetrain {
     private double previousPDError = 0.0;
     private double previousPDTime = 0.0;
     private double previousGoPosTime = 0.0;
-    double formerL1 = 0; //on part de L dans la theorie mais dans la pratique on parle plutot de Left et Right pour
-    // que ca ait un sens (et tu peux meme rajouter value apres)
-    // et on dit plutot previous dans ce cas la puisque c'est la suite instantanee
-    double formerL2 = 0; //same
-    double formerL3 = 0; //same
-    double robotX = 0; //good name :)
-    double robotY = 0; //good name :)
-    double robotHeading = 0; //good name :)
+    double previousLeftValue = 0;
+    double previousRightValue = 0;
+    double previousStrafeValue = 0;
+    double robotX = 0;
+    double robotY = 0;
+    double robotHeading = 0;
     // tune all the 3 values above to your robot starting pose (also well thought, you can just add a TUNEME mention)
-    // You can also add the possibility to set them in the constructor or a function because you don't start in the same pos when you're red or blue
     double previousXError = 0;
     double previousYError = 0;
     double previousHeadingError = 0;
 
-    private Pose2D robotPos; //bonne initiative de le creer mais dcp autant l'utiliser
-
     public Drivetrain(HardwareMap hmap){
-        frontLeftMotor = hmap.get(DcMotor.class, "front left motor");
-        frontRightMotor = hmap.get(DcMotor.class, "front right motor");
-        backRightMotor = hmap.get(DcMotor.class, "back right motor");
-        backLeftMotor = hmap.get(DcMotor.class, "back left motor");
 
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeftMotor = hmap.get(DcMotor.class, "frontLeftMotor");
+        frontRightMotor = hmap.get(DcMotor.class, "frontRightMotor");
+        backLeftMotor = hmap.get(DcMotor.class, "backLeftMotor");
+        backRightMotor = hmap.get(DcMotor.class, "backRightMotor");
+
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //You must also reset wheels encoder or save their current value in previousL1, etc.
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        //Why do you do the init of only two of you 4 drive motors ?
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         PIDTimer.startTime();
     }
-    public void Drive (double turn, double forward, double strafe){
-        double denominator = Math.max(Math.abs(turn) + Math.abs(forward) + Math.abs(strafe), 1);
-        //why not it's a good idea but the name is not very clear if you can find sth else ;)
-        frontLeftPower = (forward - turn - strafe) / denominator;
-        frontRightPower = (forward + turn + strafe) / denominator;
-        backLeftPower = (forward - turn + strafe) / denominator;
-        backRightPower = (forward + turn - strafe) / denominator;
+    public Drivetrain (HardwareMap hmap, SparkFunOTOS.Pose2D startPos){
+        this(hmap);
+        robotX = startPos.x;
+        robotY = startPos.y;
+        robotHeading = startPos.h;
+    }
+    public void Drive (double turn, double forward, double strafe, boolean fieldOriented){
+
+        if (fieldOriented){
+            double forwardCopy = forward; //;)
+            forward = Math.cos(robotHeading)*forwardCopy + Math.sin(robotHeading)*strafe;
+            strafe = -Math.sin(robotHeading)*forwardCopy + Math.cos(robotHeading)*strafe;
+        }
+
+        double maxMotorValue = Math.max(Math.abs(turn) + Math.abs(forward) + Math.abs(strafe), 1);
+
+        frontLeftPower = (forward - turn - strafe) / maxMotorValue;
+        frontRightPower = (forward + turn + strafe) / maxMotorValue;
+        backLeftPower = (forward - turn + strafe) / maxMotorValue;
+        backRightPower = (forward + turn - strafe) / maxMotorValue;
 
         frontLeftMotor.setPower(frontLeftPower);
         frontRightMotor.setPower(frontRightPower);
@@ -92,30 +109,57 @@ public class Drivetrain {
         backRightMotor.setPower(backRightPower);
     }
 
-    public void goPos (double xTarget, double yTarget, double headingTarget){
+
+    //Les docs ca ressemble plutot a ca (meme si la elle peuvent encore etre mieux) :
+    /**
+     * A function that allows the robot to move to a given point of coordinates (xTarget, yTarget) and head to a given heading target.
+     * Return if the robot has arrived yet using tolerances.
+     * @param xTarget X coordinate of the target point (in meters)
+     * @param yTarget Y coordinate of the target point (in meters)
+     * @param headingTarget heading target of the robot (in radians)
+     * @return if the robot has arrived yet using tolerances (true : yes; false : no)
+     */
+    public boolean goToPos (double xTarget, double yTarget, double headingTarget) {
+        //return true if the robot is already at the giving target point and heading
+        if (utils.IsInRange(robotX, xTarget, TOLERANCE_X_AND_Y)
+                && utils.IsInRange(robotY, yTarget, TOLERANCE_X_AND_Y)
+                && utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING))
+        {
+            return true;
+        }
+
         double xError = xTarget - robotX;
         double yError = yTarget - robotY;
         double headingError = headingTarget - robotHeading;
 
-        double pTermX = KP_X * xError;
-        double pTermY = KP_Y * yError;
-        double pTermHeading = KP_HEADING * headingError;
+        double xErrorCopy = xError;
+        xError = Math.cos(robotHeading)*xErrorCopy + Math.sin(robotHeading)*yError;
+        yError = -Math.sin(robotHeading)*xErrorCopy + Math.cos(robotHeading)*yError;
+
+        double pTermX = KP_FORWARD * xError;
+        double pTermY = KP_STRAFE * yError;
+        double pTermHeading = KP_TURN * headingError;
 
         double actualTime = PIDTimer.milliseconds();
-        double dTermX = KD_X * ((xError - previousXError)/(actualTime - previousGoPosTime));
-        double dTermY = KD_Y * ((yError - previousYError)/(actualTime - previousGoPosTime));
-        double dTermHeading = KD_HEADING * ((headingError - previousHeadingError)/(actualTime - previousGoPosTime));
+        double dTermX = KD_FORWARD * ((xError - previousXError)/(actualTime - previousGoPosTime));
+        double dTermY = KD_STRAFE * ((yError - previousYError)/(actualTime - previousGoPosTime));
+        double dTermHeading = KD_TURN * ((headingError - previousHeadingError)/(actualTime - previousGoPosTime));
 
-        double strafe = pTermX + dTermX;
-        double forward = pTermY + dTermY;
+        double forward = pTermX + dTermX;
+        double strafe = pTermY + dTermY;
         double turn = pTermHeading + dTermHeading;
 
-        Drive(turn, forward, strafe);
-        //Ca ca va pas marcher (par exemple regarde ce qu'il se passe quand tu veux aller a 1,1,180 et que tu as deja 180 de heading surtout au niveau des moteurs)
+        Drive(turn, forward, strafe, false);
+
+        previousXError = xError;
+        previousYError = yError;
+        previousHeadingError = headingError;
+        previousGoPosTime = actualTime;
+
+        return false;
     }
 
-    public void AlignWithTarget(double error, double forward, double strafe){
-        //j'aurais plutot appele ca head to target parce que align sous entend que ce peut affecter les mouvements lateraux
+    public void headToTarget(double error, double forward, double strafe){
 
         double pTerm = KP_AUTO_ALIGN * error;
 
@@ -124,7 +168,7 @@ public class Drivetrain {
 
         double turn = pTerm + dTerm;
 
-        Drive(turn, forward, strafe);
+        Drive(turn, forward, strafe, true);
 
         previousPDError = error;
         previousPDTime = actualTime;
@@ -132,29 +176,29 @@ public class Drivetrain {
 
     public void actualiseRobotPos (){
 
-        double actualL1 = frontLeftMotor.getCurrentPosition() * METERS_PER_TICK; //Alors actual ca veut dire reel donc plutot current ;) (ou même juste RightPodValue)
-        double actualL2 = frontRightMotor.getCurrentPosition() * METERS_PER_TICK; //same
-        double actualL3 = backRightMotor.getCurrentPosition() * METERS_PER_TICK; //same
+        double leftPodValue = frontLeftMotor.getCurrentPosition() * METERS_PER_TICK;
+        double rightPodValue = frontRightMotor.getCurrentPosition() * METERS_PER_TICK;
+        double strafePodValue = backRightMotor.getCurrentPosition() * METERS_PER_TICK;
 
-        double deltaL1 = actualL1 - formerL1;// pour delta tu peux juste mettre d et apres plutot Right ou Left que L1 et L2 qui veulent rien dire
-        double deltaL2 = actualL2 - formerL2;//same
-        double deltaL3 = actualL3 - formerL3;//same
+        double dLeftValue = leftPodValue - previousLeftValue;
+        double dRightValue = rightPodValue - previousRightValue;
+        double dStrafeValue = strafePodValue - previousStrafeValue;
 
-        double deltaHeading = (deltaL2 - deltaL1)/ ENTRE_AXES;//same
-        robotHeading += deltaHeading;
+        double dHeading = (dRightValue - dLeftValue)/ E;
+        robotHeading += dHeading;
 
-        double forward = (deltaL1 + deltaL2)/2;
-        double strafe = deltaL3 - deltaHeading * ENTRE_AXES_S;
+        double forward = (dLeftValue + dRightValue)/2;
+        double strafe = dStrafeValue - dHeading * ES;
 
-        double deltaX = Math.cos(robotHeading) * forward - Math.sin(robotHeading) * strafe;
-        double deltaY = Math.sin(robotHeading) * forward + Math.cos(robotHeading) * strafe;
+        double deltaX = Math.cos(robotHeading)*forward - Math.sin(robotHeading)*strafe;
+        double deltaY = Math.sin(robotHeading)*forward + Math.cos(robotHeading)*strafe;
 
         robotX += deltaX;
         robotY += deltaY;
 
-        formerL1 = actualL1;
-        formerL2 = actualL2;
-        formerL3 = actualL3;
+        previousLeftValue = leftPodValue;
+        previousRightValue = rightPodValue;
+        previousStrafeValue = strafePodValue;
     }
 
     public double getRobotHeading(){

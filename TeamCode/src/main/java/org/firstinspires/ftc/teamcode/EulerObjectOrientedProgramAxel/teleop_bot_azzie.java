@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel;
 
-import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Drivetrain.KP_FORWARD;
-import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Drivetrain.KP_STRAFE;
 import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feeder.FeederActivePos;
 import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feeder.FeederIdlePos;
 import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.allianceShifter.ALLIANCE_KEY;
@@ -17,7 +15,7 @@ public class teleop_bot_azzie extends OpMode {
     Shooter shooter;
     Feeder feeder;
     Camera camera;
-    private Object alliance; //pourquoi object et pas string ???
+    private String alliance;
 
     VoltageSensor voltageSensor;
 
@@ -34,8 +32,7 @@ public class teleop_bot_azzie extends OpMode {
 
          voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
-         alliance = blackboard.get(ALLIANCE_KEY);
-         alliance = (String) alliance; //a quoi sers-tu ligne mysterieuse...
+         alliance = (String) blackboard.get(ALLIANCE_KEY);
     }
 
     @Override
@@ -43,16 +40,16 @@ public class teleop_bot_azzie extends OpMode {
         double voltage = voltageSensor.getVoltage();
 
         if (gamepad1.left_stick_button && camera.getBearing(alliance == "red" ? 24 : 21) != 7) {
-            //et d'ailleurs pourquoi ne pas profiter de ton gyro et de ta localisation pour un premier alignement tant qu'il ne voit pas l'april tag
+            //et d'ailleurs pourquoi ne pas profiter de ton gyro et de ta localisation pour un premier alignement tant qu'il ne voit pas l'april tag -> pas encore fait
             drivetrain.headToTarget(
                     camera.getBearing(alliance == "red" ? 24 : 21),
                     gamepad1.right_stick_y,
-                    -gamepad1.left_stick_x //on a dit que ca devait etre positif a gauche donc -
+                    -gamepad1.left_stick_x
             );
         }
 
         else {
-            drivetrain.Drive(-gamepad1.left_stick_x, gamepad1.right_stick_y, -gamepad1.right_stick_x, true); //same for the two x axes
+            drivetrain.Drive(-gamepad1.left_stick_x, gamepad1.right_stick_y, -gamepad1.right_stick_x, true);
         }
         intake.setIntake_power((double) (gamepad1.right_trigger - gamepad1.left_trigger));
         feeder.setFeederPos(gamepad2.x ? FeederActivePos : FeederIdlePos);

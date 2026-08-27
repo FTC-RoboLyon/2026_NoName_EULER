@@ -2,16 +2,14 @@ package org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Lib.utils;
 
 public class Drivetrain {
-    public static final double KP_AUTO_ALIGN = 0.5; // TUNEME
-    public static final double KD_AUTO_ALIGN = 0.5; // TUNEME
+    public static final double KP_AUTO_ALIGN = 0.5; // TUNEME mtn que j'y pense quelle est la différence entre lui et KP_TURN (d'ailleurs j'aurais plutot mit heading)
+    public static final double KD_AUTO_ALIGN = 0.5; // TUNEME comme au dessus
 
     private final DcMotor frontLeftMotor;
     private final DcMotor frontRightMotor;
@@ -20,10 +18,11 @@ public class Drivetrain {
 
     public final int TICKS_PER_REVOLUTION = 8192 ;
     // Tune this to the number of tick your captor register per wheel revolution
-    public final double WHEEL_RADIUS = 0.45; //TUNEME in meters, ah ouais tu mets des sacres roues pour avoir 4.5m de rayon toi
+    //Alors je suis presque sûr qu'on dit plutôt sensor et ce même sensor est même un encoder
+    public final double WHEEL_RADIUS = 0.45; //TUNEME in meters, c'est quoi comme roue ca au juste ??? (c peut etre bon mais ca m'a l'air bien grand)
     public final double METERS_PER_TICK = (WHEEL_RADIUS * Math.PI * 2) / TICKS_PER_REVOLUTION;
-    public final double E = 5.0; // in meters
-    public final double ES = 5.0; //in meters
+    public final double E = 5.0; // in meters, si ton entraxe fait 5m j'ose même pas imaginer la taille de ton robot
+    public final double ES = 5.0; //in meters, c BIIIIIIIIIIG ;)
     public final static double KP_STRAFE = 0.25; //TUNEME
     public final static double KP_FORWARD = 0.25; //TUNEME
     public final static double KP_TURN = 0.25; //TUNEME
@@ -31,7 +30,7 @@ public class Drivetrain {
     public final static double KD_FORWARD = 0.25; //TUNEME
     public final static double KD_TURN = 0.25; //TUNEME
     public final static double TOLERANCE_X_AND_Y = 0.05; //TUNEME IN METERS
-    public final static double TOLERANCE_HEADING = 0.25; //TUNEME
+    public final static double TOLERANCE_HEADING = 0.25; //TUNEME, but what is the unit ??? 0.25 rad = 14 deg, fait bien par rapport au SI
 
 
     private double frontLeftPower;
@@ -42,9 +41,9 @@ public class Drivetrain {
     private double previousPDError = 0.0;
     private double previousPDTime = 0.0;
     private double previousGoPosTime = 0.0;
-    double previousLeftValue = 0;
-    double previousRightValue = 0;
-    double previousStrafeValue = 0;
+    double previousLeftValue = 0; //Left quoi ?
+    double previousRightValue = 0; //what Right ?
+    double previousStrafeValue = 0; //Que Strafe ?
     double robotX = 0;
     double robotY = 0;
     double robotHeading = 0;
@@ -91,7 +90,7 @@ public class Drivetrain {
     public void Drive (double turn, double forward, double strafe, boolean fieldOriented){
 
         if (fieldOriented){
-            double forwardCopy = forward; //;)
+            double forwardCopy = forward;
             forward = Math.cos(robotHeading)*forwardCopy + Math.sin(robotHeading)*strafe;
             strafe = -Math.sin(robotHeading)*forwardCopy + Math.cos(robotHeading)*strafe;
         }
@@ -110,7 +109,6 @@ public class Drivetrain {
     }
 
 
-    //Les docs ca ressemble plutot a ca (meme si la elle peuvent encore etre mieux) :
     /**
      * A function that allows the robot to move to a given point of coordinates (xTarget, yTarget) and head to a given heading target.
      * Return if the robot has arrived yet using tolerances.
@@ -133,11 +131,11 @@ public class Drivetrain {
         double headingError = headingTarget - robotHeading;
 
         double xErrorCopy = xError;
-        xError = Math.cos(robotHeading)*xErrorCopy + Math.sin(robotHeading)*yError;
-        yError = -Math.sin(robotHeading)*xErrorCopy + Math.cos(robotHeading)*yError;
+        xError = Math.cos(robotHeading)*xErrorCopy + Math.sin(robotHeading)*yError; //Bah non dcp ca ca represente plus la x error mais plutot la fwd error
+        yError = -Math.sin(robotHeading)*xErrorCopy + Math.cos(robotHeading)*yError;//same
 
-        double pTermX = KP_FORWARD * xError;
-        double pTermY = KP_STRAFE * yError;
+        double pTermX = KP_FORWARD * xError; //et dcp c'est plus le TermX non plus
+        double pTermY = KP_STRAFE * yError;//same
         double pTermHeading = KP_TURN * headingError;
 
         double actualTime = PIDTimer.milliseconds();
@@ -165,6 +163,7 @@ public class Drivetrain {
 
         double actualTime = PIDTimer.milliseconds();
         double dTerm = KD_AUTO_ALIGN * ((error - previousPDError)/(actualTime - previousPDTime));//et il se passe quoi s'il n'y avait pas de previousPDTime ou de previousPDError
+        //Tu m'as ignoré là :(
 
         double turn = pTerm + dTerm;
 

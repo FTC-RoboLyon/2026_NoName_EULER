@@ -8,17 +8,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Lib.utils;
 
 public class Drivetrain {
-    public static final double KP_AUTO_ALIGN = 0.5; // TUNEME
-    public static final double KD_AUTO_ALIGN = 0.5; // TUNEME
-
     private final DcMotor frontLeftMotor;
     private final DcMotor frontRightMotor;
     private final DcMotor backRightMotor;
     private final DcMotor backLeftMotor;
 
     public final int TICKS_PER_REVOLUTION = 8192 ;
-    // Tune this to the number of tick your captor register per wheel revolution
-    public final double WHEEL_RADIUS = 0.45; //TUNEME in meters, ah ouais tu mets des sacres roues pour avoir 4.5m de rayon toi
+    // Tune this to the number of tick your sensor register per wheel revolution
+    public final double WHEEL_RADIUS = 0.45; //TUNEME in meters
     public final double METERS_PER_TICK = (WHEEL_RADIUS * Math.PI * 2) / TICKS_PER_REVOLUTION;
     public final double E = 5.0; // in meters
     public final double ES = 5.0; //in meters
@@ -29,7 +26,7 @@ public class Drivetrain {
     public final static double KD_FORWARD = 0.25; //TUNEME
     public final static double KD_TURN = 0.25; //TUNEME
     public final static double TOLERANCE_X_AND_Y = 0.05; //TUNEME IN METERS
-    public final static double TOLERANCE_HEADING = 0.25; //TUNEME
+    public final static double TOLERANCE_HEADING = 0.25; //TUNEME IN RADIANT
 
 
     private double frontLeftPower;
@@ -41,15 +38,15 @@ public class Drivetrain {
     private ElapsedTime headingTimer = new ElapsedTime();
     private double previousGoPosTime = 0.0;
     private double previousHeadingTime = 0.0;
-    double previousLeftValue = 0;
-    double previousRightValue = 0;
-    double previousStrafeValue = 0;
+    double previousLefPodtValue = 0;
+    double previousRightPodValue = 0;
+    double previousStrafePodValue = 0;
     double robotX = 0;
     double robotY = 0;
     double robotHeading = 0;
     // tune all the 3 values above to your robot starting pose (also well thought, you can just add a TUNEME mention)
-    double previousXError = 0;
-    double previousYError = 0;
+    double previousFwdError = 0;
+    double previousStrageError = 0;
     double previousHeadingError = 0;
 
     public Drivetrain(HardwareMap hmap){
@@ -129,9 +126,9 @@ public class Drivetrain {
         double rightPodValue = frontRightMotor.getCurrentPosition() * METERS_PER_TICK;
         double strafePodValue = backRightMotor.getCurrentPosition() * METERS_PER_TICK;
 
-        double dLeftValue = leftPodValue - previousLeftValue;
-        double dRightValue = rightPodValue - previousRightValue;
-        double dStrafeValue = strafePodValue - previousStrafeValue;
+        double dLeftValue = leftPodValue - previousLefPodtValue;
+        double dRightValue = rightPodValue - previousRightPodValue;
+        double dStrafeValue = strafePodValue - previousStrafePodValue;
 
         double dHeading = (dRightValue - dLeftValue)/ E;
         robotHeading += dHeading;
@@ -145,13 +142,12 @@ public class Drivetrain {
         robotX += deltaX;
         robotY += deltaY;
 
-        previousLeftValue = leftPodValue;
-        previousRightValue = rightPodValue;
-        previousStrafeValue = strafePodValue;
+        previousLefPodtValue = leftPodValue;
+        previousRightPodValue = rightPodValue;
+        previousStrafePodValue = strafePodValue;
     }
 
 
-    //Les docs ca ressemble plutot a ca (meme si la elle peuvent encore etre mieux) :
     /**
      * A function that allows the robot to move to a given point of coordinates (xTarget, yTarget) while turning itself freely.
      * Return if the robot has arrived yet using tolerances.
@@ -171,24 +167,23 @@ public class Drivetrain {
         double xError = xTarget - robotX;
         double yError = yTarget - robotY;
 
-        double xErrorCopy = xError;
-        xError = Math.cos(robotHeading) * xErrorCopy + Math.sin(robotHeading) * yError;
-        yError = -Math.sin(robotHeading) * xErrorCopy + Math.cos(robotHeading) * yError;
+        double fwdError= Math.cos(robotHeading) * xError + Math.sin(robotHeading) * yError;
+        double strafeError = -Math.sin(robotHeading) * xError + Math.cos(robotHeading) * yError;
 
-        double pTermX = KP_FORWARD * xError;
-        double pTermY = KP_STRAFE * yError;
+        double pTermFwd = KP_FORWARD * fwdError;
+        double pTermStrafe = KP_STRAFE * strafeError;
 
         double actualTime = goToPosTimer.milliseconds();
-        double dTermX = KD_FORWARD * ((xError - previousXError) / (actualTime - previousGoPosTime));
-        double dTermY = KD_STRAFE * ((yError - previousYError) / (actualTime - previousGoPosTime));
+        double dTermFwd = KD_FORWARD * ((fwdError - previousFwdError) / (actualTime - previousGoPosTime));
+        double dTermStrafe = KD_STRAFE * ((strafeError - previousStrageError) / (actualTime - previousGoPosTime));
 
-        double forward = pTermX + dTermX;
-        double strafe = pTermY + dTermY;
+        double forward = pTermFwd + dTermFwd;
+        double strafe = pTermStrafe + dTermStrafe;
 
         Drive(turn, forward, strafe, false);
 
-        previousXError = xError;
-        previousYError = yError;
+        previousFwdError = fwdError;
+        previousStrageError = strafeError;
         previousGoPosTime = actualTime;
 
         return false;

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel;
 
-import android.util.AttributeSet;
 import android.view.animation.LinearInterpolator;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -10,8 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.arcrobotics.ftclib.util.InterpLUT;
-
 @Config
 public class Shooter {
     private final DcMotorEx ShooterMotor;
@@ -19,7 +16,7 @@ public class Shooter {
     private final CRServo transfertServo;
     private int CPR = 28;
 
-    public static double shooterTolerance = 100.0;  //in RPM
+    public static double shooterTolerance = 100.0;  //TUNEME in RPM
 
     private final double gearRatio = 1.0;
 
@@ -27,7 +24,7 @@ public class Shooter {
 
 
     public static double nearPosHood = 0.3, midPosHood = 0.58, farPosHood = 0.45; //TUNEME
-    public static double nearSpeed = 1250, midSpeed = 1500, farSpeed = 1500; //TUNEME
+    public static double nearSpeed = 1250, midSpeed = 1500, farSpeed = 1500; //TUNEME in RPM
 
     private LinearInterpolator FlywheelSpeedLUT; //pk une interpolation sur une spline et pas plutot lineaire ?
     private LinearInterpolator HoodPosLUT; //pk une interpolation sur une spline et pas plutot lineaire ?
@@ -51,10 +48,10 @@ public class Shooter {
         transfertServo.setPower(0);
 
         FlywheelSpeedLUT = new LinearInterpolator();
-        //FlywheelSpeedLUT.add(0,0); //add as much as you want  FlywheelSpeedLUT.add(input, output)
+        //add as much as you want  FlywheelSpeedLUT.add(input, output)
 
         HoodPosLUT = new LinearInterpolator();
-        //HoodPosLUT; //add as much as you want  HoodPosLUT.add(input, output)
+        //add as much as you want  HoodPosLUT.add(input, output)
     }
 
 

@@ -21,33 +21,37 @@ public class Drivetrain {
     public final double ES = 5.0; //in meters, t'as effacé les commentaires mais je continue de dire que l'entraxe de 5 METRES elle ne rentre pas sur un robot FTC (ni même sur un robot FRC) (boh apres a tout moment tu laisses juste ca parce que t'as pas de vraie valeur...)
     public final static double KP_STRAFE = 0.25; //TUNEME
     public final static double KP_FORWARD = 0.25; //TUNEME
-    public final static double KP_TURN = 0.25; //TUNEME, heading ca peut etre mieux que turn qui par sons sens pourrait inclure un mouvement sur les axes X et Y
+    public final static double KP_HEADING = 0.25; //TUNEME
     public final static double KD_STRAFE = 0.25; //TUNEME
     public final static double KD_FORWARD = 0.25; //TUNEME
-    public final static double KD_TURN = 0.25; //TUNEME, same
+    public final static double KD_HEADING = 0.25; //TUNEME
     public final static double TOLERANCE_X_AND_Y = 0.05; //TUNEME IN METERS
-    public final static double TOLERANCE_HEADING = 0.25; //TUNEME IN RADIANT, 0.25 rad = 14 deg, je veux bien qu'on soit tolerants mais ca fait bcp la
-
+    public final static double TOLERANCE_HEADING = 0.10; //TUNEME IN RADIANT
 
     private double frontLeftPower;
     private double frontRightPower;
     private double backLeftPower;
     private double backRightPower;
-    private double forward = 0.0, strafe = 0.0, turn = 0.0;
+    private double forward = 0.0, strafe = 0.0;
     private ElapsedTime goToPosTimer = new ElapsedTime();
     private ElapsedTime headingTimer = new ElapsedTime();
     private double previousGoPosTime = 0.0;
     private double previousHeadingTime = 0.0;
-    double previousLeftPodValue = 0;
-    double previousRightPodValue = 0;
-    double previousStrafePodValue = 0;
-    double robotX = 0;
-    double robotY = 0;
-    double robotHeading = 0;
-    // tune all the 3 values above to your robot starting pose TUNEME
-    double previousFwdError = 0;
-    double previousStrafeError = 0;
-    double previousHeadingError = 0;
+    private double previousLeftPodValue = 0;
+    private double previousRightPodValue = 0;
+    private double previousStrafePodValue = 0;
+    private double robotX = 0;
+    private double robotY = 0;
+    private double robotHeading = 0;
+    // tune all the 3 values above to your robot starting pose
+
+    private double previousFwdError = 0;
+    private double previousStrafeError = 0;
+    private double previousHeadingError = 0;
+    private boolean firstGoToPosIteration = true; //stay true until firt iteration is finished
+    private boolean firstDriveHeadToTargetIteration = true; //stay true until firt iteration is finished
+    // for the two boolean above, stay true until first iteration of their function (become false a this moment)
+    // and become true again when target of their function is reached
 
     public Drivetrain(HardwareMap hmap){
 
@@ -100,33 +104,31 @@ public class Drivetrain {
      * Allows the drivetrain to move and rotate at given powers.
      * This function handles displacement based on the field or robot axes.
      *
-     * @param Turn the rotation power given to the robot
-     * @param Forward the displacement power along the X axes of the chosen coordinate system
-     * @param Strafe the displacement power along the Y axes of the chosen coordinate system
+     * @param rotationPower the rotation power given to the robot
+     * @param xPower the displacement power along the X axes of the chosen coordinate system
+     * @param yPower the displacement power along the Y axes of the chosen coordinate system
      * @param fieldOriented if the power are given in the field coordinate system (if false it assumes that they are given in the robot coordinate system)
      */
 
     //Le petit pb mtn que j'y pense c'est que les noms fwd et strafe n'ont pas de sens si c'est pas field oriented (XPower et YPower, ou un truc dans le genre serait peut etre mieux)
     //Turn veut d'ailleurs toujours rien dire ce qu'on mesure c'est le "heading" qui varie avec des "rotation"
-    public void Drive (double Turn, double Forward, double Strafe, boolean fieldOriented){
-        if(Forward != 1000.0 && Strafe != 1000.0){
-            if (fieldOriented){
-                forward = Math.cos(robotHeading)*Forward + Math.sin(robotHeading)*Strafe;
-                strafe = -Math.sin(robotHeading)*Forward + Math.cos(robotHeading)*Strafe;
-            }else{
-                forward = Forward;
-                strafe = Strafe;
-            }
+
+    //euh d'accord mais ca a du sens de mettre xPower et yPower si c'est field oriented ? fin jveux dire c'est utile que je laisse les variable forward et strafe externe a la fonction comme ca ou faudrait que je travaille uniquement avec xpower et ypower ?
+    public void Drive (double rotationPower, double xPower, double yPower, boolean fieldOriented){
+        if (fieldOriented){
+            forward = Math.cos(robotHeading)*xPower + Math.sin(robotHeading)*yPower;
+            strafe = -Math.sin(robotHeading)*xPower + Math.cos(robotHeading)*yPower;
+        }else{
+            forward = xPower;
+            strafe = yPower;
         }
-        if (Turn != 1000.0)
-            turn = Turn;
 
-        double maxMotorValue = Math.max(Math.abs(turn) + Math.abs(forward) + Math.abs(strafe), 1);
+        double maxMotorValue = Math.max(Math.abs(rotationPower) + Math.abs(forward) + Math.abs(strafe), 1);
 
-        frontLeftPower = (forward - turn - strafe) / maxMotorValue;
-        frontRightPower = (forward + turn + strafe) / maxMotorValue;
-        backLeftPower = (forward - turn + strafe) / maxMotorValue;
-        backRightPower = (forward + turn - strafe) / maxMotorValue;
+        frontLeftPower = (forward - rotationPower - strafe) / maxMotorValue;
+        frontRightPower = (forward + rotationPower + strafe) / maxMotorValue;
+        backLeftPower = (forward - rotationPower + strafe) / maxMotorValue;
+        backRightPower = (forward + rotationPower - strafe) / maxMotorValue;
 
         frontLeftMotor.setPower(frontLeftPower);
         frontRightMotor.setPower(frontRightPower);
@@ -190,87 +192,88 @@ public class Drivetrain {
     // donc potentiellement aussi changer son nom et lui faire acceder directement a la camera même si c'est pas obligatoire.
     //Le seul problème est que si tu fais comme je te dis HeadToTarget n'est plus compatible avec un drive power donc il faut creer une nouvelle fonction
     //DriveHeadingHeadingToTarget qui est en fait celle que tu as deja (qui serait d'ailleurs bien plus facilement implémentable avec une machine à état voir directement une logique Subsystem).
-    public boolean goToPos (double xTarget, double yTarget, double turn) {
+    public boolean goToPos (double xTarget, double yTarget, double headingTarget) {
         //return true if the robot is already at the giving target point and heading
         if (utils.IsInRange(robotX, xTarget, TOLERANCE_X_AND_Y)
-                && utils.IsInRange(robotY, yTarget, TOLERANCE_X_AND_Y)) {
+                && utils.IsInRange(robotY, yTarget, TOLERANCE_X_AND_Y)
+                && utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING))
+        {
+            firstGoToPosIteration = true;
             return true;
         }
 
+
         double xError = xTarget - robotX;
         double yError = yTarget - robotY;
+        double headingError = headingTarget - robotHeading;
 
         double fwdError= Math.cos(robotHeading) * xError + Math.sin(robotHeading) * yError;
         double strafeError = -Math.sin(robotHeading) * xError + Math.cos(robotHeading) * yError;
 
-        double pTermFwd = KP_FORWARD * fwdError;
-        double pTermStrafe = KP_STRAFE * strafeError;
+        double pTermX = KP_FORWARD * fwdError;
+        double pTermY = KP_STRAFE * strafeError;
+        double pTermHeading = KD_HEADING * headingError;
 
-        double actualTime = goToPosTimer.milliseconds(); //actual veut toujours dire réel, maintenaint c'est current
-        double dTermFwd = KD_FORWARD * ((fwdError - previousFwdError) / (actualTime - previousGoPosTime));
-        double dTermStrafe = KD_STRAFE * ((strafeError - previousStrafeError) / (actualTime - previousGoPosTime));
-        //encore une fois a ta premiere boucle ou au changement de target la valeur de tes previous risque d'être totalament erronée et causer un overshoot
-        //Example : imagine previous est encore a 0, ta vraie position est 0 et tu veux aller a 10. Ta currentError sera donc de 10 et ton dTerm calculera KD*(10-0)/(on va dire 0.002 pour l'exemple) = KD*5000
-        // ce qui est beaucoup trop et cause l'overshoot et encore la j'ai fait comme si tu eviter l'overshoot sur le GoPosTime
+        double currentTime = goToPosTimer.milliseconds();
 
-        double forward = pTermFwd + dTermFwd;
-        double strafe = pTermStrafe + dTermStrafe;
+        if (firstGoToPosIteration == true){
+            previousFwdError = fwdError;
+            previousStrafeError = strafeError;
+            previousHeadingError = headingError;
+            firstGoToPosIteration = false;
+        }
+        double dTermX = KD_FORWARD * ((fwdError - previousFwdError)/(currentTime - previousGoPosTime));
+        double dTermY = KD_STRAFE * ((strafeError - previousStrafeError)/(currentTime - previousGoPosTime));
+        double dTermHeading = KD_HEADING * ((headingError - previousHeadingError)/(currentTime - previousGoPosTime));
 
-        Drive(turn, forward, strafe, false);
+        double forward = pTermX + dTermX;
+        double strafe = pTermY + dTermY;
+        double rotationPower = pTermHeading + dTermHeading;
+
+        Drive(rotationPower, forward, strafe, true);
 
         previousFwdError = fwdError;
         previousStrafeError = strafeError;
-        previousGoPosTime = actualTime;
-
-        return false;
-    }
-
-    /**
-     * A function that allows the robot to orient itself to a given orientation while moving along x and y axes -> orient c pas fou, c'est mieux head
-     * Return if the robot is oriented yet using tolerance -> oriented to what
-     * @param headingTarget the orientation that we want the robot to be -> pourquoi se compliquer la vie
-     * @param forward the power with which the robot will move forward
-     * @param strafe the power with which the robot will move sideway
-     * @return if the robot is heading to the target using tolerance (true : yes ; false : no)
-     */
-
-    //Ma version corrigée des specs :
-    /**
-     * A function that allows the robot to head to a given headingTarget while moving
-     * Return if the robot is heading to the target using tolerance
-     * @param headingTarget the target heading of the robot
-     * @param forward the forward power applied to the robot
-     * @param strafe the strafe power applied to the robot
-     * @return if the robot has reach its heading target using tolerance (true : yes ; false : no)
-     */
-    public boolean headToTarget(double headingTarget, double forward, double strafe){
-
-        if (utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING))
-            return true;
-
-        double headingError = headingTarget - robotHeading;
-
-        double pTermHeading = KP_TURN * headingError;
-
-        double actualTime = goToPosTimer.milliseconds();
-        double dTermHeading = KD_TURN * ((headingError - previousHeadingError)/(actualTime - previousHeadingTime));
-        //tjr le meme pb d'overshoot
-
-        double turn = pTermHeading + dTermHeading;
-
-        Drive(turn, forward, strafe, true);
         previousHeadingError = headingError;
-        previousHeadingTime = actualTime;
+        previousGoPosTime = currentTime;
 
         return false;
     }
 
-    public boolean goToPosAndHead (double xTarget, double yTarget, double headingTarget){
-        if (goToPos(xTarget, yTarget, 1000.0) && headToTarget(headingTarget, 1000.0, 1000.0)){
-            return true;
-        }
-        return false;
-    }
+
+   public boolean driveHeadToTarget(double headingTarget, double forward, double strafe){
+       if (utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING)){
+           firstDriveHeadToTargetIteration = true;
+           return true;
+       }
+
+       double headingError = headingTarget - robotHeading;
+
+       double pTermHeading = KP_HEADING * headingError;
+
+       if (firstDriveHeadToTargetIteration == true){
+           previousHeadingError = headingError;
+           firstDriveHeadToTargetIteration = false;
+       }
+
+       double actualTime = headingTimer.milliseconds();
+       double dTermHeading = KD_HEADING * ((headingError - previousHeadingError)/(actualTime - previousHeadingTime));
+
+       double turn = pTermHeading + dTermHeading;
+
+       Drive(turn, forward, strafe, true);
+       previousHeadingError = headingError;
+       previousHeadingTime = actualTime;
+
+       return false;
+   }
+
+    //public boolean goToPosAndHead (double xTarget, double yTarget, double headingTarget){
+    //    if (goToPos(xTarget, yTarget, 1000.0) && headToTarget(headingTarget, 1000.0, 1000.0)){
+    //        return true;
+    //    }
+    //    return false;
+    //}
 
     public double getRobotHeading(){
         return robotHeading;

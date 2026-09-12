@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel;
 
-import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Drivetrain.KP_FORWARD;
-import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Drivetrain.KP_STRAFE;
 import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feeder.FeederActivePos;
 import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feeder.FeederIdlePos;
 import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.allianceShifter.ALLIANCE_KEY;
@@ -41,20 +39,20 @@ public class teleop_bot_azzie extends OpMode {
     @Override
     public void loop() {
         double voltage = voltageSensor.getVoltage();
+        drivetrain.actualiseRobotPos();
 
         if (gamepad1.left_stick_button && camera.getBearing(alliance == "red" ? 24 : 21) != 7) {
-            //et d'ailleurs pourquoi ne pas profiter de ton gyro et de ta localisation pour un premier alignement tant qu'il ne voit pas l'april tag
-            drivetrain.headToTarget(
-                    camera.getBearing(alliance == "red" ? 24 : 21),
+            //et d'ailleurs pourquoi ne pas profiter de ton gyro et de ta localisation pour un premier alignement tant qu'il ne voit pas l'april tag    don't worry its on me      finally i will let it for later
+            drivetrain.driveHeadToTarget(
+                    drivetrain.getRobotHeading() - camera.getBearing(alliance == "red" ? 24 : 21),
                     gamepad1.right_stick_y,
-                    -gamepad1.left_stick_x //on a dit que ca devait etre positif a gauche donc -
-            );
-        }
+                    -gamepad1.left_stick_x); //on a dit que ca devait etre positif a gauche donc -
 
+        }
         else {
             drivetrain.Drive(-gamepad1.left_stick_x, gamepad1.right_stick_y, -gamepad1.right_stick_x, true); //same for the two x axes
         }
-        intake.setIntake_power((double) (gamepad1.right_trigger - gamepad1.left_trigger));
+        intake.setIntake_power(gamepad1.right_trigger - gamepad1.left_trigger);
         feeder.setFeederPos(gamepad2.x ? FeederActivePos : FeederIdlePos);
 
 

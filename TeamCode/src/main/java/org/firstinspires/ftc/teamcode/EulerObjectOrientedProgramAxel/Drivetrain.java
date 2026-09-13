@@ -43,15 +43,16 @@ public class Drivetrain {
     private double robotX = 0;
     private double robotY = 0;
     private double robotHeading = 0;
-    // tune all the 3 values above to your robot starting pose
+    // tune all 3 values above to tune your robot starting pos
 
     private double previousFwdError = 0;
     private double previousStrafeError = 0;
     private double previousHeadingError = 0;
-    private boolean firstGoToPosIteration = true; //stay true until firt iteration is finished
-    private boolean firstDriveHeadToTargetIteration = true; //stay true until firt iteration is finished
+    private boolean firstGoToPosIteration = true; //stay true until first iteration is finished
+    private boolean firstDriveHeadToTargetIteration = true; //stay true until first iteration is finished
     // for the two boolean above, stay true until first iteration of their function (become false a this moment)
-    // and become true again when target of their function is reached
+    // and become true again when target of their function is reached -> eh ben qu'est ce qui te prend de faire autant de commentaire mais bon tant mieux
+    // (boh apres je t'avoues cela sont pas très utile le nom de la variable et assez clair mais bon mtn qu'ils sont la autant les laisser)
 
     public Drivetrain(HardwareMap hmap){
 
@@ -91,16 +92,6 @@ public class Drivetrain {
     }
 
     /**
-     * Move the drivetrain using
-     * @param Turn the power with which the robot will turn
-     * @param Forward the power with which the robot will move forward
-     * @param Strafe the power with which the robot will move sideway
-     *               For the three parameters above, if we give the value of 1000.0, the precedents values given will be kept
-     * @param fieldOriented if we want to transform Forward and Strafe power from field coordinate to robot coordinate
-     */
-
-    //ma version des specs :
-    /**
      * Allows the drivetrain to move and rotate at given powers.
      * This function handles displacement based on the field or robot axes.
      *
@@ -110,10 +101,8 @@ public class Drivetrain {
      * @param fieldOriented if the power are given in the field coordinate system (if false it assumes that they are given in the robot coordinate system)
      */
 
-    //Le petit pb mtn que j'y pense c'est que les noms fwd et strafe n'ont pas de sens si c'est pas field oriented (XPower et YPower, ou un truc dans le genre serait peut etre mieux)
-    //Turn veut d'ailleurs toujours rien dire ce qu'on mesure c'est le "heading" qui varie avec des "rotation"
-
     //euh d'accord mais ca a du sens de mettre xPower et yPower si c'est field oriented ? fin jveux dire c'est utile que je laisse les variable forward et strafe externe a la fonction comme ca ou faudrait que je travaille uniquement avec xpower et ypower ?
+    //Pour ta premiere question oui car forward n'est que l'axe X du robot et strafe l'axe Y. Pour ta deuxieme question les variables externes ne te servent plus a r puisqu'elles ne sont utilisées qu'ici donc soit tu les mets en interne soit tu les supprime prc qu'elles servent plus a grand chose
     public void Drive (double rotationPower, double xPower, double yPower, boolean fieldOriented){
         if (fieldOriented){
             forward = Math.cos(robotHeading)*xPower + Math.sin(robotHeading)*yPower;
@@ -165,33 +154,13 @@ public class Drivetrain {
 
 
     /**
-     * A function that allows the robot to move to a given point of coordinates (xTarget, yTarget) while turning itself freely.
-     * Return if the robot has arrived yet using tolerances.
-     * @param xTarget X coordinate of the target point (in meters)
-     * @param yTarget Y coordinate of the target point (in meters)
-     * @param turn the rotation given directly to the robot (if you don't want the robot to turn just set it to 0)
-     *                  For the parameter above, if we give the value of 1000.0, the precedent value given will be kept
-     * @return if the robot has arrived yet using tolerances (true : yes; false : no)
-     */
-
-    //Je te remets mes specs là :
-    /**
      * A function that allows the robot to move to a given point of coordinates (xTarget, yTarget) and head to a given heading target.
      * Return if the robot has arrived yet using tolerances.
      * @param xTarget X coordinate of the target point (in meters)
      * @param yTarget Y coordinate of the target point (in meters)
-     * param headingTarget heading target of the robot (in radians)
+     * @param headingTarget heading target of the robot (in radians)
      * @return if the robot has arrived yet using tolerances (true : yes; false : no)
      */
-
-    //La majeure difference est le heading/turn. Deja le nom heading correspond mieux que turn car turn n'est pas forcement une rotation sur soi-même mais juste tourner
-    //ce qui n'a donc aucun sens. Ensuite ca n'a pas de sens de controller les coordonnées X et Y en PID/target mais le heading seulement avec un power pour ce que tu veux faire avec ça.
-    // Il faut remettre comme c'etait avant mais tout simplement si tu ne veux pas tourner tu ecrira goToPos(2.0, 0.5, robotHeading).
-    //Par contre si tu veux bouger a une coordonnée tout en regardant une target tu auras juste a ecrire goToPos(2.0, 0.5, headToTarget()).
-    //Faire comme ca sera beacoup plus propre mais il faut dcp que plutot de controller les moteurs headToTarget ne fasse que calculer la headingTarget
-    // donc potentiellement aussi changer son nom et lui faire acceder directement a la camera même si c'est pas obligatoire.
-    //Le seul problème est que si tu fais comme je te dis HeadToTarget n'est plus compatible avec un drive power donc il faut creer une nouvelle fonction
-    //DriveHeadingHeadingToTarget qui est en fait celle que tu as deja (qui serait d'ailleurs bien plus facilement implémentable avec une machine à état voir directement une logique Subsystem).
     public boolean goToPos (double xTarget, double yTarget, double headingTarget) {
         //return true if the robot is already at the giving target point and heading
         if (utils.IsInRange(robotX, xTarget, TOLERANCE_X_AND_Y)
@@ -230,7 +199,7 @@ public class Drivetrain {
         double strafe = pTermY + dTermY;
         double rotationPower = pTermHeading + dTermHeading;
 
-        Drive(rotationPower, forward, strafe, true);
+        Drive(rotationPower, forward, strafe, false); //->attention tu as deja passée tout tes calculs dans les coordonées robot
 
         previousFwdError = fwdError;
         previousStrafeError = strafeError;
@@ -241,10 +210,13 @@ public class Drivetrain {
     }
 
 
-   public boolean driveHeadToTarget(double headingTarget, double forward, double strafe){
+    //Tu as mis un return boolean mais la je suis pas sur que y'ai besoin parce que même si tu es deja aligné cette fonction est faite pour être utilisée
+    //en TeleOp en pilotant avec la manette donc le programme s'en fou de savoir s'il est alginé
+    // (en tout cas pour l'instant sauf si tu fais un shoot automatique mais dans ce cas la le return ne doit quand meme pas coupé les inputs de la manette et la correction du heading
+   public boolean driveHeadingToTarget(double headingTarget, double forward, double strafe){
        if (utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING)){
            firstDriveHeadToTargetIteration = true;
-           return true;
+           return true; //-> le pb c'est que la il coupe avant de donner les consigne de fwd et strafe
        }
 
        double headingError = headingTarget - robotHeading;

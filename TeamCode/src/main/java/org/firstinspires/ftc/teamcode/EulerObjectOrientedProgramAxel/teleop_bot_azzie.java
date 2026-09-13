@@ -43,7 +43,7 @@ public class teleop_bot_azzie extends OpMode {
 
         if (gamepad1.left_stick_button && camera.getBearing(alliance == "red" ? 24 : 21) != 7) {
             //et d'ailleurs pourquoi ne pas profiter de ton gyro et de ta localisation pour un premier alignement tant qu'il ne voit pas l'april tag    don't worry its on me      finally i will let it for later
-            drivetrain.driveHeadToTarget(
+            drivetrain.driveHeadingToTarget(
                     drivetrain.getRobotHeading() - camera.getBearing(alliance == "red" ? 24 : 21),
                     gamepad1.right_stick_y,
                     -gamepad1.left_stick_x); //on a dit que ca devait etre positif a gauche donc -

@@ -18,7 +18,7 @@ public class Drivetrain {
     public final double WHEEL_RADIUS = 0.45; //TUNEME in meters
     public final double METERS_PER_TICK = (WHEEL_RADIUS * Math.PI * 2) / TICKS_PER_REVOLUTION;
     public final double E = 5.0; // in meters
-    public final double ES = 5.0; //in meters, t'as effacé les commentaires mais je continue de dire que l'entraxe de 5 METRES elle ne rentre pas sur un robot FTC (ni même sur un robot FRC) (boh apres a tout moment tu laisses juste ca parce que t'as pas de vraie valeur...)
+    public final double ES = 5.0; //in meters
     public final static double KP_STRAFE = 0.25; //TUNEME
     public final static double KP_FORWARD = 0.25; //TUNEME
     public final static double KP_HEADING = 0.25; //TUNEME
@@ -32,7 +32,6 @@ public class Drivetrain {
     private double frontRightPower;
     private double backLeftPower;
     private double backRightPower;
-    private double forward = 0.0, strafe = 0.0;
     private ElapsedTime goToPosTimer = new ElapsedTime();
     private ElapsedTime headingTimer = new ElapsedTime();
     private double previousGoPosTime = 0.0;
@@ -51,8 +50,8 @@ public class Drivetrain {
     private boolean firstGoToPosIteration = true; //stay true until first iteration is finished
     private boolean firstDriveHeadToTargetIteration = true; //stay true until first iteration is finished
     // for the two boolean above, stay true until first iteration of their function (become false a this moment)
-    // and become true again when target of their function is reached -> eh ben qu'est ce qui te prend de faire autant de commentaire mais bon tant mieux
-    // (boh apres je t'avoues cela sont pas très utile le nom de la variable et assez clair mais bon mtn qu'ils sont la autant les laisser)
+    // and become true again when target of their function is reached
+
 
     public Drivetrain(HardwareMap hmap){
 
@@ -100,16 +99,12 @@ public class Drivetrain {
      * @param yPower the displacement power along the Y axes of the chosen coordinate system
      * @param fieldOriented if the power are given in the field coordinate system (if false it assumes that they are given in the robot coordinate system)
      */
-
-    //euh d'accord mais ca a du sens de mettre xPower et yPower si c'est field oriented ? fin jveux dire c'est utile que je laisse les variable forward et strafe externe a la fonction comme ca ou faudrait que je travaille uniquement avec xpower et ypower ?
-    //Pour ta premiere question oui car forward n'est que l'axe X du robot et strafe l'axe Y. Pour ta deuxieme question les variables externes ne te servent plus a r puisqu'elles ne sont utilisées qu'ici donc soit tu les mets en interne soit tu les supprime prc qu'elles servent plus a grand chose
     public void Drive (double rotationPower, double xPower, double yPower, boolean fieldOriented){
+        double forward = xPower;
+        double strafe = yPower;
         if (fieldOriented){
             forward = Math.cos(robotHeading)*xPower + Math.sin(robotHeading)*yPower;
             strafe = -Math.sin(robotHeading)*xPower + Math.cos(robotHeading)*yPower;
-        }else{
-            forward = xPower;
-            strafe = yPower;
         }
 
         double maxMotorValue = Math.max(Math.abs(rotationPower) + Math.abs(forward) + Math.abs(strafe), 1);
@@ -125,7 +120,7 @@ public class Drivetrain {
         backRightMotor.setPower(backRightPower);
     }
 
-    public void actualiseRobotPos (){
+    public void actualiseRobotPos(){
 
         double leftPodValue = frontLeftMotor.getCurrentPosition() * METERS_PER_TICK;
         double rightPodValue = frontRightMotor.getCurrentPosition() * METERS_PER_TICK;
@@ -162,7 +157,6 @@ public class Drivetrain {
      * @return if the robot has arrived yet using tolerances (true : yes; false : no)
      */
     public boolean goToPos (double xTarget, double yTarget, double headingTarget) {
-        //return true if the robot is already at the giving target point and heading
         if (utils.IsInRange(robotX, xTarget, TOLERANCE_X_AND_Y)
                 && utils.IsInRange(robotY, yTarget, TOLERANCE_X_AND_Y)
                 && utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING))
@@ -199,7 +193,7 @@ public class Drivetrain {
         double strafe = pTermY + dTermY;
         double rotationPower = pTermHeading + dTermHeading;
 
-        Drive(rotationPower, forward, strafe, false); //->attention tu as deja passée tout tes calculs dans les coordonées robot
+        Drive(rotationPower, forward, strafe, false);
 
         previousFwdError = fwdError;
         previousStrafeError = strafeError;
@@ -209,14 +203,10 @@ public class Drivetrain {
         return false;
     }
 
-
-    //Tu as mis un return boolean mais la je suis pas sur que y'ai besoin parce que même si tu es deja aligné cette fonction est faite pour être utilisée
-    //en TeleOp en pilotant avec la manette donc le programme s'en fou de savoir s'il est alginé
-    // (en tout cas pour l'instant sauf si tu fais un shoot automatique mais dans ce cas la le return ne doit quand meme pas coupé les inputs de la manette et la correction du heading
    public boolean driveHeadingToTarget(double headingTarget, double forward, double strafe){
        if (utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING)){
            firstDriveHeadToTargetIteration = true;
-           return true; //-> le pb c'est que la il coupe avant de donner les consigne de fwd et strafe
+           return true;
        }
 
        double headingError = headingTarget - robotHeading;
@@ -240,12 +230,6 @@ public class Drivetrain {
        return false;
    }
 
-    //public boolean goToPosAndHead (double xTarget, double yTarget, double headingTarget){
-    //    if (goToPos(xTarget, yTarget, 1000.0) && headToTarget(headingTarget, 1000.0, 1000.0)){
-    //        return true;
-    //    }
-    //    return false;
-    //}
 
     public double getRobotHeading(){
         return robotHeading;
@@ -259,3 +243,4 @@ public class Drivetrain {
 
 
 }
+

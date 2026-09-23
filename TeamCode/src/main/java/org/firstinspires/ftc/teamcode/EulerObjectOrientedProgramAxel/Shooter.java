@@ -103,3 +103,4 @@ public class Shooter {
         return ((ShooterMotor.getVelocity() / CPR) * 60)/gearRatio;
     }
 }
+

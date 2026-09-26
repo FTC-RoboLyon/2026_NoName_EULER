@@ -179,7 +179,7 @@ public class Drivetrain {
 
         double currentTime = goToPosTimer.milliseconds();
 
-        if (firstGoToPosIteration == true){
+        if (firstGoToPosIteration){
             previousFwdError = fwdError;
             previousStrafeError = strafeError;
             previousHeadingError = headingError;
@@ -194,6 +194,7 @@ public class Drivetrain {
         double rotationPower = pTermHeading + dTermHeading;
 
         Drive(rotationPower, forward, strafe, false);
+
 
         previousFwdError = fwdError;
         previousStrafeError = strafeError;
@@ -213,7 +214,7 @@ public class Drivetrain {
 
        double pTermHeading = KP_HEADING * headingError;
 
-       if (firstDriveHeadToTargetIteration == true){
+       if (firstDriveHeadToTargetIteration){
            previousHeadingError = headingError;
            firstDriveHeadToTargetIteration = false;
        }

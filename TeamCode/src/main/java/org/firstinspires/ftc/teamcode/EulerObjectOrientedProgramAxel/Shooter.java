@@ -9,6 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.Lib.utils;
+
 @Config
 public class Shooter {
     private final DcMotorEx ShooterMotor;
@@ -71,7 +74,7 @@ public class Shooter {
 
     public void SetFlywheelTargetSpeed (double targetSpeed, double voltage){
 
-        double error = targetSpeed - get_Shooter_RPM();
+        double error = targetSpeed - utils.TickPerSecondToRPM(ShooterMotor.getVelocity(), CPR, gearRatio);
 
         if (Math.abs(error) < shooterTolerance)
             error = 0;
@@ -80,7 +83,7 @@ public class Shooter {
         double feedBack = error * shooterKp;
 
         ShooterPower = feedForward + feedBack;
-        ShooterMotor.setPower(getVoltageCompensated(ShooterPower, voltage));
+        ShooterMotor.setPower(utils.getVoltageCompensated(ShooterPower, voltage));
 
         transfertServo.setPower(1);
     }
@@ -91,16 +94,5 @@ public class Shooter {
         transfertServo.setPower(0);
     }
 
-    public double getVoltageCompensated (double power, double voltage){
-        double output = (power*voltage)/11;
-
-        if (Math.abs(output) > 1)
-            output /= Math.abs(output);
-
-        return output;
-    }
-    private double get_Shooter_RPM (){
-        return ((ShooterMotor.getVelocity() / CPR) * 60)/gearRatio;
-    }
 }
 

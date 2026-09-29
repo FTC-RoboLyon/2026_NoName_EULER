@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.Lib;
 
 public final class utils {
-    public static boolean IsInRange(double value, double target, double tolerance)// good
+    public static boolean IsInRange(double value, double target, double tolerance)
     {
         return (value >= target-tolerance && value <= target+tolerance);
     }
 
-    public static double getVoltageCompensated (double power, double voltage){
+    public static double getVoltageCompensated (double power, double voltage)
+    //->Le seul pb de faire comme ca c'est que tu met pour tout tes subsystems une compensation pour 11V mais des fois on voudra mettre des trucs differents
+    // genre l'intake a pas besoin de bcp de puissance on met à 9V alors que le shooter à 11V (ces valeurs que je viens de te donner sont aléatoires juste pour l'exemple)
+    {
         double output = (power*voltage)/11;
 
         if (Math.abs(output) > 1)

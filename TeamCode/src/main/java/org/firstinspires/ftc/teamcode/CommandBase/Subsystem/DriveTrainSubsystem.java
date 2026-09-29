@@ -52,6 +52,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
     private boolean firstIteration = true; //stay true until first iteration is finished
     // for the two boolean above, stay true until first iteration of their function (become false a this moment)
     // and become true again when target of their function is reached
+    //-> j'en vois qu'une perso et dans ce cas la precise firstIteration de quoi genre PDFFirstIteration
 
 
     private double xTarget = robotX, yTarget = robotY, headingTarget = robotHeading;
@@ -60,11 +61,11 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
 
     public enum DriveMode{
-        IDLE,
+        IDLE, //->Pour la base y'a pas vrm de IDLE c'est plutot un DISABLE
         ROBOT_ORIENTED,
-        FILED_ORIENTED,
+        FILED_ORIENTED, //Alors le terrain ca s'ecrit field la t'as marqué repere rempli
         GO_TO_POS,
-        DRIVE_HEADING
+        DRIVE_HEADING //Je pense que tu peux trouver un nom plus clair
     }
     private DriveMode driveMode = DriveMode.IDLE;
     public void setDriveMode(DriveMode drive){
@@ -110,6 +111,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         this.driveMode = driveMode;
+        //->Pas besoin d'en mettre un dans le constructeur prc que la ca nous oblige a en mettre un dans l'init de l'opMode alors qu'il est pas censé bouger a ce moment la
 
         goToPosTimer.startTime();
         goToPosTimer.reset();
@@ -185,6 +187,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
      * @param Headingtarget heading target of the robot (in radians)
      * @return if the robot has arrived yet using tolerances (true : yes; false : no)
      */
+    //Normalement aucune autre fonction n'est censée changer le drive Mode que SetDriveMode même si elles changent les parametres d'un certain drive mode
     public boolean goToPos (double Xtarget, double Ytarget, double Headingtarget) {
         xTarget = Xtarget;
         yTarget = Ytarget;
@@ -211,7 +214,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
             return true;
         }
         return false;
-    }
+    }//pk toutes les fonctions comme ca elles existent encore si tu les utilise pas étant donné qu'elles sont implémentées autrement
 
     public void stopTheRobot(){
         driveMode = DriveMode.IDLE;
@@ -240,6 +243,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
             case ROBOT_ORIENTED:
                 fieldOriented = false;
+                //La tu le mets false mais par contre tu le remet jamais en true qd field oriented
+                //En plus en avec cette organisation de code on preferera 2 fonction différentes, une en field oriented et l'autre non voir faire direct les operation dans le switch quand y'en a pas bcp
+                //En plus pk passer des paramtres dans ta onction Drive elle aussi a accès a ces données
                 Drive(turnSupplier.getAsDouble(), xSupplier.getAsDouble(), ySupplier.getAsDouble());
                 break;
 

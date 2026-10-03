@@ -49,9 +49,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
     private double previousFwdError = 0;
     private double previousStrafeError = 0;
     private double previousHeadingError = 0;
-    private boolean firstIteration = true; //stay true until first iteration is finished
-    // for the two boolean above, stay true until first iteration of their function (become false a this moment)
-    // and become true again when target of their function is reached
+    private boolean PDfirstIteration = true; //stay true until first iteration is finished
+    // for the boolean above, stay true until first iteration of goToPos() or driveHeading() (become false a this moment)
+    // and become true again when target of the function is reached
     //-> j'en vois qu'une perso et dans ce cas la precise firstIteration de quoi genre PDFFirstIteration
 
 
@@ -59,24 +59,25 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     private boolean fieldOriented = true;
 
+    private double xPower = 0.0, yPower = 0.0, rotationPower = 0.0;
+
+
 
     public enum DriveMode{
-        IDLE, //->Pour la base y'a pas vrm de IDLE c'est plutot un DISABLE
-        ROBOT_ORIENTED,
-        FILED_ORIENTED, //Alors le terrain ca s'ecrit field la t'as marqué repere rempli
+        DISABLE,
+        ROBOT_CENTRIC,
+        FIELD_CENTRIC,
         GO_TO_POS,
-        DRIVE_HEADING //Je pense que tu peux trouver un nom plus clair
+        DRIVE_AND_HEAD_TO_TARGET
     }
-    private DriveMode driveMode = DriveMode.IDLE;
+    private DriveMode driveMode = DriveMode.DISABLE;
     public void setDriveMode(DriveMode drive){
         driveMode = drive;
-        if (driveMode == DriveMode.GO_TO_POS || driveMode == DriveMode.DRIVE_HEADING)
-            firstIteration = true;
     }
     public DriveMode getDriveMode(){return driveMode;}
 
 
-    public DriveTrainSubsystem (HardwareMap hmap, DriveMode driveMode,
+    public DriveTrainSubsystem (HardwareMap hmap,
                                 DoubleSupplier ySupplier,
                                 DoubleSupplier xSupplier,
                                 DoubleSupplier turnSupplier){
@@ -110,9 +111,6 @@ public class DriveTrainSubsystem extends SubsystemBase {
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        this.driveMode = driveMode;
-        //->Pas besoin d'en mettre un dans le constructeur prc que la ca nous oblige a en mettre un dans l'init de l'opMode alors qu'il est pas censé bouger a ce moment la
-
         goToPosTimer.startTime();
         goToPosTimer.reset();
 
@@ -120,32 +118,24 @@ public class DriveTrainSubsystem extends SubsystemBase {
         headingTimer.reset();
 
     }
-    public DriveTrainSubsystem (HardwareMap hmap, DriveMode driveMode,
+    public DriveTrainSubsystem (HardwareMap hmap,
                                 DoubleSupplier ySupplier,
                                 DoubleSupplier xSupplier,
                                 DoubleSupplier turnSupplier,
                                 SparkFunOTOS.Pose2D startPos){
-        this(hmap, driveMode, ySupplier, xSupplier, turnSupplier);
+        this(hmap, ySupplier, xSupplier, turnSupplier);
         robotX = startPos.x;
         robotY = startPos.y;
         robotHeading = startPos.h;
     }
-    private void Drive(double rotationPower, double xPower, double yPower){
+    private void applyMotorsPower(){
 
-        double forward = xPower;
-        double strafe = yPower;
+        double maxMotorValue = Math.max(Math.abs(rotationPower) + Math.abs(xPower) + Math.abs(yPower), 1);
 
-        if (fieldOriented){
-            forward = Math.cos(robotHeading)*xPower + Math.sin(robotHeading)*yPower;
-            strafe = -Math.sin(robotHeading)*xPower + Math.cos(robotHeading)*yPower;
-        }
-
-        double maxMotorValue = Math.max(Math.abs(rotationPower) + Math.abs(forward) + Math.abs(strafe), 1);
-
-        frontLeftPower = (forward - rotationPower - strafe) / maxMotorValue;
-        frontRightPower = (forward + rotationPower + strafe) / maxMotorValue;
-        backLeftPower = (forward - rotationPower + strafe) / maxMotorValue;
-        backRightPower = (forward + rotationPower - strafe) / maxMotorValue;
+        frontLeftPower = (xPower - rotationPower - yPower) / maxMotorValue;
+        frontRightPower = (xPower + rotationPower + yPower) / maxMotorValue;
+        backLeftPower = (xPower - rotationPower + yPower) / maxMotorValue;
+        backRightPower = (xPower + rotationPower - yPower) / maxMotorValue;
 
         frontLeftMotor.setPower(frontLeftPower);
         frontRightMotor.setPower(frontRightPower);
@@ -163,7 +153,6 @@ public class DriveTrainSubsystem extends SubsystemBase {
         double dStrafeValue = strafePodValue - previousStrafePodValue;
 
         double dHeading = (dRightValue - dLeftValue)/ E;
-        robotHeading += dHeading;
 
         double forward = (dLeftValue + dRightValue)/2;
         double strafe = dStrafeValue - dHeading * ES;
@@ -173,6 +162,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
         robotX += deltaX;
         robotY += deltaY;
+        robotHeading += dHeading;
 
         previousLeftPodValue = leftPodValue;
         previousRightPodValue = rightPodValue;
@@ -188,37 +178,35 @@ public class DriveTrainSubsystem extends SubsystemBase {
      * @return if the robot has arrived yet using tolerances (true : yes; false : no)
      */
     //Normalement aucune autre fonction n'est censée changer le drive Mode que SetDriveMode même si elles changent les parametres d'un certain drive mode
-    public boolean goToPos (double Xtarget, double Ytarget, double Headingtarget) {
+    public void setGoToPosTargets (double Xtarget, double Ytarget, double Headingtarget) {
         xTarget = Xtarget;
         yTarget = Ytarget;
         headingTarget = Headingtarget;
 
-        if (utils.IsInRange(robotX, xTarget, TOLERANCE_X_AND_Y)
-                && utils.IsInRange(robotY, yTarget, TOLERANCE_X_AND_Y)
-                && utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING))
-        {
-            firstIteration = true;
-            driveMode = DriveMode.IDLE;
-            return true;
-
-        } else {
-            driveMode = DriveMode.GO_TO_POS;
-            return false;
-        }
+        PDfirstIteration = true;
     }
 
-    public boolean driveHeadingToTarget(double headingTarget){
+    public void setHeadingTarget(double headingTarget){
         this.headingTarget = headingTarget;
-        if (utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING)){
-            firstIteration = true;
-            return true;
-        }
-        return false;
-    }//pk toutes les fonctions comme ca elles existent encore si tu les utilise pas étant donné qu'elles sont implémentées autrement
+
+        PDfirstIteration = true;
+    }
+
+    public boolean isAtXYTargets(){
+        return utils.IsInRange(robotX, xTarget, TOLERANCE_X_AND_Y)
+            && utils.IsInRange(robotY, yTarget, TOLERANCE_X_AND_Y);
+    }
+
+    public boolean isAtHeadingTarget(){
+        return utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING);
+    }
+
+
+    //pk toutes les fonctions comme ca elles existent encore si tu les utilise pas étant donné qu'elles sont implémentées autrement
 
     public void stopTheRobot(){
-        driveMode = DriveMode.IDLE;
-        firstIteration = true;
+        driveMode = DriveMode.DISABLE;
+        PDfirstIteration = true;
     }
 
     public double getRobotHeading(){
@@ -235,31 +223,38 @@ public class DriveTrainSubsystem extends SubsystemBase {
     public void periodic(){
 
         actualiseRobotPos();
+        double headingError = headingTarget - robotHeading;
 
         switch (driveMode){
-            case IDLE:
-                Drive(0,0,0);
+            case DISABLE:
+                xPower = 0.0;
+                yPower = 0.0;
+                rotationPower = 0.0;
                 break;
 
-            case ROBOT_ORIENTED:
-                fieldOriented = false;
-                //La tu le mets false mais par contre tu le remet jamais en true qd field oriented
-                //En plus en avec cette organisation de code on preferera 2 fonction différentes, une en field oriented et l'autre non voir faire direct les operation dans le switch quand y'en a pas bcp
-                //En plus pk passer des paramtres dans ta onction Drive elle aussi a accès a ces données
-                Drive(turnSupplier.getAsDouble(), xSupplier.getAsDouble(), ySupplier.getAsDouble());
+            case ROBOT_CENTRIC:
+                xPower = xSupplier.getAsDouble();
+                yPower = ySupplier.getAsDouble();
+                rotationPower = turnSupplier.getAsDouble();
+
                 break;
 
-            case FILED_ORIENTED:
-                Drive(turnSupplier.getAsDouble(), xSupplier.getAsDouble(), ySupplier.getAsDouble());
+            case FIELD_CENTRIC:
+
+                xPower = xSupplier.getAsDouble();
+                yPower = ySupplier.getAsDouble();
+                rotationPower = turnSupplier.getAsDouble();
+
+                double xPower1 = xPower;
+                xPower = Math.cos(robotHeading)* xPower1 + Math.sin(robotHeading)* yPower;
+                yPower = -Math.sin(robotHeading)*xPower1 + Math.cos(robotHeading)* yPower;
+
                 break;
 
             case GO_TO_POS:
 
-                fieldOriented = false;
-
                 double xError = xTarget - robotX;
                 double yError = yTarget - robotY;
-                double headingError = headingTarget - robotHeading;
 
                 double fwdError= Math.cos(robotHeading) * xError + Math.sin(robotHeading) * yError;
                 double strafeError = -Math.sin(robotHeading) * xError + Math.cos(robotHeading) * yError;
@@ -270,22 +265,19 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
                 double currentTime = goToPosTimer.milliseconds();
 
-                if (firstIteration){
+                if (PDfirstIteration){
                     previousFwdError = fwdError;
                     previousStrafeError = strafeError;
                     previousHeadingError = headingError;
-                    firstIteration = false;
+                    PDfirstIteration = false;
                 }
                 double dTermX = KD_FORWARD * ((fwdError - previousFwdError)/(currentTime - previousGoPosTime));
                 double dTermY = KD_STRAFE * ((strafeError - previousStrafeError)/(currentTime - previousGoPosTime));
                 double dTermHeading1 = KD_HEADING * ((headingError - previousHeadingError)/(currentTime - previousGoPosTime));
 
-                double forward = pTermX + dTermX;
-                double strafe = pTermY + dTermY;
-                double rotationPower = pTermHeading1 + dTermHeading1;
-
-                Drive(rotationPower, forward, strafe);
-
+                xPower = pTermX + dTermX;
+                yPower = pTermY + dTermY;
+                rotationPower = pTermHeading1 + dTermHeading1;
 
                 previousFwdError = fwdError;
                 previousStrafeError = strafeError;
@@ -294,34 +286,37 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
                 break;
 
-            case DRIVE_HEADING:
-
-                fieldOriented = true;
-
-                headingError = headingTarget - robotHeading;
+            case DRIVE_AND_HEAD_TO_TARGET:
 
                 double pTermHeading2 = KP_HEADING * headingError;
 
-                if (firstIteration){
+                if (PDfirstIteration){
                     previousHeadingError = headingError;
-                    firstIteration = false;
+                    PDfirstIteration = false;
                 }
 
                 double actualTime = headingTimer.milliseconds();
                 double dTermHeading2 = KD_HEADING * ((headingError - previousHeadingError)/(actualTime - previousHeadingTime));
 
-                double turn = pTermHeading2 + dTermHeading2;
+                xPower = xSupplier.getAsDouble();
+                yPower = ySupplier.getAsDouble();
+                rotationPower = pTermHeading2 + dTermHeading2;
 
-                Drive(turn, xSupplier.getAsDouble(), ySupplier.getAsDouble());
+                double xPower2 = xPower;
+                xPower = Math.cos(robotHeading)* xPower2 + Math.sin(robotHeading)* yPower;
+                yPower = -Math.sin(robotHeading)* xPower2 + Math.cos(robotHeading)* yPower;
+
                 previousHeadingError = headingError;
                 previousHeadingTime = actualTime;
 
                 break;
 
             default:
-                driveMode = DriveMode.IDLE;
+                driveMode = DriveMode.DISABLE;
                 break;
 
         }
+
+        applyMotorsPower();
     }
 }

@@ -83,7 +83,7 @@ public class Shooter {
         double feedBack = error * shooterKp;
 
         ShooterPower = feedForward + feedBack;
-        ShooterMotor.setPower(utils.getVoltageCompensated(ShooterPower, voltage));
+        ShooterMotor.setPower(utils.getVoltageCompensated(ShooterPower, voltage, 11));
 
         transfertServo.setPower(1);
     }

@@ -6,11 +6,11 @@ public final class utils {
         return (value >= target-tolerance && value <= target+tolerance);
     }
 
-    public static double getVoltageCompensated (double power, double voltage)
+    public static double getVoltageCompensated (double power, double voltage, double setpoint)
     //->Le seul pb de faire comme ca c'est que tu met pour tout tes subsystems une compensation pour 11V mais des fois on voudra mettre des trucs differents
     // genre l'intake a pas besoin de bcp de puissance on met à 9V alors que le shooter à 11V (ces valeurs que je viens de te donner sont aléatoires juste pour l'exemple)
     {
-        double output = (power*voltage)/11;
+        double output = (power*voltage)/setpoint;
 
         if (Math.abs(output) > 1)
             output /= Math.abs(output);
@@ -28,5 +28,9 @@ public final class utils {
      */
     public static double TickPerSecondToRPM(double ticksPerSecond, double TPR, double gearRatio){
         return ( (ticksPerSecond/TPR) * 60 ) / gearRatio;
+    }
+
+    public static double clamp(double value, double max, double min){
+        return Math.min(Math.max(value, min), max);
     }
 }

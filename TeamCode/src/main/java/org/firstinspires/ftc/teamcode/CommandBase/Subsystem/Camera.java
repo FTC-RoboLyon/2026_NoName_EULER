@@ -1,18 +1,21 @@
-package org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel;
+package org.firstinspires.ftc.teamcode.CommandBase.Subsystem;
 
 import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.CommandBase.robotContainer;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class Camera {
     private static String cameraName = "Webcam 1";
@@ -20,7 +23,8 @@ public class Camera {
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
 
-    public Camera (HardwareMap hmap){
+    public Camera(HardwareMap hmap){
+
         aprilTagProcessor = new AprilTagProcessor.Builder()
                 .setDrawTagID(false)
                 .setDrawTagOutline(false)
@@ -29,7 +33,6 @@ public class Camera {
                 .setOutputUnits(DistanceUnit.METER, AngleUnit.RADIANS)
                 .setLensIntrinsics(1666.94, 1666.94, 930.463, 618.081)
                 .build();
-
 
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(hmap.get(WebcamName.class, cameraName));
@@ -58,10 +61,6 @@ public class Camera {
                 return aprilTag.ftcPose.bearing;
         }
         return 7.0; // if id not detected, return a value that the camera would never return (the camera only reach pi radiant)
-    }
-
-    public void setAprilTagProcessorEnabled (boolean enabled){
-        visionPortal.setProcessorEnabled(aprilTagProcessor, enabled);
     }
 
     public void close()

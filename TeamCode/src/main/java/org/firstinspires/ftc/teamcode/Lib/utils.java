@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Lib;
 
+import com.arcrobotics.ftclib.hardware.ServoEx;
+
 public final class utils {
     public static boolean IsInRange(double value, double target, double tolerance)
     {

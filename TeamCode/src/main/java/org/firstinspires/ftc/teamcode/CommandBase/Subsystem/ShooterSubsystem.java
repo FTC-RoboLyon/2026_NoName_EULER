@@ -34,37 +34,37 @@ public class ShooterSubsystem extends SubsystemBase {
     private static double previousTime = 0.0;
     private boolean firstIteration = true;
 
-    private enum WantedState {
-        STANS_BY,
+    public enum WantedState {
+        STAND_BY,
         SHOOT_NEAR,
         SHOOT_MID,
         SHOOT_FAR,
-        MANUAL
+        MANUAL,
+        SHOOT_AUTO
     }
-    private enum SystemState {
+    public enum SystemState {
         IDLE,
         PREPARING_SHOOT_NEAR,
         PREPARING_SHOOT_MID,
         PREPARING_SHOOT_FAR,
         PREPARING_SHOOT_MANUAL,
+        PREPARING_SHOOT_AUTO,
+
         READY_TO_SHOOT_MANUAL,
+        READY_TO_SHOOT_AUTO,
         READY_TO_SHOOT_NEAR,
         READY_TO_SHOOT_MID,
-        READY_TO_SHOOT_FAR,
+        READY_TO_SHOOT_FAR
     }
-    private WantedState wantedState = WantedState.STANS_BY;
+    private WantedState wantedState = WantedState.STAND_BY;
     private SystemState systemState = SystemState.IDLE;
     public void setWantedState (WantedState state) {
-        if (state != WantedState.MANUAL)
-            wantedState = state;
-        else
-            robot.getTelemetry().addLine("please use 'shooter.setTargets()' ");
+        wantedState = state;
     }
 
     public void setTargets(double flywheelTarget, double HoodPos) {
         flywheelVeloTarget = flywheelTarget;
         hoodPosTarget = HoodPos;
-        wantedState = WantedState.MANUAL;
     }
     public SystemState getSystemState() {return systemState;}
 
@@ -100,7 +100,8 @@ public class ShooterSubsystem extends SubsystemBase {
             case IDLE:
                 stopShooter();
                 break;
-
+            case PREPARING_SHOOT_AUTO:
+                //TODO find a way to find a flywheel velocity and a hood position in fonction of robot.getCameraDistanceToGoal()
             case PREPARING_SHOOT_NEAR:
             case PREPARING_SHOOT_MID:
             case PREPARING_SHOOT_FAR:
@@ -131,7 +132,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private void RunStateMachine(){
         switch (wantedState)
         {
-            case STANS_BY:
+            case STAND_BY:
                 systemState = SystemState.IDLE;
                 break;
 
@@ -156,9 +157,12 @@ public class ShooterSubsystem extends SubsystemBase {
             case MANUAL:
                 systemState = SystemState.PREPARING_SHOOT_MANUAL;
                 break;
+            case SHOOT_AUTO:
+                systemState = SystemState.PREPARING_SHOOT_AUTO;
+                break;
 
             default:
-                wantedState = WantedState.STANS_BY;
+                wantedState = WantedState.STAND_BY;
                 robot.getTelemetry().addLine("Please enter a valid shooter wanted state");
                 break;
 
@@ -199,6 +203,14 @@ public class ShooterSubsystem extends SubsystemBase {
                     firstIteration = true;
                 }
                 break;
+            case PREPARING_SHOOT_AUTO:
+                if (utils.IsInRange(flywheelRPM, flywheelVeloTarget, FLYWHEEL_TOLERANCE) && utils.IsInRange(hoodServo.getPosition(), hoodPosTarget, HOOD_TOLERANCE))
+                {
+                    systemState = SystemState.PREPARING_SHOOT_AUTO;
+                    firstIteration = true;
+                }
+                break;
+
 
             case READY_TO_SHOOT_MANUAL:
             case READY_TO_SHOOT_NEAR:
@@ -230,7 +242,5 @@ public class ShooterSubsystem extends SubsystemBase {
         previousTime = actualTime;
 
         return proportional + derivative + feedForward;
-
-
     }
 }

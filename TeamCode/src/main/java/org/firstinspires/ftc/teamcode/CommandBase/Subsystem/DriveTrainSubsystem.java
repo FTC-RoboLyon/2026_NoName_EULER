@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
+import org.firstinspires.ftc.teamcode.CommandBase.robotContainer;
+import org.firstinspires.ftc.teamcode.Lib.LyonLib.kinematics.Pose2d;
 import org.firstinspires.ftc.teamcode.Lib.utils;
 
 import java.util.function.DoubleSupplier;
@@ -20,6 +22,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
     private ElapsedTime headingTimer = new ElapsedTime();
 
     private DoubleSupplier ySupplier, xSupplier, turnSupplier;
+    private robotContainer robot;
 
     public final int TICKS_PER_REVOLUTION = 8192 ;
     // Tune this to the number of tick your sensor register per wheel revolution
@@ -43,9 +46,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
     private double previousLeftPodValue = 0;
     private double previousRightPodValue = 0;
     private double previousStrafePodValue = 0;
-    private double robotX = 0;
-    private double robotY = 0;
-    private double robotHeading = 0;
+    private double robotX = 0; //in meters
+    private double robotY = 0; //in meters
+    private double robotHeading = 0; //in radiants
     private double previousFwdError = 0;
     private double previousStrafeError = 0;
     private double previousHeadingError = 0;
@@ -78,6 +81,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
 
     public DriveTrainSubsystem (HardwareMap hmap,
+                                robotContainer robot,
                                 DoubleSupplier ySupplier,
                                 DoubleSupplier xSupplier,
                                 DoubleSupplier turnSupplier){
@@ -85,6 +89,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
         this.ySupplier = ySupplier;
         this.xSupplier = xSupplier;
         this.turnSupplier = turnSupplier;
+
+        this.robot = robot;
 
         frontLeftMotor = hmap.get(DcMotor.class, "frontLeftMotor");
         frontRightMotor = hmap.get(DcMotor.class, "frontRightMotor");
@@ -119,11 +125,12 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     }
     public DriveTrainSubsystem (HardwareMap hmap,
+                                robotContainer robot,
                                 DoubleSupplier ySupplier,
                                 DoubleSupplier xSupplier,
                                 DoubleSupplier turnSupplier,
                                 SparkFunOTOS.Pose2D startPos){
-        this(hmap, ySupplier, xSupplier, turnSupplier);
+        this(hmap, robot, ySupplier, xSupplier, turnSupplier);
         robotX = startPos.x;
         robotY = startPos.y;
         robotHeading = startPos.h;
@@ -164,6 +171,13 @@ public class DriveTrainSubsystem extends SubsystemBase {
         robotY += deltaY;
         robotHeading += dHeading;
 
+        if (robotHeading > 2 * Math.PI){
+            robotHeading -= 2 * Math.PI;
+        }
+        else if (robotHeading < 2 * Math.PI){
+
+        }
+
         previousLeftPodValue = leftPodValue;
         previousRightPodValue = rightPodValue;
         previousStrafePodValue = strafePodValue;
@@ -199,6 +213,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     public boolean isAtHeadingTarget(){
         return utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING);
+    }
+
+    public double getDstanceToAPoint(Pose2d point){
+        return Math.sqrt( Math.pow(point.xMeters - robotX, 2) + Math.pow(point.yMeters - robotY, 2));
     }
 
 
@@ -313,6 +331,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
             default:
                 driveMode = DriveMode.DISABLE;
+                robot.getTelemetry().addLine("Please enter a valid drivetrain driveMode");
                 break;
 
         }

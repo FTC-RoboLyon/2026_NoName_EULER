@@ -9,7 +9,8 @@ public class TelopCommandBase extends OpMode {
 
     @Override
     public void init() {
-        robot = new robotContainer(hardwareMap, telemetry, gamepad1, gamepad2);
+        robot = new robotContainer(hardwareMap, telemetry, gamepad1, gamepad2, robotContainer.Periode.TELEOP);
+
     }
 
     @Override

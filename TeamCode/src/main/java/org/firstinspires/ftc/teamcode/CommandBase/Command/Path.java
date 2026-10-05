@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 
 public class Path extends SequentialCommandGroup {
-
+    //nom pas tres clair, il ne permet pas de deviner ce qu'il fait on pourrait croire su'il stocke tout les infos d'un chemin plutot
     DriveTrainSubsystem driveTrainSubsystem;
 
     Pose2d[] points;

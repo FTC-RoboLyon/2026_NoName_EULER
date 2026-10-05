@@ -5,7 +5,7 @@ import com.seattlesolvers.solverslib.command.CommandBase;
 import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.ShooterSubsystem;
 
 public class SetShooterPos extends CommandBase {
-
+    //Dcp c pas vrm set shooter Pos mais juste setShooterWantedStateCmd
     ShooterSubsystem shooterSubsystem;
     ShooterSubsystem.WantedState wantedState;
 

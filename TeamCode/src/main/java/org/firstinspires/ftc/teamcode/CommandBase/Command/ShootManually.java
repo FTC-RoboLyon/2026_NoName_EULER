@@ -49,12 +49,14 @@ public class ShootManually extends CommandBase {
         if (buttonHoodPos.getAsBoolean())
             hoodPos += hoodPosIncrmentation;
         shooterSubsystem.setTargets(veloTarget, hoodPos);
+        //Et pourquoi le shooter irait pas chercher cette info tout seul prc que la dcp il est required par une command qui peut en plus le mettre en Stand_By a la fin
     }
 
     @Override
     public void end(boolean interrupted){
         if (interrupted)
             shooterSubsystem.setWantedState(ShooterSubsystem.WantedState.STAND_BY);
+        //est tu sur de bien comprendre a quoi correspondent la fonction end et son parametre interrupted
     }
 
     @Override

@@ -21,7 +21,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public static final double FLYWHEEL_KP = 1.0, FLYWHEEL_KF = 1.0, FLYWHEEL_KD = 1.0; //TUNEME
 
-    public static final double HOOD_TOLERANCE = 100.0;  //TUNEME between 0 and 1 ?
+    public static final double HOOD_TOLERANCE = 100.0;  //TUNEME between 0 and 1 ? 0 and 1 what ? potatoes, chairs, Antoines, ;)
     public static final double FLYWHEEL_TOLERANCE = 100.0;  //TUNEME in RPM
 
     public static final double NEAR_POS_HOOD = 0.3, MID_POS_HOOD = 0.58, FAR_POS_HOOD = 0.45; //TUNEME between 0 and 1
@@ -40,6 +40,10 @@ public class ShooterSubsystem extends SubsystemBase {
         SHOOT_MID,
         SHOOT_FAR,
         MANUAL,
+        //En fait si tu regarde bien mon code de SecretProject les machines a etat (en tout cas de Wanted State et System State)
+        // ne sont utilisée que lorsque le systeme est en mode automatique. Pour savoir ça j'utilise le ControlMode que tu peux trouver dans mon code
+        // jsp pas pk Adam l'a pas encore remise dans la derniere version de la LyonLib mais de toute maniere il m'a dit qu'il devrait bientot push ses dernieres modifs
+        // mais pour l'instant t'a qu'à utiliser la version qu'est dans mon Secret Project (plus si secret d'ailleurs)
         SHOOT_AUTO
     }
     public enum SystemState {
@@ -65,7 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void setTargets(double flywheelTarget, double HoodPos) {
         flywheelVeloTarget = flywheelTarget;
         hoodPosTarget = HoodPos;
-    }
+    }//PLus vrm censé en avoir besoin puisque tes commandes sont juste censées changer Wanted State et/ou evetuellement Control Mode
     public SystemState getSystemState() {return systemState;}
 
 
@@ -76,6 +80,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         flywheelMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         flywheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Force au zeroPowerBehavior que tu as oublie
 
         PDFTimer.startTime();
         PDFTimer.reset();
@@ -122,10 +127,11 @@ public class ShooterSubsystem extends SubsystemBase {
             case READY_TO_SHOOT_NEAR:
             case READY_TO_SHOOT_MID:
             case READY_TO_SHOOT_FAR:
+                //ah oui donc toi tu t'es cru en exo de physique a negliger les frottements quoi ;)
                 break;
             default:
                 systemState = SystemState.IDLE;
-                break;//->comme l'autre default
+                break;
         }
     }
 
@@ -139,26 +145,26 @@ public class ShooterSubsystem extends SubsystemBase {
             case SHOOT_NEAR:
                 flywheelVeloTarget = NEAR_FLYWHEEL_RPM;
                 hoodPosTarget = NEAR_POS_HOOD;
-                systemState = SystemState.PREPARING_SHOOT_NEAR;
+                systemState = SystemState.PREPARING_SHOOT_NEAR; //-> donc meme si il est deja en READY_TO_SHOOT_NEAR tu le rechange tjr en PREPARING, tu tireras donc jamais
                 break;
 
             case SHOOT_MID:
-                flywheelVeloTarget = MID_FLYWHEEL_RPM;
+                flywheelVeloTarget = MID_FLYWHEEL_RPM; //same
                 hoodPosTarget = MID_POS_HOOD;
                 systemState = SystemState.PREPARING_SHOOT_MID;
                 break;
 
             case SHOOT_FAR:
-                flywheelVeloTarget = FAR_FLYWHEEL_RPM;
+                flywheelVeloTarget = FAR_FLYWHEEL_RPM; //same
                 hoodPosTarget = FAR_POS_HOOD;
                 systemState = SystemState.PREPARING_SHOOT_FAR;
                 break;
 
             case MANUAL:
-                systemState = SystemState.PREPARING_SHOOT_MANUAL;
+                systemState = SystemState.PREPARING_SHOOT_MANUAL; //same
                 break;
             case SHOOT_AUTO:
-                systemState = SystemState.PREPARING_SHOOT_AUTO;
+                systemState = SystemState.PREPARING_SHOOT_AUTO; //same
                 break;
 
             default:
@@ -184,7 +190,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 if (utils.IsInRange(flywheelRPM, flywheelVeloTarget, FLYWHEEL_TOLERANCE) && utils.IsInRange(hoodServo.getPosition(), hoodPosTarget, HOOD_TOLERANCE))
                 {
                     systemState = SystemState.READY_TO_SHOOT_MID;
-                    firstIteration = true;
+                    firstIteration = true;//pk repasser ca en true, tu coupes le PID quand tu es a la bonne vitesse
                 }
                 break;
 
@@ -192,7 +198,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 if (utils.IsInRange(flywheelRPM, flywheelVeloTarget, FLYWHEEL_TOLERANCE) && utils.IsInRange(hoodServo.getPosition(), hoodPosTarget, HOOD_TOLERANCE))
                 {
                     systemState = SystemState.READY_TO_SHOOT_FAR;
-                    firstIteration = true;
+                    firstIteration = true; //same
                 }
                 break;
 
@@ -200,14 +206,14 @@ public class ShooterSubsystem extends SubsystemBase {
                 if (utils.IsInRange(flywheelRPM, flywheelVeloTarget, FLYWHEEL_TOLERANCE) && utils.IsInRange(hoodServo.getPosition(), hoodPosTarget, HOOD_TOLERANCE))
                 {
                     systemState = SystemState.READY_TO_SHOOT_MANUAL;
-                    firstIteration = true;
+                    firstIteration = true; //same
                 }
                 break;
             case PREPARING_SHOOT_AUTO:
                 if (utils.IsInRange(flywheelRPM, flywheelVeloTarget, FLYWHEEL_TOLERANCE) && utils.IsInRange(hoodServo.getPosition(), hoodPosTarget, HOOD_TOLERANCE))
                 {
                     systemState = SystemState.PREPARING_SHOOT_AUTO;
-                    firstIteration = true;
+                    firstIteration = true; //same
                 }
                 break;
 
@@ -220,6 +226,7 @@ public class ShooterSubsystem extends SubsystemBase {
             default:
                 systemState = SystemState.IDLE;
                 robot.getTelemetry().addLine("Please enter a valid shooter systemState");
+                //boucle infiniiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiieeeeeeeeeeeeeeeeeeeeeeeeeeeee
         }
     }
 

@@ -60,7 +60,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     private double xTarget = robotX, yTarget = robotY, headingTarget = robotHeading;
 
-    private boolean fieldOriented = true;
+    private boolean fieldOriented = true;//Dcp ca sert encore ?
 
     private double xPower = 0.0, yPower = 0.0, rotationPower = 0.0;
 
@@ -71,7 +71,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         ROBOT_CENTRIC,
         FIELD_CENTRIC,
         GO_TO_POS,
-        DRIVE_AND_HEAD_TO_TARGET
+        DRIVE_AND_HEAD_TO_TARGET //un peu long mais au moins c clair
     }
     private DriveMode driveMode = DriveMode.DISABLE;
     public void setDriveMode(DriveMode drive){
@@ -129,7 +129,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
                                 DoubleSupplier ySupplier,
                                 DoubleSupplier xSupplier,
                                 DoubleSupplier turnSupplier,
-                                SparkFunOTOS.Pose2D startPos){
+                                SparkFunOTOS.Pose2D startPos){ //->pas tres important mais autant utiliser nos Pose2d ici aussi
         this(hmap, robot, ySupplier, xSupplier, turnSupplier);
         robotX = startPos.x;
         robotY = startPos.y;
@@ -191,7 +191,6 @@ public class DriveTrainSubsystem extends SubsystemBase {
      * @param Headingtarget heading target of the robot (in radians)
      * @return if the robot has arrived yet using tolerances (true : yes; false : no)
      */
-    //Normalement aucune autre fonction n'est censée changer le drive Mode que SetDriveMode même si elles changent les parametres d'un certain drive mode
     public void setGoToPosTargets (double Xtarget, double Ytarget, double Headingtarget) {
         xTarget = Xtarget;
         yTarget = Ytarget;
@@ -206,23 +205,21 @@ public class DriveTrainSubsystem extends SubsystemBase {
         PDfirstIteration = true;
     }
 
-    public boolean isAtXYTargets(){
+    public boolean isAtXYTargets(){//Nom pas fou, j'aurais plutot mis genre hasReachedLinearTargets ou un truc du genre, apres ton nom marche quand même on comprends
         return utils.IsInRange(robotX, xTarget, TOLERANCE_X_AND_Y)
             && utils.IsInRange(robotY, yTarget, TOLERANCE_X_AND_Y);
     }
 
-    public boolean isAtHeadingTarget(){
+    public boolean isAtHeadingTarget(){//On peut pas vraiment dire qu'il est a l'orientation cible mais plutot qu'il est aligné avec l'orientation cible ou qqc dans le gner (pareil c du détail après)
         return utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING);
     }
 
-    public double getDstanceToAPoint(Pose2d point){
+    public double getDstanceToAPoint(Pose2d point){//Il manque un i (je le rajoute pas comme tu m'as dit de tout mettre en commentaire)
         return Math.sqrt( Math.pow(point.xMeters - robotX, 2) + Math.pow(point.yMeters - robotY, 2));
     }
 
 
-    //pk toutes les fonctions comme ca elles existent encore si tu les utilise pas étant donné qu'elles sont implémentées autrement
-
-    public void stopTheRobot(){
+    public void stopTheRobot(){//Normalement aucune autre fonction n'est censée changer le drive Mode que SetDriveMode même si elles changent les parametres d'un certain drive mode, dcp eskeu cette fonction a vrm un interet ???
         driveMode = DriveMode.DISABLE;
         PDfirstIteration = true;
     }
@@ -241,7 +238,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
     public void periodic(){
 
         actualiseRobotPos();
-        double headingError = headingTarget - robotHeading;
+        double headingError = headingTarget - robotHeading; //Pk calculer le heading error tout le temps alors qu'il ne sert pas tjr
 
         switch (driveMode){
             case DISABLE:

@@ -27,20 +27,20 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class robotContainer extends Robot {
-    private HardwareMap hardwareMap;
+    private HardwareMap hardwareMap; //t'as vrm besoin de stocker ça ?'
     private static VoltageSensor voltageSensor;
     private Gamepad gamepad1, gamepad2;
     private Telemetry telemetry;
 
 
-    private static DriveTrainSubsystem driveTrain;
+    private static DriveTrainSubsystem driveTrain; //normalement drivretrain c un seul mot mais bon...
     private static ShooterSubsystem shooter;
     private static IntakeSubsystem intake;
     private static Camera camera;
 
     private Object alliance;
 
-    public enum Periode{
+    public enum Periode{ //What is this strange language I see here ... ;) (I think that he wanted to say Period)
         AUTO,
         TELEOP
     }
@@ -71,10 +71,10 @@ public class robotContainer extends Robot {
         setBulkReading(hardwareMap, LynxModule.BulkCachingMode.AUTO);
 
         alliance = blackboard.get(ALLIANCE_KEY);
-        alliance = (String) alliance;
+        alliance = (String) alliance; //meme l'IDE te dit que cette ligne ne sert a rien donc peut etre se poser la question de son utilité
     }
 
-    public Telemetry getTelemetry(){return telemetry;}
+    public Telemetry getTelemetry(){return telemetry;}//Sympa mais dcp par contr la telemetry tu l'update ou ?
     public double getCameraBearing(){
         return camera.getBearing(alliance == "red" ? 24 : 20);
     }

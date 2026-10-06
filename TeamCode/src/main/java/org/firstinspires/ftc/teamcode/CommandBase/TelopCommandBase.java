@@ -14,7 +14,7 @@ public class TelopCommandBase extends OpMode {
 
     @Override
     public void loop() {
-
+        //mmmh et dans ta loop tu fais r, donc vrm ton robot ne fait r, j'avoues j'ai pas la vision la
     }
 
     @Override

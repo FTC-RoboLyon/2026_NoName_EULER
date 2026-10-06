@@ -19,13 +19,13 @@ import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.ShooterSubsystem;
 import java.util.function.DoubleSupplier;
 
 public class robotContainer extends Robot {
-    private HardwareMap hardwareMap;
+    private HardwareMap hardwareMap; //t'as vrm besoin de stocker ça ?'
     private static VoltageSensor voltageSensor;
     private GamepadEx gamepad1, gamepad2;
     private Telemetry telemetry;
 
 
-    private static DriveTrainSubsystem driveTrain;
+    private static DriveTrainSubsystem driveTrain; //normalement drivretrain c un seul mot mais bon...
     private static ShooterSubsystem shooter;
     private static IntakeSubsystem intake;
     private static Camera camera;
@@ -57,7 +57,7 @@ public class robotContainer extends Robot {
         setBulkReading(hardwareMap, LynxModule.BulkCachingMode.AUTO);
 
         alliance = blackboard.get(ALLIANCE_KEY);
-        alliance = (String) alliance;
+        alliance = (String) alliance; //meme l'IDE te dit que cette ligne ne sert a rien donc peut etre se poser la question de son utilité
     }
 
     public void bindCommands(Gamepad gamepad1, Gamepad gamepad2){
@@ -72,8 +72,7 @@ public class robotContainer extends Robot {
         this.gamepad1 = new GamepadEx(gamepad1);
         this.gamepad2 = new GamepadEx(gamepad2);
     }
-
-    public Telemetry getTelemetry(){return telemetry;}
+    public Telemetry getTelemetry(){return telemetry;}//Sympa mais dcp par contr la telemetry tu l'update ou ?
     public double getCameraBearing(){
         return camera.getBearing(alliance == "red" ? 24 : 20);
     }

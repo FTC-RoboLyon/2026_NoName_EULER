@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.CommandBase.Subsystem;
 
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -23,10 +24,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setIntakeMode(IntakeMode intakeMode) {this.intakeMode = intakeMode;}
     public IntakeMode getIntakeMode(){return intakeMode;}
 
-    public IntakeSubsystem(HardwareMap hmap, Gamepad gamepad1){
+    public IntakeSubsystem(HardwareMap hmap){
         intakeMotor = hmap.get(DcMotor.class, "Intake");
 
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+    }
+    public void setGamepad(Gamepad gamepad1){
         gamepad = gamepad1;
     }
 

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.CommandBase;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 public class TelopCommandBase extends OpMode {
@@ -9,7 +8,7 @@ public class TelopCommandBase extends OpMode {
 
     @Override
     public void init() {
-        robot = new robotContainer(hardwareMap, telemetry, gamepad1, gamepad2, robotContainer.Periode.TELEOP);
+        robot = new robotContainer(hardwareMap, telemetry, robotContainer.RobotMode.TELEOP);
 
     }
 

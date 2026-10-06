@@ -81,14 +81,17 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
 
     public DriveTrainSubsystem (HardwareMap hmap,
-                                robotContainer robot,
-                                DoubleSupplier ySupplier,
-                                DoubleSupplier xSupplier,
-                                DoubleSupplier turnSupplier){
+                                robotContainer robot
+                                ){
 
-        this.ySupplier = ySupplier;
-        this.xSupplier = xSupplier;
-        this.turnSupplier = turnSupplier;
+        if (ySupplier == null)
+            ySupplier = ()->0.0;
+
+        if (xSupplier == null)
+            xSupplier = ()->0.0;
+
+        if (turnSupplier == null)
+            turnSupplier = ()->0.0;
 
         this.robot = robot;
 
@@ -124,17 +127,85 @@ public class DriveTrainSubsystem extends SubsystemBase {
         headingTimer.reset();
 
     }
+
     public DriveTrainSubsystem (HardwareMap hmap,
                                 robotContainer robot,
-                                DoubleSupplier ySupplier,
-                                DoubleSupplier xSupplier,
-                                DoubleSupplier turnSupplier,
-                                SparkFunOTOS.Pose2D startPos){
-        this(hmap, robot, ySupplier, xSupplier, turnSupplier);
-        robotX = startPos.x;
-        robotY = startPos.y;
-        robotHeading = startPos.h;
+                                Pose2d startPos){
+        this(hmap, robot);
+        robotX = startPos.xMeters;
+        robotY = startPos.yMeters;
+        robotHeading = startPos.headingRadians;
     }
+
+
+    public void setSupplier(DoubleSupplier ySupplier,
+                            DoubleSupplier xSupplier,
+                            DoubleSupplier turnSupplier){
+        this.ySupplier = ySupplier;
+        this.xSupplier = xSupplier;
+        this.turnSupplier = turnSupplier;
+    }
+
+    public void setPose(Pose2d startPos){
+        robotX = startPos.xMeters;
+        robotY = startPos.yMeters;
+        robotHeading = startPos.headingRadians;
+    }
+
+    /**
+     * A function that allows the robot to move to a given point of coordinates (xTarget, yTarget) and head to a given heading target.
+     * Return if the robot has arrived yet using tolerances.
+     * @param Xtarget X coordinate of the target point (in meters)
+     * @param Ytarget Y coordinate of the target point (in meters)
+     * @param Headingtarget heading target of the robot (in radians)
+     * @return if the robot has arrived yet using tolerances (true : yes; false : no)
+     */
+    //Normalement aucune autre fonction n'est censée changer le drive Mode que SetDriveMode même si elles changent les parametres d'un certain drive mode
+    public void setGoToPosTargets (double Xtarget, double Ytarget, double Headingtarget) {
+        xTarget = Xtarget;
+        yTarget = Ytarget;
+        headingTarget = Headingtarget;
+
+        PDfirstIteration = true;
+    }
+
+    public void setHeadingTarget(double headingTarget){
+        this.headingTarget = headingTarget;
+
+        PDfirstIteration = true;
+    }
+
+    public boolean isAtXYTargets(){
+        return utils.IsInRange(robotX, xTarget, TOLERANCE_X_AND_Y)
+                && utils.IsInRange(robotY, yTarget, TOLERANCE_X_AND_Y);
+    }
+
+    public boolean isAtHeadingTarget(){
+        return utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING);
+    }
+
+    public double getDstanceToAPoint(Pose2d point){
+        return Math.sqrt( Math.pow(point.xMeters - robotX, 2) + Math.pow(point.yMeters - robotY, 2));
+    }
+
+
+    //pk toutes les fonctions comme ca elles existent encore si tu les utilise pas étant donné qu'elles sont implémentées autrement
+
+    public void stopTheRobot(){
+        driveMode = DriveMode.DISABLE;
+        PDfirstIteration = true;
+    }
+
+    public double getRobotHeading(){
+        return robotHeading;
+    }
+    public double getRobotX(){
+        return robotX;
+    }
+    public double getRobotY(){
+        return robotY;
+    }
+
     private void applyMotorsPower(){
 
         double maxMotorValue = Math.max(Math.abs(rotationPower) + Math.abs(xPower) + Math.abs(yPower), 1);
@@ -183,59 +254,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         previousStrafePodValue = strafePodValue;
     }
 
-    /**
-     * A function that allows the robot to move to a given point of coordinates (xTarget, yTarget) and head to a given heading target.
-     * Return if the robot has arrived yet using tolerances.
-     * @param Xtarget X coordinate of the target point (in meters)
-     * @param Ytarget Y coordinate of the target point (in meters)
-     * @param Headingtarget heading target of the robot (in radians)
-     * @return if the robot has arrived yet using tolerances (true : yes; false : no)
-     */
-    //Normalement aucune autre fonction n'est censée changer le drive Mode que SetDriveMode même si elles changent les parametres d'un certain drive mode
-    public void setGoToPosTargets (double Xtarget, double Ytarget, double Headingtarget) {
-        xTarget = Xtarget;
-        yTarget = Ytarget;
-        headingTarget = Headingtarget;
 
-        PDfirstIteration = true;
-    }
-
-    public void setHeadingTarget(double headingTarget){
-        this.headingTarget = headingTarget;
-
-        PDfirstIteration = true;
-    }
-
-    public boolean isAtXYTargets(){
-        return utils.IsInRange(robotX, xTarget, TOLERANCE_X_AND_Y)
-            && utils.IsInRange(robotY, yTarget, TOLERANCE_X_AND_Y);
-    }
-
-    public boolean isAtHeadingTarget(){
-        return utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING);
-    }
-
-    public double getDstanceToAPoint(Pose2d point){
-        return Math.sqrt( Math.pow(point.xMeters - robotX, 2) + Math.pow(point.yMeters - robotY, 2));
-    }
-
-
-    //pk toutes les fonctions comme ca elles existent encore si tu les utilise pas étant donné qu'elles sont implémentées autrement
-
-    public void stopTheRobot(){
-        driveMode = DriveMode.DISABLE;
-        PDfirstIteration = true;
-    }
-
-    public double getRobotHeading(){
-        return robotHeading;
-    }
-    public double getRobotX(){
-        return robotX;
-    }
-    public double getRobotY(){
-        return robotY;
-    }
 
     @Override
     public void periodic(){

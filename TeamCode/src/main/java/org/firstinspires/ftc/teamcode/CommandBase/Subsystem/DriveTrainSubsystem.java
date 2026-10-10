@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.CommandBase.Subsystem;
 
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -59,8 +58,6 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
 
     private double xTarget = robotX, yTarget = robotY, headingTarget = robotHeading;
-
-    private boolean fieldOriented = true;//Dcp ca sert encore ?
 
     private double xPower = 0.0, yPower = 0.0, rotationPower = 0.0;
 
@@ -174,23 +171,17 @@ public class DriveTrainSubsystem extends SubsystemBase {
         PDfirstIteration = true;
     }
 
-    public boolean isAtXYTargets(){//Nom pas fou, j'aurais plutot mis genre hasReachedLinearTargets ou un truc du genre, apres ton nom marche quand même on comprends
+    public boolean hasReachedLinearTargets(){
         return utils.IsInRange(robotX, xTarget, TOLERANCE_X_AND_Y)
                 && utils.IsInRange(robotY, yTarget, TOLERANCE_X_AND_Y);
     }
 
-    public boolean isAtHeadingTarget(){//On peut pas vraiment dire qu'il est a l'orientation cible mais plutot qu'il est aligné avec l'orientation cible ou qqc dans le gner (pareil c du détail après)
+    public boolean alineWithHeadingTarget(){
         return utils.IsInRange(robotHeading, headingTarget, TOLERANCE_HEADING);
     }
 
-    public double getDstanceToAPoint(Pose2d point){//Il manque un i (je le rajoute pas comme tu m'as dit de tout mettre en commentaire)
+    public double getDistanceToAPoint(Pose2d point){
         return Math.sqrt( Math.pow(point.xMeters - robotX, 2) + Math.pow(point.yMeters - robotY, 2));
-    }
-
-
-    public void stopTheRobot(){//Normalement aucune autre fonction n'est censée changer le drive Mode que SetDriveMode même si elles changent les parametres d'un certain drive mode, dcp eskeu cette fonction a vrm un interet ???
-        driveMode = DriveMode.DISABLE;
-        PDfirstIteration = true;
     }
 
     public double getRobotHeading(){
@@ -239,12 +230,13 @@ public class DriveTrainSubsystem extends SubsystemBase {
         robotY += deltaY;
         robotHeading += dHeading;
 
-        if (robotHeading > 2 * Math.PI){
-            robotHeading -= 2 * Math.PI;
-        }
-        else if (robotHeading < 2 * Math.PI){
-
-        }
+        //if (robotHeading > 2 * Math.PI){
+        //    robotHeading -= 2 * Math.PI;
+        //}
+        //else if (robotHeading < 2 * Math.PI){
+        //
+        //}
+        // bon je voulais faire en sorte que l'orientation dépasse pas 2pi mais jarrive pas je met en TODO
 
         previousLeftPodValue = leftPodValue;
         previousRightPodValue = rightPodValue;
@@ -257,13 +249,15 @@ public class DriveTrainSubsystem extends SubsystemBase {
     public void periodic(){
 
         actualiseRobotPos();
-        double headingError = headingTarget - robotHeading; //Pk calculer le heading error tout le temps alors qu'il ne sert pas tjr
+        double headingError = headingTarget - robotHeading; //Pk calculer le heading error tout le temps alors qu'il ne sert pas tjr    // car sinon je dois le créer 2 fois dans case go to poos et drive heading
 
         switch (driveMode){
             case DISABLE:
                 xPower = 0.0;
                 yPower = 0.0;
                 rotationPower = 0.0;
+                if (!PDfirstIteration)
+                    PDfirstIteration = true;
                 break;
 
             case ROBOT_CENTRIC:

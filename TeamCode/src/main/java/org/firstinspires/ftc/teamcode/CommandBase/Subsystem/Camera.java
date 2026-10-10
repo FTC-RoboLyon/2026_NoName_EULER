@@ -23,6 +23,8 @@ public class Camera {
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
 
+    private int targetId;
+
     public Camera(HardwareMap hmap){
 
         aprilTagProcessor = new AprilTagProcessor.Builder()
@@ -46,18 +48,21 @@ public class Camera {
 
         FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
     }
+    public void setTargetID(int id){
+        targetId = id;
+    }
 
-    public double getDistanceMeters (int id){
+    public double getDistanceMeters (){
         for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
-            if (aprilTag.id == id)
+            if (aprilTag.id == targetId)
                 return aprilTag.ftcPose.range;
         }
         return -1.0;  // if id not detected, return a value that the camera would never return
     }
 
-    public double getBearing (int id){
+    public double getBearing (){
         for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
-            if (aprilTag.id == id)
+            if (aprilTag.id == targetId)
                 return aprilTag.ftcPose.bearing;
         }
         return 7.0; // if id not detected, return a value that the camera would never return (the camera only reach pi radiant)

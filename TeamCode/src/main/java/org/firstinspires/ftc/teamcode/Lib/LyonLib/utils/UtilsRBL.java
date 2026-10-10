@@ -10,7 +10,7 @@
 
 package org.firstinspires.ftc.teamcode.Lib.LyonLib.utils;
 
-import org.firstinspires.ftc.LyonLib.logging.DebugUtils;
+import org.firstinspires.ftc.teamcode.Lib.LyonLib.logging.DebugUtils;
 
 public final class UtilsRBL {
 

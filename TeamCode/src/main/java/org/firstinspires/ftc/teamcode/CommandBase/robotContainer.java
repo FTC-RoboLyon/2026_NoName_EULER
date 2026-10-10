@@ -17,15 +17,15 @@ import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.ShooterSubsystem;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class robotContainer extends Robot {
-    private HardwareMap hardwareMap; //t'as vrm besoin de stocker ça ?'
     private static VoltageSensor voltageSensor;
     private GamepadEx gamepad1, gamepad2;
     private Telemetry telemetry;
 
 
-    private static DriveTrainSubsystem driveTrain; //normalement drivretrain c un seul mot mais bon...
+    private static DriveTrainSubsystem drivetrain;
     private static ShooterSubsystem shooter;
     private static IntakeSubsystem intake;
     private static Camera camera;
@@ -38,26 +38,27 @@ public class robotContainer extends Robot {
     }
     private RobotMode robotMode = RobotMode.TELEOP;
 
+    private int idRobot;
+
     public robotContainer (HardwareMap hmap, Telemetry telemetry, RobotMode robotMode1){
 
         robotMode = robotMode1;
 
-        hardwareMap = hmap;
-
         this.telemetry = telemetry;
 
-        driveTrain = new DriveTrainSubsystem(hardwareMap, this);
-        shooter = new ShooterSubsystem(hardwareMap, "Shooter", "Hood", this);
-        intake = new IntakeSubsystem(hardwareMap);
-        camera = new Camera(hardwareMap);
+        drivetrain = new DriveTrainSubsystem(hmap, this);
+        shooter = new ShooterSubsystem(hmap, "Shooter", "Hood", this);
+        intake = new IntakeSubsystem(hmap);
+        camera = new Camera(hmap);
 
-        driveTrain.setDriveMode(robotMode == RobotMode.TELEOP ? DriveTrainSubsystem.DriveMode.FIELD_CENTRIC : DriveTrainSubsystem.DriveMode.GO_TO_POS);
+        drivetrain.setDriveMode(robotMode == RobotMode.TELEOP ? DriveTrainSubsystem.DriveMode.FIELD_CENTRIC : DriveTrainSubsystem.DriveMode.GO_TO_POS);
 
-        voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
-        setBulkReading(hardwareMap, LynxModule.BulkCachingMode.AUTO);
+        voltageSensor = hmap.get(VoltageSensor.class, "Control Hub");
+        setBulkReading(hmap, LynxModule.BulkCachingMode.AUTO);
 
         alliance = blackboard.get(ALLIANCE_KEY);
-        alliance = (String) alliance; //meme l'IDE te dit que cette ligne ne sert a rien donc peut etre se poser la question de son utilité
+
+        camera.setTargetID(alliance == "red" ? 24 : 20);
     }
 
     public void bindCommands(Gamepad gamepad1, Gamepad gamepad2){
@@ -66,23 +67,29 @@ public class robotContainer extends Robot {
         DoubleSupplier strafe = ()-> gamepad1.left_stick_y;
         DoubleSupplier turn = ()-> gamepad1.right_stick_x;
 
-        driveTrain.setSupplier(forward, strafe, turn);
-        intake.setGamepad(gamepad1);
+        Supplier<Float> intakeBalls = ()-> gamepad1.right_trigger;
+        Supplier<Float> ejectBalls = ()-> gamepad1.left_trigger;
+
+        drivetrain.setSupplier(forward, strafe, turn);
+        intake.setSuppliers(intakeBalls, ejectBalls);
 
         this.gamepad1 = new GamepadEx(gamepad1);
         this.gamepad2 = new GamepadEx(gamepad2);
+
+        //TODO bind all commands to button here
     }
+
     public Telemetry getTelemetry(){return telemetry;}//Sympa mais dcp par contr la telemetry tu l'update ou ?
     public double getCameraBearing(){
-        return camera.getBearing(alliance == "red" ? 24 : 20);
+        return camera.getBearing();
     }
     public double getCameraDistanceToGoal(){
-        return camera.getDistanceMeters(alliance == "red" ? 24 : 20);
+        return camera.getDistanceMeters();
     }
 
     public static double getVoltage(){return voltageSensor.getVoltage();}
 
-    public DriveTrainSubsystem getDriveTrain(){return driveTrain;}
+    public DriveTrainSubsystem getDriveTrain(){return drivetrain;}
     public ShooterSubsystem getShooter(){return shooter;}
 
     public IntakeSubsystem getIntake(){return intake;}

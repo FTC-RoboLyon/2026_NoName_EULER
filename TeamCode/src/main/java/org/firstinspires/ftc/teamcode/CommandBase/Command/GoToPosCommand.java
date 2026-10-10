@@ -30,7 +30,7 @@ public class GoToPosCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return driveTrainSubsystem.isAtXYTargets();
+        return driveTrainSubsystem.hasReachedLinearTargets();
     }//donc tu ne prends pas en compte le heading dans ton isFinished (c peut etre volontaire mais je voullais etre sur que ca le soit)
 
 

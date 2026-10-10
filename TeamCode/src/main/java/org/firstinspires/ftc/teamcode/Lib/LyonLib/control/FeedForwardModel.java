@@ -16,8 +16,8 @@
 
 package org.firstinspires.ftc.teamcode.Lib.LyonLib.control;
 
-import org.firstinspires.ftc.LyonLib.logging.DebugUtils;
-import org.firstinspires.ftc.LyonLib.utils.UtilsRBL;
+import org.firstinspires.ftc.teamcode.Lib.LyonLib.logging.DebugUtils;
+import org.firstinspires.ftc.teamcode.Lib.LyonLib.utils.UtilsRBL;
 
 import java.util.function.DoubleUnaryOperator;
 

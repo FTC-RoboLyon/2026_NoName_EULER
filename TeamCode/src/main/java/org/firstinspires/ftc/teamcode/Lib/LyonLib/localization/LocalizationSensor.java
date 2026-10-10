@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Lib.LyonLib.localization;
 
-import org.firstinspires.ftc.LyonLib.kinematics.Pose2d;
+import org.firstinspires.ftc.teamcode.Lib.LyonLib.kinematics.Pose2d;
 
 /**
  * Sensor contract for the fusion.

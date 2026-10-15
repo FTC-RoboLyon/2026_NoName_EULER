@@ -236,7 +236,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         //else if (robotHeading < 2 * Math.PI){
         //
         //}
-        // bon je voulais faire en sorte que l'orientation dépasse pas 2pi mais jarrive pas je met en TODO
+        // bon je voulais faire en sorte que l'orientation dépasse pas 2pi mais jarrive pas je met en TODO, jsusi sur tu peux le faire (petit indeice tu peux utiliser le modulo)
 
         previousLeftPodValue = leftPodValue;
         previousRightPodValue = rightPodValue;
@@ -250,6 +250,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
         actualiseRobotPos();
         double headingError = headingTarget - robotHeading; //Pk calculer le heading error tout le temps alors qu'il ne sert pas tjr    // car sinon je dois le créer 2 fois dans case go to poos et drive heading
+        // -> et donc si c des variables locales elles se detruisent a la sortie et tu ne sera jamais dans ces deux cas en meme temps
 
         switch (driveMode){
             case DISABLE:

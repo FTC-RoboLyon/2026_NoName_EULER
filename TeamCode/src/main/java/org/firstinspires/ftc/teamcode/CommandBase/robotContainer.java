@@ -38,7 +38,7 @@ public class robotContainer extends Robot {
     }
     private RobotMode robotMode = RobotMode.TELEOP;
 
-    private int idRobot;
+    private int idRobot; //hein ???
 
     public robotContainer (HardwareMap hmap, Telemetry telemetry, RobotMode robotMode1){
 
@@ -48,7 +48,7 @@ public class robotContainer extends Robot {
 
         drivetrain = new DriveTrainSubsystem(hmap, this);
         shooter = new ShooterSubsystem(hmap, "Shooter", "Hood", this);
-        intake = new IntakeSubsystem(hmap);
+        intake = new IntakeSubsystem(hmap); //je crois que les lignes rouges c pas normal ;)
         camera = new Camera(hmap);
 
         drivetrain.setDriveMode(robotMode == RobotMode.TELEOP ? DriveTrainSubsystem.DriveMode.FIELD_CENTRIC : DriveTrainSubsystem.DriveMode.GO_TO_POS);
@@ -77,6 +77,7 @@ public class robotContainer extends Robot {
         this.gamepad2 = new GamepadEx(gamepad2);
 
         //TODO bind all commands to button here
+        //bien vu, par contre juste il faut l'appler quelque part cette fonction sinon elle ne fait r
     }
 
     public Telemetry getTelemetry(){return telemetry;}//Sympa mais dcp par contr la telemetry tu l'update ou ?

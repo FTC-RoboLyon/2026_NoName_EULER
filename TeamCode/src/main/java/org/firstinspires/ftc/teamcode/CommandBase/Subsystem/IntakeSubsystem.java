@@ -20,18 +20,18 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
 
-    public enum IntakeWanteState { //Souviens toi il n'y a que la base qui a un enum mode les autres c WantedState et SystemState
+    public enum IntakeWanteState {
         IDLE,
         INTAKE,
         EJECT
     }
-    public enum IntakeControlMode {
+    public enum IntakeControlMode { //C bien deja y'a les Control mode mais dcp fait comme sur le shooter et utilise l'enum Control Mode general
         DISABLE,
-        MANUAL_VOLTAGE,
-        AUTO_ON_OFF
+        MANUAL_VOLTAGE, //normalement voltage c'est vrm quand tu donne une valeur en volt, en FTC on donne plutot une valeur entre 1 et -1 et c'est ce qu'on appelle le duty Cycle (en tt cas Adam l'a appelé comme ça)
+        AUTO_ON_OFF //Ca c pas un Control Mode de la liste Auto ca ne dit rien de comment on donne la consigne, la ca serait plutot juste DUTY_CYCLE (pas de Manual suggere l'auto, a la limite sinon VOLTAGE mais en lien avec le commentaire juste au-dessus)
     }
     public enum IntakeSystemState {
-        STAND_BY,
+        STAND_BY, //C'est l'inverse IDLE et STAND_BY, on veut qu'il stand_by (attende) donc il est IDLE (innocupé)
         INTAKING,
         EJECTING
     }
@@ -40,7 +40,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private IntakeControlMode intakeControlMode = IntakeControlMode.DISABLE;
 
     public void setIntakeControlMode(IntakeControlMode controlMode){intakeControlMode = controlMode;}
-    public void setIntakeWanteState(IntakeWanteState intakeWanteState) {this.intakeWanteState = intakeWanteState;}
+    public void setIntakeWantedState(IntakeWanteState intakeWanteState) {this.intakeWanteState = intakeWanteState;} //pas besoin de préciser intake dans le nom de tes fonctions, on le sait deja car l'objet lui-meme est un intake
 
     public IntakeControlMode getIntakeControlMode() {
         return intakeControlMode;
@@ -53,13 +53,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
         this.robot = robot;
 
-        intakeMotor = hmap.get(DcMotor.class, "Intake");
+        intakeMotor = hmap.get(DcMotor.class, "Intake"); //normalement dans le nom du device on precisera ce que c'est donc plutot IntakeMotor
 
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if (intakeSupplier == null)
+        if (intakeSupplier == null) //comment il pourraient ne pas être nules si tu viens de les creer ?
             intakeSupplier = ()-> 0f;
 
         if (ejectSupplier == null)
@@ -74,7 +74,8 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic(){
 
-        switch (intakeControlMode) {
+        switch (intakeControlMode)
+        { //je trouve plus facile a lire comme ca
             case DISABLE:
                 break;
             case MANUAL_VOLTAGE:
@@ -101,8 +102,11 @@ public class IntakeSubsystem extends SubsystemBase {
                 case EJECTING:
                     intakeMotor.setPower(utils.getVoltageCompensated(-1.0, robot.getVoltage(), INTAKE_VOLTAGE_SETPOINT));
                     break;
+                    //et le default ?
             }
             break;
+            //et le default ?
+
         }
     }
     private void RunStateMachine(){
@@ -116,13 +120,14 @@ public class IntakeSubsystem extends SubsystemBase {
             case EJECT:
                 intakeSystemState = IntakeSystemState.EJECTING;
                 break;
+                //defalut ?
         }
 
         switch (intakeSystemState){
             case STAND_BY:
             case INTAKING:
             case EJECTING:
-                break;
+                break;// et le default ?
         }
     }
 }

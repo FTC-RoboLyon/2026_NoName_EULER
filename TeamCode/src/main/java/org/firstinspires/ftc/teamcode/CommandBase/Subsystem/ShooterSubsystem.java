@@ -18,7 +18,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private Servo hoodServo;
     private ElapsedTime PDFTimer = new ElapsedTime();
     private robotContainer robot;
-    private BooleanSupplier plusVeloSupplier;
+    private BooleanSupplier plusVeloSupplier; //on ne comprend tjr pas quand tu mets velo ca veut rien dire soit tu mets speed, soit velocity
     private BooleanSupplier minusVeloSupplier;
     private BooleanSupplier plusIncrementationSupplier;
     private BooleanSupplier minusIncrementationSupplier;
@@ -30,6 +30,8 @@ public class ShooterSubsystem extends SubsystemBase {
     public static final double FLYWHEEL_KP = 1.0, FLYWHEEL_KF = 1.0, FLYWHEEL_KD = 1.0; //TUNEME
 
     public static final double HOOD_TOLERANCE = 100.0;  //TUNEME between 0 and 1 ? 0 and 1 what ? potatoes, chairs, Antoines, ;)   mdrr no but it is so long to write "between 1 and 0 the percentage of the plage your servo can parcourate"
+    //But is it very usefull to set the tolerance with a percentage of the servo which means nothing for us, maybe you must convert it in an angle measure unit, but also now that you tell me that,
+    //why put a tolerance on a servo who is able to control itself ? And if it's to check is position I think that your servo will be in place faster than your flywheel. (d'ailleur parcourate n'existe pas)
     public static final double FLYWHEEL_TOLERANCE = 100.0;  //TUNEME in RPM
 
     public static final double NEAR_POS_HOOD = 0.3, MID_POS_HOOD = 0.58, FAR_POS_HOOD = 0.45; //TUNEME between 0 and 1
@@ -47,10 +49,6 @@ public class ShooterSubsystem extends SubsystemBase {
         SHOOT_NEAR,
         SHOOT_MID,
         SHOOT_FAR,
-        //En fait si tu regarde bien mon code de SecretProject les machines a etat (en tout cas de Wanted State et System State)
-        // ne sont utilisée que lorsque le systeme est en mode automatique. Pour savoir ça j'utilise le ControlMode que tu peux trouver dans mon code
-        // jsp pas pk Adam l'a pas encore remise dans la derniere version de la LyonLib mais de toute maniere il m'a dit qu'il devrait bientot push ses dernieres modifs
-        // mais pour l'instant t'a qu'à utiliser la version qu'est dans mon Secret Project (plus si secret d'ailleurs)
         SHOOT_AUTO
     }
     public enum SystemState {
@@ -76,7 +74,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void setTargets(double flywheelTarget, double HoodPos) {
         flywheelVeloTarget = flywheelTarget;
         hoodPosTarget = HoodPos;
-    }//PLus vrm censé en avoir besoin puisque tes commandes sont juste censées changer Wanted State et/ou evetuellement Control Mode
+    }
     public SystemState getSystemState() {return systemState;}
     public ControlMode getShooterControlMode(){return shooterControlMode;}
 
@@ -121,7 +119,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 public boolean getAsBoolean() {
                     robot.getTelemetry().addLine("Please define your supplier");
                     return false;
-                }};}
+                }};} //c kwa ce bazar, pk tu fais pas comme dans l'intake ?
     }
 
     public void setSupplier(BooleanSupplier plusVeloSupplier,
@@ -149,7 +147,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         switch (shooterControlMode) {
             case DISABLED:
-                break;
+                break; //ils sont passés ou tout les default ?
             case MANUAL_VELOCITY:
                 if (plusVeloSupplier.getAsBoolean())
                     flywheelVeloTarget += veloIncrementation;
@@ -159,7 +157,8 @@ public class ShooterSubsystem extends SubsystemBase {
                 if (plusIncrementationSupplier.getAsBoolean())
                     veloIncrementation *= 10;
                 if(minusIncrementationSupplier.getAsBoolean())
-                    veloIncrementation /= 10;
+                    veloIncrementation /= 10; //d'ailleurs fait gaffe en divisant un int par dix tu pourrais te retrouver avec une valeur pas int
+                //Oula bizarre ton systeme, pas tres clair dans les noms surtout ce qui complexifie la compréhension
 
                 applyFlywheelVeloWithPIDF();
                 hoodServo.setPosition(hoodPosTarget);
@@ -215,7 +214,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 {
                     systemState = SystemState.PREPARING_SHOOT_NEAR;
                 }
-                firstIteration = true;
+                firstIteration = true;//tu le remets dcp tjr a first iteration, donc en fait tant qu'on shoot on est en first iteration.
                 break;
 
             case SHOOT_MID:
@@ -225,7 +224,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 {
                     systemState = SystemState.PREPARING_SHOOT_MID;
                 }
-                firstIteration = true;
+                firstIteration = true;//comme avant
                 break;
 
             case SHOOT_FAR:
@@ -234,7 +233,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 if (systemState != SystemState.READY_TO_SHOOT_FAR)
                 {
                     systemState = SystemState.PREPARING_SHOOT_FAR;
-                }
+                }//et dcp pk lui il change pas first iteration alors que tout les autre oui ?
                 break;
 
             case SHOOT_AUTO:
@@ -243,7 +242,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 {
                     systemState = SystemState.PREPARING_SHOOT_AUTO;
                 }
-                firstIteration = true;
+                firstIteration = true;//pareil
                 break;
 
             default:
@@ -259,6 +258,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
             case PREPARING_SHOOT_NEAR:
                 if (utils.IsInRange(flywheelRPM, flywheelVeloTarget, FLYWHEEL_TOLERANCE) && utils.IsInRange(hoodServo.getPosition(), hoodPosTarget, HOOD_TOLERANCE))
+                    //je suis pas sur qu'en temps normal il soit utile que verifier que le servo soit a sa place, il sera presque tjr plus rapide que ta flywheel et sinon quand ta flywheel sera bonne lui ne devrait pas etre tres loin
                 {
                     systemState = SystemState.READY_TO_SHOOT_NEAR;
                 }
@@ -322,7 +322,7 @@ public class ShooterSubsystem extends SubsystemBase {
                                 flywheelPower, robot.getVoltage(), 11
                         )
                         , 1, -1
-                )
+                )//mise en page particuliere la quand meme
         );
     }
 

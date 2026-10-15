@@ -50,7 +50,7 @@ public class Camera {
     }
     public void setTargetID(int id){
         targetId = id;
-    }
+    } //peut etre faire un get aussi au cas ou mais sinon bonne idée
 
     public double getDistanceMeters (){
         for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){

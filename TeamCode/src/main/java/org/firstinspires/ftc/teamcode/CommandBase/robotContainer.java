@@ -3,25 +3,31 @@ package org.firstinspires.ftc.teamcode.CommandBase;
 import static com.qualcomm.robotcore.eventloop.opmode.OpMode.blackboard;
 import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.allianceShifter.ALLIANCE_KEY;
 
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.seattlesolvers.solverslib.command.Robot;
+import com.seattlesolvers.solverslib.command.button.GamepadButton;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.CommandBase.Command.SetShooterControlMode;
+import org.firstinspires.ftc.teamcode.CommandBase.Command.SetShooterWantedState;
 import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.Camera;
 import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.DriveTrainSubsystem;
 import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.ShooterSubsystem;
+import org.firstinspires.ftc.teamcode.Lib.LyonLib.control.ControlMode;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class robotContainer extends Robot {
     private static VoltageSensor voltageSensor;
-    private GamepadEx gamepad1, gamepad2;
+    private GamepadEx gamepadEx1, gamepadEx2;
     private Telemetry telemetry;
 
 
@@ -38,7 +44,7 @@ public class robotContainer extends Robot {
     }
     private RobotMode robotMode = RobotMode.TELEOP;
 
-    private int idRobot; //hein ???
+    private int TargetAprilTagId;
 
     public robotContainer (HardwareMap hmap, Telemetry telemetry, RobotMode robotMode1){
 
@@ -48,11 +54,11 @@ public class robotContainer extends Robot {
 
         drivetrain = new DriveTrainSubsystem(hmap, this);
         shooter = new ShooterSubsystem(hmap, "Shooter", "Hood", this);
-        intake = new IntakeSubsystem(hmap,this);
+        intake = new IntakeSubsystem(hmap,this, "Intake Motor");
         camera = new Camera(hmap);
 
         drivetrain.setDriveMode(robotMode == RobotMode.TELEOP ? DriveTrainSubsystem.DriveMode.FIELD_CENTRIC : DriveTrainSubsystem.DriveMode.GO_TO_POS);
-        intake.setIntakeControlMode(robotMode == RobotMode.TELEOP ? IntakeSubsystem.ControlMode.MANUAL_VOLTAGE : IntakeSubsystem.ControlMode.AUTO_ON_OFF);
+        intake.setControlMode(robotMode == RobotMode.TELEOP ? ControlMode.MANUAL_DUTY_CYCLE : ControlMode.DUTY_CYCLE);
 
         voltageSensor = hmap.get(VoltageSensor.class, "Control Hub");
         setBulkReading(hmap, LynxModule.BulkCachingMode.AUTO);
@@ -71,24 +77,53 @@ public class robotContainer extends Robot {
         Supplier<Float> intakeBalls = ()-> gamepad1.right_trigger;
         Supplier<Float> ejectBalls = ()-> gamepad1.left_trigger;
 
+        BooleanSupplier plusSpeedSupplier = ()-> gamepad1.dpad_up;
+        BooleanSupplier minusSpeedSupplier = ()-> gamepad1.dpad_down;
+        BooleanSupplier increaseIncrementationSupplier = ()-> gamepad1.dpad_right;
+        BooleanSupplier decreaseIncrementationSupplier = ()-> gamepad1.dpad_left;
+
+        shooter.defineSupplier(
+                plusSpeedSupplier,
+                minusSpeedSupplier,
+                increaseIncrementationSupplier,
+                decreaseIncrementationSupplier);
+
         drivetrain.setSupplier(forward, strafe, turn);
         intake.setSuppliers(intakeBalls, ejectBalls);
 
-        this.gamepad1 = new GamepadEx(gamepad1);
-        this.gamepad2 = new GamepadEx(gamepad2);
+        this.gamepadEx1 = new GamepadEx(gamepad1);
+        this.gamepadEx2 = new GamepadEx(gamepad2);
+
+
+        gamepadEx2.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed(new SetShooterWantedState(shooter, ShooterSubsystem.WantedState.SHOOT_AUTO));
+
+        gamepadEx2.getGamepadButton(GamepadKeys.Button.B)
+                .whenPressed(new SetShooterWantedState(shooter, ShooterSubsystem.WantedState.SHOOT_NEAR))
+                .whenReleased(new SetShooterWantedState(shooter, ShooterSubsystem.WantedState.STAND_BY));
+
+        gamepadEx2.getGamepadButton(GamepadKeys.Button.X)
+                .whenPressed(new SetShooterWantedState(shooter, ShooterSubsystem.WantedState.SHOOT_MID))
+                .whenReleased(new SetShooterWantedState(shooter, ShooterSubsystem.WantedState.STAND_BY));
+
+        gamepadEx2.getGamepadButton(GamepadKeys.Button.Y)
+                .whenPressed(new SetShooterWantedState(shooter, ShooterSubsystem.WantedState.SHOOT_FAR))
+                .whenReleased(new SetShooterWantedState(shooter, ShooterSubsystem.WantedState.STAND_BY));
+
+        gamepadEx2.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(new SetShooterControlMode(shooter, ControlMode.MANUAL_VELOCITY));
+        gamepadEx2.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(new SetShooterControlMode(shooter, ControlMode.VELOCITY_AUTO_PIDF));
+
+        gamepadEx2.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .and(new GamepadButton(gamepadEx2, GamepadKeys.Button.RIGHT_BUMPER))
+                .whenActive(new SetShooterControlMode(shooter, ControlMode.DISABLED));
 
         //TODO bind all commands to button here
-        //bien vu, par contre juste il faut l'appler quelque part cette fonction sinon elle ne fait r
     }
 
+    public Object getAlliance(){return alliance;}
     public Telemetry getTelemetry(){return telemetry;}
-    public double getCameraBearing(){
-        return camera.getBearing();
-    }
-    public double getCameraDistanceToGoal(){
-        return camera.getDistanceMeters();
-    }
-
     public static double getVoltage(){return voltageSensor.getVoltage();}
 
     public DriveTrainSubsystem getDriveTrain(){return drivetrain;}

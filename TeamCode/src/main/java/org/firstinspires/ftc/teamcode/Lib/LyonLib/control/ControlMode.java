@@ -8,7 +8,7 @@ package org.firstinspires.ftc.teamcode.Lib.LyonLib.control;
         POSITION_VOLTAGE_PID,       // Position control (PID + volts output)
         POSITION_DUTYCYCLE_PID,     // Position control (PID + duty cycle output)
         VELOCITY_VOLTAGE_PID,       // Velocity control (PID + volts output)
-        VELOCITY_VOLTAGE_PIDF,      // A control using feedback kp, ki, kd and a feedforward kv, ks, ka
+        VELOCITY_AUTO_PIDF,      // A control using feedback kp, ki, kd and a feedforward kv, ks, ka
         VELOCITY_DUTYCYCLE_PID,     // Velocity control (PID + duty cycle output)
         MODEL_CONTROLLED,           // Model-based control (dynamic system model + PID feedback)
 

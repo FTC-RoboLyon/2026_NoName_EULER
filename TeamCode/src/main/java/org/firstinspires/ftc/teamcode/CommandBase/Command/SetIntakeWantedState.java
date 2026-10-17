@@ -15,7 +15,7 @@ public class SetIntakeWantedState extends CommandBase {
 
     @Override
     public void initialize(){
-        intakeSubsystem.setIntakeWantedState(intakeMode);
+        intakeSubsystem.setWantedState(intakeMode);
     }
 
     @Override

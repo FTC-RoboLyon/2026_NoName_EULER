@@ -18,27 +18,24 @@ public class ShooterSubsystem extends SubsystemBase {
     private Servo hoodServo;
     private ElapsedTime PDFTimer = new ElapsedTime();
     private robotContainer robot;
-    private BooleanSupplier plusVeloSupplier;
-    private BooleanSupplier minusVeloSupplier;
-    private BooleanSupplier plusIncrementationSupplier;
-    private BooleanSupplier minusIncrementationSupplier;
-    private int veloIncrementation;
+    private BooleanSupplier plusSpeedSupplier = ()-> false;
+    private BooleanSupplier minusSpeedSupplier = ()-> false;
+    private BooleanSupplier increaseIncrementationSupplier = ()-> false;
+    private BooleanSupplier decreaseIncrementationSupplier = ()-> false;
+    private double speedIncrementation;
 
     public static final double GEAR_RATIO = 1.0;
     public static final double TICKS_PER_ROTATION = 28;
 
     public static final double FLYWHEEL_KP = 1.0, FLYWHEEL_KF = 1.0, FLYWHEEL_KD = 1.0; //TUNEME
 
-    public static final double HOOD_TOLERANCE = 100.0;  //TUNEME between 0 and 1 ? 0 and 1 what ? potatoes, chairs, Antoines, ;)   mdrr no but it is so long to write "between 1 and 0 the percentage of the plage your servo can parcourate"
-    //But is it very usefull to set the tolerance with a percentage of the servo which means nothing for us, maybe you must convert it in an angle measure unit, but also now that you tell me that,
-    //why put a tolerance on a servo who is able to control itself ? And if it's to check is position I think that your servo will be in place faster than your flywheel. (d'ailleur parcourate n'existe pas)
     public static final double FLYWHEEL_TOLERANCE = 100.0;  //TUNEME in RPM
 
-    public static final double NEAR_POS_HOOD = 0.3, MID_POS_HOOD = 0.58, FAR_POS_HOOD = 0.45; //TUNEME between 0 and 1
+    public static final double NEAR_POS_HOOD = 0.3, MID_POS_HOOD = 0.58, FAR_POS_HOOD = 0.45; //TUNEME between 0 and 1, the percentage of the angle your servo can turn between the minimum position and the maximum position
     public static final double NEAR_FLYWHEEL_RPM = 1250, MID_FLYWHEEL_RPM = 1500, FAR_FLYWHEEL_RPM = 1500; //TUNEME in RPM
 
-    private static double flywheelRPM = 0.0;
-    private static double flywheelVeloTarget = 0.0;
+    private static double flywheelActualSpeedRPM = 0.0;
+    private static double flywheelSpeedTarget = 0.0;
     private static double hoodPosTarget = 0.0;
     private static double previousError = 0.0;
     private static double previousTime = 0.0;
@@ -87,49 +84,20 @@ public class ShooterSubsystem extends SubsystemBase {
         PDFTimer.startTime();
         PDFTimer.reset();
 
-
-        if (plusVeloSupplier == null) {
-            plusVeloSupplier = new BooleanSupplier() {
-                @Override
-                public boolean getAsBoolean() {
-                    robot.getTelemetry().addLine("Please define your supplier");
-                    return false;
-                }};}
-        if (minusVeloSupplier == null) {
-            minusVeloSupplier = new BooleanSupplier() {
-                @Override
-                public boolean getAsBoolean() {
-                    robot.getTelemetry().addLine("Please define your supplier");
-                    return false;
-                }};}
-        if (plusIncrementationSupplier == null) {
-            plusIncrementationSupplier = new BooleanSupplier() {
-                @Override
-                public boolean getAsBoolean() {
-                    robot.getTelemetry().addLine("Please define your supplier");
-                    return false;
-                }
-            };}
-        if (minusIncrementationSupplier == null) {
-            minusIncrementationSupplier = new BooleanSupplier() {
-                @Override
-                public boolean getAsBoolean() {
-                    robot.getTelemetry().addLine("Please define your supplier");
-                    return false;
-                }};} //c kwa ce bazar, pk tu fais pas comme dans l'intake ?
     }
 
-    public void setSupplier(BooleanSupplier plusVeloSupplier,
-                            BooleanSupplier minusVeloSupplier,
+    public void defineSupplier(BooleanSupplier plusSpeedSupplier,
+                               BooleanSupplier minusSpeedSupplier,
 
-                            BooleanSupplier plusIncrementationSupplier,
-                            BooleanSupplier minusIncrementationSupplier){
+                               BooleanSupplier plusIncrementationSupplier,
+                               BooleanSupplier minusIncrementationSupplier)
+    {
 
-        this.plusVeloSupplier = plusVeloSupplier;
-        this.minusVeloSupplier = minusVeloSupplier;
+        this.plusSpeedSupplier = plusSpeedSupplier;
+        this.minusSpeedSupplier = minusSpeedSupplier;
 
-        this.plusIncrementationSupplier = plusIncrementationSupplier;
-        this.minusIncrementationSupplier = minusIncrementationSupplier;
+        this.increaseIncrementationSupplier = plusIncrementationSupplier;
+        this.decreaseIncrementationSupplier = minusIncrementationSupplier;
     }
 
 
@@ -142,40 +110,40 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic(){
 
-        switch (shooterControlMode) {
+        switch (shooterControlMode)
+        {
             case DISABLED:
-                break; //ils sont passés ou tout les default ?
+                break;
             case MANUAL_VELOCITY:
-                if (plusVeloSupplier.getAsBoolean())
-                    flywheelVeloTarget += veloIncrementation;
-                if (minusVeloSupplier.getAsBoolean())
-                    flywheelVeloTarget -= veloIncrementation;
+                if (plusSpeedSupplier.getAsBoolean())
+                    flywheelSpeedTarget += speedIncrementation;
+                if (minusSpeedSupplier.getAsBoolean())
+                    flywheelSpeedTarget -= speedIncrementation;
 
-                if (plusIncrementationSupplier.getAsBoolean())
-                    veloIncrementation *= 10;
-                if(minusIncrementationSupplier.getAsBoolean())
-                    veloIncrementation /= 10; //d'ailleurs fait gaffe en divisant un int par dix tu pourrais te retrouver avec une valeur pas int
-                //Oula bizarre ton systeme, pas tres clair dans les noms surtout ce qui complexifie la compréhension
+                if (increaseIncrementationSupplier.getAsBoolean())
+                    speedIncrementation *= 10;
+                if(decreaseIncrementationSupplier.getAsBoolean())
+                    speedIncrementation /= 10;
 
-                applyFlywheelVeloWithPIDF();
+                applyFlywheelSpeedWithPIDF();
                 hoodServo.setPosition(hoodPosTarget);
+
+                robot.getTelemetry().addData("Incrementation", speedIncrementation);
                 break;
 
-            case VELOCITY_VOLTAGE_PIDF:
+            case VELOCITY_AUTO_PIDF:
 
-                flywheelRPM = utils.TickPerSecondToRPM(flywheelMotor.getVelocity(), TICKS_PER_ROTATION, GEAR_RATIO);
+                flywheelActualSpeedRPM = utils.TickPerSecondToRPM(flywheelMotor.getVelocity(), TICKS_PER_ROTATION, GEAR_RATIO);
 
                 RunStateMachine();
 
                 switch (systemState) {
                     case IDLE:
-                        stopShooter();
                         break;
-
                     case PREPARING_SHOOT_AUTO:
                     case READY_TO_SHOOT_AUTO:
                         updateTargetsDistance();
-                        applyFlywheelVeloWithPIDF();
+                        applyFlywheelSpeedWithPIDF();
                         hoodServo.setPosition(hoodPosTarget);
                         break;
 
@@ -185,7 +153,7 @@ public class ShooterSubsystem extends SubsystemBase {
                     case READY_TO_SHOOT_NEAR:
                     case READY_TO_SHOOT_MID:
                     case READY_TO_SHOOT_FAR:
-                        applyFlywheelVeloWithPIDF();
+                        applyFlywheelSpeedWithPIDF();
                         hoodServo.setPosition(hoodPosTarget);
                         break;
 
@@ -194,10 +162,15 @@ public class ShooterSubsystem extends SubsystemBase {
                         break;
                 }
                 break;
+            default:
+                robot.getTelemetry().addLine("Please enter a valid Shooter ControlMode");
+                break;
         }
+
     }
 
-    private void RunStateMachine(){
+    private void RunStateMachine()
+    {
         switch (wantedState)
         {
             case STAND_BY:
@@ -205,41 +178,46 @@ public class ShooterSubsystem extends SubsystemBase {
                 break;
 
             case SHOOT_NEAR:
-                flywheelVeloTarget = NEAR_FLYWHEEL_RPM;
+                flywheelSpeedTarget = NEAR_FLYWHEEL_RPM;
                 hoodPosTarget = NEAR_POS_HOOD;
                 if (systemState != SystemState.READY_TO_SHOOT_NEAR)
                 {
+                    if (systemState != SystemState.PREPARING_SHOOT_NEAR)
+                        firstIteration = true;
                     systemState = SystemState.PREPARING_SHOOT_NEAR;
                 }
-                firstIteration = true;//tu le remets dcp tjr a first iteration, donc en fait tant qu'on shoot on est en first iteration.
                 break;
 
             case SHOOT_MID:
-                flywheelVeloTarget = MID_FLYWHEEL_RPM;
+                flywheelSpeedTarget = MID_FLYWHEEL_RPM;
                 hoodPosTarget = MID_POS_HOOD;
                 if (systemState != SystemState.READY_TO_SHOOT_MID)
                 {
+                    if (systemState != SystemState.PREPARING_SHOOT_MID)
+                        firstIteration = true;
                     systemState = SystemState.PREPARING_SHOOT_MID;
                 }
-                firstIteration = true;//comme avant
                 break;
 
             case SHOOT_FAR:
-                flywheelVeloTarget = FAR_FLYWHEEL_RPM;
+                flywheelSpeedTarget = FAR_FLYWHEEL_RPM;
                 hoodPosTarget = FAR_POS_HOOD;
                 if (systemState != SystemState.READY_TO_SHOOT_FAR)
                 {
+                    if (systemState != SystemState.PREPARING_SHOOT_FAR)
+                        firstIteration = true;
                     systemState = SystemState.PREPARING_SHOOT_FAR;
-                }//et dcp pk lui il change pas first iteration alors que tout les autre oui ?
+                }
                 break;
 
             case SHOOT_AUTO:
                 updateTargetsDistance();
                 if (systemState != SystemState.READY_TO_SHOOT_AUTO)
                 {
+                    if (systemState != SystemState.PREPARING_SHOOT_AUTO)
+                        firstIteration = true;
                     systemState = SystemState.PREPARING_SHOOT_AUTO;
                 }
-                firstIteration = true;//pareil
                 break;
 
             default:
@@ -254,30 +232,25 @@ public class ShooterSubsystem extends SubsystemBase {
                 break;
 
             case PREPARING_SHOOT_NEAR:
-                if (utils.IsInRange(flywheelRPM, flywheelVeloTarget, FLYWHEEL_TOLERANCE) && utils.IsInRange(hoodServo.getPosition(), hoodPosTarget, HOOD_TOLERANCE))
-                    //je suis pas sur qu'en temps normal il soit utile que verifier que le servo soit a sa place, il sera presque tjr plus rapide que ta flywheel et sinon quand ta flywheel sera bonne lui ne devrait pas etre tres loin
-                {
+                if (utils.IsInRange(flywheelActualSpeedRPM, flywheelSpeedTarget, FLYWHEEL_TOLERANCE)) {
                     systemState = SystemState.READY_TO_SHOOT_NEAR;
                 }
                 break;
 
             case PREPARING_SHOOT_MID:
-                if (utils.IsInRange(flywheelRPM, flywheelVeloTarget, FLYWHEEL_TOLERANCE) && utils.IsInRange(hoodServo.getPosition(), hoodPosTarget, HOOD_TOLERANCE))
-                {
+                if (utils.IsInRange(flywheelActualSpeedRPM, flywheelSpeedTarget, FLYWHEEL_TOLERANCE)) {
                     systemState = SystemState.READY_TO_SHOOT_MID;
                 }
                 break;
 
             case PREPARING_SHOOT_FAR:
-                if (utils.IsInRange(flywheelRPM, flywheelVeloTarget, FLYWHEEL_TOLERANCE) && utils.IsInRange(hoodServo.getPosition(), hoodPosTarget, HOOD_TOLERANCE))
-                {
+                if (utils.IsInRange(flywheelActualSpeedRPM, flywheelSpeedTarget, FLYWHEEL_TOLERANCE)) {
                     systemState = SystemState.READY_TO_SHOOT_FAR;
                 }
                 break;
 
             case PREPARING_SHOOT_AUTO:
-                if (utils.IsInRange(flywheelRPM, flywheelVeloTarget, FLYWHEEL_TOLERANCE) && utils.IsInRange(hoodServo.getPosition(), hoodPosTarget, HOOD_TOLERANCE))
-                {
+                if (utils.IsInRange(flywheelActualSpeedRPM, flywheelSpeedTarget, FLYWHEEL_TOLERANCE)) {
                     systemState = SystemState.READY_TO_SHOOT_AUTO;
                 }
                 break;
@@ -293,10 +266,10 @@ public class ShooterSubsystem extends SubsystemBase {
         }
     }
 
-    private void applyFlywheelVeloWithPIDF() {
-        double actualError = flywheelVeloTarget - flywheelRPM;
+    private void applyFlywheelSpeedWithPIDF(){
+        double actualError = flywheelSpeedTarget - flywheelActualSpeedRPM;
 
-        double feedForward = (FLYWHEEL_KF * flywheelVeloTarget);
+        double feedForward = (FLYWHEEL_KF * flywheelSpeedTarget);
         double proportional = actualError * FLYWHEEL_KP;
 
         double actualTime = PDFTimer.milliseconds();
@@ -325,8 +298,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private void updateTargetsDistance(){
         double distance = robot.getCamera().getDistanceMeters();
-        flywheelVeloTarget = 0.0; // the value we will give in fonction of the distance
+        flywheelSpeedTarget = 0.0; // the value we will give in fonction of the distance
         hoodPosTarget = 0.0;// the value we will give in fonction of the distance
         //TODO find a way to calculate flywheel and hood targets in fonction of the distance to the goal
+    }
+
+    private void telemetry(){
+        robot.getTelemetry().addData("Shooter RPM speed", flywheelActualSpeedRPM);
+        robot.getTelemetry().addData("Shooter RPM Target speed", flywheelSpeedTarget);
+        robot.getTelemetry().addData("Shooter ControlMode", shooterControlMode);
+        robot.getTelemetry().addData("Shooter Wanted state", wantedState);
+        robot.getTelemetry().addData("Shooter System state", systemState);
     }
 }

@@ -21,7 +21,6 @@ public class teleop_bot_azzie extends OpMode {
 
     private boolean searchingForBalls = false;
 
-
     @Override
     public void init() {
          drivetrain = new Drivetrain(hardwareMap);

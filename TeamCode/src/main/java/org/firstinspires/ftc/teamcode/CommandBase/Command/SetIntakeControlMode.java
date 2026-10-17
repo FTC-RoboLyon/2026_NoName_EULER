@@ -3,20 +3,21 @@ package org.firstinspires.ftc.teamcode.CommandBase.Command;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.ShooterSubsystem;
+import org.firstinspires.ftc.teamcode.Lib.LyonLib.control.ControlMode;
 
 public class SetIntakeControlMode extends CommandBase {
 
     IntakeSubsystem intakeSubsystem;
-    IntakeSubsystem.ControlMode controlMode;
+    ControlMode controlMode;
 
-    public SetIntakeControlMode(IntakeSubsystem intakeSubsystem, IntakeSubsystem.ControlMode controlMode){
+    public SetIntakeControlMode(IntakeSubsystem intakeSubsystem, ControlMode controlMode)
+    {
         this.intakeSubsystem = intakeSubsystem;
         this.controlMode = controlMode;
     }
     @Override
     public void initialize(){
-        intakeSubsystem.setIntakeControlMode(controlMode);
+        intakeSubsystem.setControlMode(controlMode);
     }
 
     @Override

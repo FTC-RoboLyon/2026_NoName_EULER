@@ -67,7 +67,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         ROBOT_CENTRIC,
         FIELD_CENTRIC,
         GO_TO_POS,
-        DRIVE_AND_HEAD_TO_TARGET //un peu long mais au moins c clair
+        DRIVE_AND_HEAD_TO_TARGET
     }
     private DriveMode driveMode = DriveMode.DISABLE;
     public void setDriveMode(DriveMode drive){
@@ -160,12 +160,6 @@ public class DriveTrainSubsystem extends SubsystemBase {
         xTarget = Xtarget;
         yTarget = Ytarget;
         headingTarget = Headingtarget;
-
-        PDfirstIteration = true;
-    }
-
-    public void setHeadingTarget(double headingTarget){
-        this.headingTarget = headingTarget;
 
         PDfirstIteration = true;
     }
@@ -273,8 +267,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
                 rotationPower = turnSupplier.getAsDouble();
 
                 double xPower1 = xPower;
-                xPower = Math.cos(robotHeading)* xPower1 + Math.sin(robotHeading)* yPower;
-                yPower = -Math.sin(robotHeading)*xPower1 + Math.cos(robotHeading)* yPower;
+                xPower = Math.cos(robotHeading) * xPower1 + Math.sin(robotHeading)* yPower;
+                yPower = -Math.sin(robotHeading) * xPower1 + Math.cos(robotHeading)* yPower;
 
                 break;
 
@@ -316,6 +310,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
                 break;
 
             case DRIVE_AND_HEAD_TO_TARGET:
+
+                headingTarget = robotHeading - robot.getCamera().getBearing();
 
                 headingError = headingTarget - robotHeading;
 

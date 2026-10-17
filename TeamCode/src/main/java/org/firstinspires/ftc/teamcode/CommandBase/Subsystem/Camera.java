@@ -23,6 +23,8 @@ public class Camera {
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
 
+    public final double CAMERA_FX = 1666.94, CAMERA_FY = 1666.94, CAMERA_CX = 930.463, CAMERA_CY = 618.081;
+
     private int targetId;
 
     public Camera(HardwareMap hmap){
@@ -33,7 +35,7 @@ public class Camera {
                 .setDrawAxes(false)
                 .setDrawCubeProjection(false)
                 .setOutputUnits(DistanceUnit.METER, AngleUnit.RADIANS)
-                .setLensIntrinsics(1666.94, 1666.94, 930.463, 618.081)
+                .setLensIntrinsics(CAMERA_FX, CAMERA_FY, CAMERA_CX, CAMERA_CY)
                 .build();
 
         VisionPortal.Builder builder = new VisionPortal.Builder();
@@ -50,7 +52,10 @@ public class Camera {
     }
     public void setTargetID(int id){
         targetId = id;
-    } //peut etre faire un get aussi au cas ou mais sinon bonne idée
+    }
+    public int getTargetId() {
+        return targetId;
+    }
 
     public double getDistanceMeters (){
         for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
@@ -60,7 +65,7 @@ public class Camera {
         return -1.0;  // if id not detected, return a value that the camera would never return
     }
 
-    public double getBearing (){
+    public double getBearing(){
         for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
             if (aprilTag.id == targetId)
                 return aprilTag.ftcPose.bearing;

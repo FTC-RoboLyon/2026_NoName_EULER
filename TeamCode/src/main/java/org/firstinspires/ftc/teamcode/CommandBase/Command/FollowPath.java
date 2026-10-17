@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.Lib.LyonLib.kinematics.Pose2d;
 import java.util.ArrayList;
 
 public class FollowPath extends SequentialCommandGroup {
-    //nom pas tres clair, il ne permet pas de deviner ce qu'il fait on pourrait croire su'il stocke tout les infos d'un chemin plutot
     DriveTrainSubsystem driveTrainSubsystem;
 
     Pose2d[] points;

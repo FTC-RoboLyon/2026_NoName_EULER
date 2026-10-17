@@ -11,6 +11,7 @@ public class TelopCommandBase extends OpMode {
         robot = new robotContainer(hardwareMap, telemetry, robotContainer.RobotMode.TELEOP);
         robot.bindCommands(gamepad1, gamepad2);
 
+        telemetry.addData("Alliance", robot.getAlliance());
     }
 
     @Override
@@ -18,8 +19,7 @@ public class TelopCommandBase extends OpMode {
 
         CommandScheduler.getInstance().run();
 
-        robot.getTelemetry().update();
-        //mmmh et dans ta loop tu fais r, donc vrm ton robot ne fait r, j'avoues j'ai pas la vision la         ouais 30 seconde
+        telemetry.update();
     }
 
     @Override

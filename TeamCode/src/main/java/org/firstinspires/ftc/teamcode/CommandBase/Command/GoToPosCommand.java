@@ -22,11 +22,10 @@ public class GoToPosCommand extends CommandBase {
         driveTrainSubsystem.setGoToPosTargets(posTarget.xMeters, posTarget.yMeters, posTarget.headingRadians);
     }
 
-
     @Override
-    public void end(boolean interrupted) {
-        driveTrainSubsystem.setDriveMode(DriveTrainSubsystem.DriveMode.DISABLE);
-    }
+    public void execute(){}
+
+
 
     @Override
     public boolean isFinished() {

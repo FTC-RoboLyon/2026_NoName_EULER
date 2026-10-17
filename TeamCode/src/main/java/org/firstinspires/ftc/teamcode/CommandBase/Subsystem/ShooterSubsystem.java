@@ -18,7 +18,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private Servo hoodServo;
     private ElapsedTime PDFTimer = new ElapsedTime();
     private robotContainer robot;
-    private BooleanSupplier plusVeloSupplier; //on ne comprend tjr pas quand tu mets velo ca veut rien dire soit tu mets speed, soit velocity
+    private BooleanSupplier plusVeloSupplier;
     private BooleanSupplier minusVeloSupplier;
     private BooleanSupplier plusIncrementationSupplier;
     private BooleanSupplier minusIncrementationSupplier;
@@ -71,10 +71,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     public void setShooterControlMode (ControlMode controlMode){shooterControlMode = controlMode;}
 
-    public void setTargets(double flywheelTarget, double HoodPos) {
-        flywheelVeloTarget = flywheelTarget;
-        hoodPosTarget = HoodPos;
-    }
+
     public SystemState getSystemState() {return systemState;}
     public ControlMode getShooterControlMode(){return shooterControlMode;}
 

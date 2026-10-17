@@ -48,10 +48,11 @@ public class robotContainer extends Robot {
 
         drivetrain = new DriveTrainSubsystem(hmap, this);
         shooter = new ShooterSubsystem(hmap, "Shooter", "Hood", this);
-        intake = new IntakeSubsystem(hmap); //je crois que les lignes rouges c pas normal ;)
+        intake = new IntakeSubsystem(hmap,this);
         camera = new Camera(hmap);
 
         drivetrain.setDriveMode(robotMode == RobotMode.TELEOP ? DriveTrainSubsystem.DriveMode.FIELD_CENTRIC : DriveTrainSubsystem.DriveMode.GO_TO_POS);
+        intake.setIntakeControlMode(robotMode == RobotMode.TELEOP ? IntakeSubsystem.ControlMode.MANUAL_VOLTAGE : IntakeSubsystem.ControlMode.AUTO_ON_OFF);
 
         voltageSensor = hmap.get(VoltageSensor.class, "Control Hub");
         setBulkReading(hmap, LynxModule.BulkCachingMode.AUTO);
@@ -80,7 +81,7 @@ public class robotContainer extends Robot {
         //bien vu, par contre juste il faut l'appler quelque part cette fonction sinon elle ne fait r
     }
 
-    public Telemetry getTelemetry(){return telemetry;}//Sympa mais dcp par contr la telemetry tu l'update ou ?
+    public Telemetry getTelemetry(){return telemetry;}
     public double getCameraBearing(){
         return camera.getBearing();
     }

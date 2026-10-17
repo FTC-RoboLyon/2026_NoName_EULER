@@ -4,11 +4,11 @@ import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.IntakeSubsystem;
 
-public class IntakeCommand extends CommandBase {
+public class SetIntakeWantedState extends CommandBase {
     IntakeSubsystem intakeSubsystem;
-    IntakeSubsystem.IntakeWanteState intakeMode;
+    IntakeSubsystem.WanteState intakeMode;
 
-    public IntakeCommand(IntakeSubsystem intake, IntakeSubsystem.IntakeWanteState intakeMode){ //IntakeCommand ne veut rien dire, il faut que son nom dise a quoi elle sert, en l'occurence changer le wanted state de l'intake)
+    public SetIntakeWantedState(IntakeSubsystem intake, IntakeSubsystem.WanteState intakeMode){
         intakeSubsystem = intake;
         this.intakeMode = intakeMode;
     }

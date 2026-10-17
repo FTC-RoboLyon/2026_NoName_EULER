@@ -6,17 +6,14 @@ import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.DriveTrainSubsystem;
 import org.firstinspires.ftc.teamcode.Lib.LyonLib.kinematics.Pose2d;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 
-public class Path extends SequentialCommandGroup {
+public class FollowPath extends SequentialCommandGroup {
     //nom pas tres clair, il ne permet pas de deviner ce qu'il fait on pourrait croire su'il stocke tout les infos d'un chemin plutot
     DriveTrainSubsystem driveTrainSubsystem;
 
     Pose2d[] points;
 
-    public Path (DriveTrainSubsystem drivetrain, Pose2d... points){
+    public FollowPath(DriveTrainSubsystem drivetrain, Pose2d... points){
         driveTrainSubsystem = drivetrain;
         driveTrainSubsystem.setDriveMode(DriveTrainSubsystem.DriveMode.GO_TO_POS);
         this.points = points;

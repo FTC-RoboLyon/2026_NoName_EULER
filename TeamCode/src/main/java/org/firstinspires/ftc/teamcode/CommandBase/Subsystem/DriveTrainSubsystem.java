@@ -54,7 +54,6 @@ public class DriveTrainSubsystem extends SubsystemBase {
     private boolean PDfirstIteration = true; //stay true until first iteration is finished
     // for the boolean above, stay true until first iteration of goToPos() or driveHeading() (become false a this moment)
     // and become true again when target of the function is reached
-    //-> j'en vois qu'une perso et dans ce cas la precise firstIteration de quoi genre PDFFirstIteration
 
 
     private double xTarget = robotX, yTarget = robotY, headingTarget = robotHeading;
@@ -236,7 +235,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         //else if (robotHeading < 2 * Math.PI){
         //
         //}
-        // bon je voulais faire en sorte que l'orientation dépasse pas 2pi mais jarrive pas je met en TODO, jsusi sur tu peux le faire (petit indeice tu peux utiliser le modulo)
+        // bon je voulais faire en sorte que l'orientation dépasse pas 2pi mais jarrive pas je met en TODO
 
         previousLeftPodValue = leftPodValue;
         previousRightPodValue = rightPodValue;
@@ -249,8 +248,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
     public void periodic(){
 
         actualiseRobotPos();
-        double headingError = headingTarget - robotHeading; //Pk calculer le heading error tout le temps alors qu'il ne sert pas tjr    // car sinon je dois le créer 2 fois dans case go to poos et drive heading
-        // -> et donc si c des variables locales elles se detruisent a la sortie et tu ne sera jamais dans ces deux cas en meme temps
+        double headingError;
 
         switch (driveMode){
             case DISABLE:
@@ -281,6 +279,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
                 break;
 
             case GO_TO_POS:
+
+                headingError = headingTarget - robotHeading;
 
                 double xError = xTarget - robotX;
                 double yError = yTarget - robotY;
@@ -316,6 +316,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
                 break;
 
             case DRIVE_AND_HEAD_TO_TARGET:
+
+                headingError = headingTarget - robotHeading;
 
                 double pTermHeading2 = KP_HEADING * headingError;
 

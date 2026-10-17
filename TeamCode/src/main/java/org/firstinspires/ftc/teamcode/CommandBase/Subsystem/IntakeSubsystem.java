@@ -20,32 +20,32 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
 
-    public enum IntakeWanteState {
+    public enum WanteState {
         IDLE,
         INTAKE,
         EJECT
     }
-    public enum IntakeControlMode { //C bien deja y'a les Control mode mais dcp fait comme sur le shooter et utilise l'enum Control Mode general
+    public enum ControlMode { //C bien deja y'a les Control mode mais dcp fait comme sur le shooter et utilise l'enum Control Mode general
         DISABLE,
         MANUAL_VOLTAGE, //normalement voltage c'est vrm quand tu donne une valeur en volt, en FTC on donne plutot une valeur entre 1 et -1 et c'est ce qu'on appelle le duty Cycle (en tt cas Adam l'a appelé comme ça)
         AUTO_ON_OFF //Ca c pas un Control Mode de la liste Auto ca ne dit rien de comment on donne la consigne, la ca serait plutot juste DUTY_CYCLE (pas de Manual suggere l'auto, a la limite sinon VOLTAGE mais en lien avec le commentaire juste au-dessus)
     }
-    public enum IntakeSystemState {
+    public enum SystemState {
         STAND_BY, //C'est l'inverse IDLE et STAND_BY, on veut qu'il stand_by (attende) donc il est IDLE (innocupé)
         INTAKING,
         EJECTING
     }
-    private IntakeWanteState intakeWanteState = IntakeWanteState.IDLE;
-    private IntakeSystemState intakeSystemState = IntakeSystemState.STAND_BY;
-    private IntakeControlMode intakeControlMode = IntakeControlMode.DISABLE;
+    private WanteState intakeWanteState = WanteState.IDLE;
+    private SystemState intakeSystemState = SystemState.STAND_BY;
+    private ControlMode intakeControlMode = ControlMode.DISABLE;
 
-    public void setIntakeControlMode(IntakeControlMode controlMode){intakeControlMode = controlMode;}
-    public void setIntakeWantedState(IntakeWanteState intakeWanteState) {this.intakeWanteState = intakeWanteState;} //pas besoin de préciser intake dans le nom de tes fonctions, on le sait deja car l'objet lui-meme est un intake
+    public void setIntakeControlMode(ControlMode controlMode){intakeControlMode = controlMode;}
+    public void setIntakeWantedState(WanteState intakeWanteState) {this.intakeWanteState = intakeWanteState;} //pas besoin de préciser intake dans le nom de tes fonctions, on le sait deja car l'objet lui-meme est un intake
 
-    public IntakeControlMode getIntakeControlMode() {
+    public ControlMode getIntakeControlMode() {
         return intakeControlMode;
     }
-    public IntakeSystemState getIntakeSystemState() {
+    public SystemState getIntakeSystemState() {
         return intakeSystemState;
     }
 
@@ -112,13 +112,13 @@ public class IntakeSubsystem extends SubsystemBase {
     private void RunStateMachine(){
         switch (intakeWanteState){
             case IDLE:
-                intakeSystemState = IntakeSystemState.STAND_BY;
+                intakeSystemState = SystemState.STAND_BY;
                 break;
             case INTAKE:
-                intakeSystemState = IntakeSystemState.INTAKING;
+                intakeSystemState = SystemState.INTAKING;
                 break;
             case EJECT:
-                intakeSystemState = IntakeSystemState.EJECTING;
+                intakeSystemState = SystemState.EJECTING;
                 break;
                 //defalut ?
         }

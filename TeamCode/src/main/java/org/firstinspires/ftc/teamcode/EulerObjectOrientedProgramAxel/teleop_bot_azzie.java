@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel;
 
 import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feeder.FeederActivePos;
 import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.Feeder.FeederIdlePos;
-import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.allianceShifter.ALLIANCE_KEY;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -15,9 +14,10 @@ public class teleop_bot_azzie extends OpMode {
     Shooter shooter;
     Feeder feeder;
     Camera camera;
-    private Object alliance; //pourquoi object et pas string ???
 
     VoltageSensor voltageSensor;
+
+    String alliance = "red";
 
     private boolean searchingForBalls = false;
 
@@ -31,8 +31,6 @@ public class teleop_bot_azzie extends OpMode {
 
          voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
-         alliance = blackboard.get(ALLIANCE_KEY);
-         alliance = (String) alliance; //a quoi sers-tu ligne mysterieuse...
     }
 
     @Override

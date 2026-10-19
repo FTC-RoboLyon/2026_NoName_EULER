@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.CommandBase;
 
 import static com.qualcomm.robotcore.eventloop.opmode.OpMode.blackboard;
-import static org.firstinspires.ftc.teamcode.EulerObjectOrientedProgramAxel.allianceShifter.ALLIANCE_KEY;
-
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -36,7 +34,7 @@ public class robotContainer extends Robot {
     private static IntakeSubsystem intake;
     private static Camera camera;
 
-    private Object alliance;
+    private String alliance = "red";
 
     public enum RobotMode {
         AUTO,
@@ -45,6 +43,7 @@ public class robotContainer extends Robot {
     private RobotMode robotMode = RobotMode.TELEOP;
 
     private int TargetAprilTagId;
+
 
     public robotContainer (HardwareMap hmap, Telemetry telemetry, RobotMode robotMode1){
 
@@ -62,8 +61,6 @@ public class robotContainer extends Robot {
 
         voltageSensor = hmap.get(VoltageSensor.class, "Control Hub");
         setBulkReading(hmap, LynxModule.BulkCachingMode.AUTO);
-
-        alliance = blackboard.get(ALLIANCE_KEY);
 
         camera.setTargetID(alliance == "red" ? 24 : 20);
     }

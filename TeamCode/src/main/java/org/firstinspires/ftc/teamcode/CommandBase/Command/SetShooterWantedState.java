@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.CommandBase.Command;
 
 import com.seattlesolvers.solverslib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.ShooterSubsystem;
+import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.Shooter.ShooterSubsystem;
 
 public class SetShooterWantedState extends CommandBase {
     ShooterSubsystem shooterSubsystem;

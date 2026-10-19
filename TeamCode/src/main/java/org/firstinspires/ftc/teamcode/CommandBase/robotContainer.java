@@ -15,10 +15,10 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.CommandBase.Command.SetShooterControlMode;
 import org.firstinspires.ftc.teamcode.CommandBase.Command.SetShooterWantedState;
-import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.Camera;
-import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.DriveTrainSubsystem;
-import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.ShooterSubsystem;
+import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.Camera.Camera;
+import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.Drivetrain.DriveTrainSubsystem;
+import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.Intake.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.Shooter.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.Lib.LyonLib.control.ControlMode;
 
 import java.util.function.BooleanSupplier;

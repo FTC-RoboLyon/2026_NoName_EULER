@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.CommandBase.Command;
 
 import com.seattlesolvers.solverslib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.DriveTrainSubsystem;
+import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.Drivetrain.DriveTrainSubsystem;
 import org.firstinspires.ftc.teamcode.Lib.LyonLib.kinematics.Pose2d;
 
 public class GoToPosCommand extends CommandBase {
@@ -21,9 +21,6 @@ public class GoToPosCommand extends CommandBase {
         driveTrainSubsystem.setDriveMode(DriveTrainSubsystem.DriveMode.GO_TO_POS);
         driveTrainSubsystem.setGoToPosTargets(posTarget.xMeters, posTarget.yMeters, posTarget.headingRadians);
     }
-
-    @Override
-    public void execute(){}
 
 
 

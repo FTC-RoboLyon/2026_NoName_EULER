@@ -55,10 +55,10 @@ public class Drivetrain {
 
     public Drivetrain(HardwareMap hmap){
 
-        frontLeftMotor = hmap.get(DcMotor.class, "frontLeftMotor");
-        frontRightMotor = hmap.get(DcMotor.class, "frontRightMotor");
-        backLeftMotor = hmap.get(DcMotor.class, "backLeftMotor");
-        backRightMotor = hmap.get(DcMotor.class, "backRightMotor");
+        frontLeftMotor = hmap.get(DcMotor.class, "frontLeft");
+        frontRightMotor = hmap.get(DcMotor.class, "frontRight");
+        backLeftMotor = hmap.get(DcMotor.class, "rearLeft");
+        backRightMotor = hmap.get(DcMotor.class, "rearRight");
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -136,8 +136,9 @@ public class Drivetrain {
         double forward = (dLeftValue + dRightValue)/2;
         double strafe = dStrafeValue - dHeading * ES;
 
-        double deltaX = Math.cos(robotHeading)*forward - Math.sin(robotHeading)*strafe;
-        double deltaY = Math.sin(robotHeading)*forward + Math.cos(robotHeading)*strafe;
+        double midHeading = robotHeading + (dHeading/2.0);
+        double deltaX = Math.cos(midHeading)*forward - Math.sin(midHeading)*strafe;
+        double deltaY = Math.sin(midHeading)*forward + Math.cos(midHeading)*strafe;
 
         robotX += deltaX;
         robotY += deltaY;

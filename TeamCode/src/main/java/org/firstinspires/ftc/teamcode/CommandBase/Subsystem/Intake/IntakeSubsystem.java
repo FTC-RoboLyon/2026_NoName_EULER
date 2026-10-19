@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.CommandBase.Subsystem;
+package org.firstinspires.ftc.teamcode.CommandBase.Subsystem.Intake;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;

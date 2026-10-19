@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.CommandBase.Subsystem;
+package org.firstinspires.ftc.teamcode.CommandBase.Subsystem.Shooter;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -40,6 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private static double previousError = 0.0;
     private static double previousTime = 0.0;
     private boolean firstIteration = true;
+    private boolean ballHasPassed;
 
     public enum WantedState {
         STAND_BY,
@@ -256,6 +257,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 break;
 
             case READY_TO_SHOOT_AUTO:
+                ballHasPassed = !utils.IsInRange(flywheelActualSpeedRPM, flywheelSpeedTarget, FLYWHEEL_TOLERANCE);
             case READY_TO_SHOOT_NEAR:
             case READY_TO_SHOOT_MID:
             case READY_TO_SHOOT_FAR:

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.CommandBase.Command;
 
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 
-import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.DriveTrainSubsystem;
+import org.firstinspires.ftc.teamcode.CommandBase.Subsystem.Drivetrain.DriveTrainSubsystem;
 import org.firstinspires.ftc.teamcode.Lib.LyonLib.kinematics.Pose2d;
 
 import java.util.ArrayList;

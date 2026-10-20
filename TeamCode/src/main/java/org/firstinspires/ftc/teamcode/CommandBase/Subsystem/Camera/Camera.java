@@ -51,6 +51,13 @@ public class Camera {
     public int getTargetId() {
         return targetId;
     }
+    public boolean targetIDIsDetected(){
+        for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
+            if (aprilTag.id == targetId)
+                return true;
+        }
+        return false;
+    }
 
     public double getDistanceMeters (){
         for (AprilTagDetection aprilTag : aprilTagProcessor.getDetections()){
